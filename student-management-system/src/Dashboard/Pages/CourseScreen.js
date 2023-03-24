@@ -8,7 +8,25 @@ import EditIcon from '@mui/icons-material/Edit';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
+import { Typography } from '@mui/material';
 
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {'Copyright © '}
+      <Link color="inherit" href="#">
+        Johsafe
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 export default function CourseScreen() {
 
   
@@ -111,6 +129,7 @@ export default function CourseScreen() {
               </div>
             </div>
           </div>
+          <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
     </div>

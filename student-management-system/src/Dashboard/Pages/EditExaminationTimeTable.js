@@ -4,8 +4,27 @@ import { Container } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
-export default function CreateTimeTableScreen() {
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {'Copyright © '}
+      <Link color="inherit" href="#">
+        Johsafe
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
+export default function EditTimeTableScreen() {
   const [title, setTitle] = useState('');
   const [academicyear, setAcademicyear] = useState('');
   const [month, setMonth] = useState('');
@@ -42,7 +61,7 @@ export default function CreateTimeTableScreen() {
         <SideBarDetails />
         <Container>
           <Helmet>
-            <title>Create TimeTable</title>
+            <title>Edit TimeTable</title>
           </Helmet>
           <div style={{ padding: '3rem' }}>
             <div
@@ -61,7 +80,7 @@ export default function CreateTimeTableScreen() {
                 </Button>
               </Link> */}
               <div>
-                <h1>Create TimeTable</h1>
+                <h1>Edit TimeTable</h1>
               </div>
             </div>
 
@@ -241,6 +260,7 @@ export default function CreateTimeTableScreen() {
               </form>
             </Card>
           </div>
+          <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
     </div>

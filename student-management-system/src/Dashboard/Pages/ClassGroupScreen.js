@@ -8,9 +8,28 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Link } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
+import { Typography } from '@mui/material';
 
+
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {'Copyright © '}
+      <Link color="inherit" href="#">
+        Johsafe
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 export default function ClassGroupScreen() {
-  const [name, setName] = useState('');
+  const [abbr, setAbbr] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -18,12 +37,12 @@ export default function ClassGroupScreen() {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append('name', name);
+    formData.append('name', abbr);
     formData.append('title', title);
     formData.append('description', description);
     try {
-      console.warn(name, title, description);
-      console.log(name, title, description);
+      console.warn(abbr, title, description);
+      console.log(abbr, title, description);
     } catch (err) {
       console.error(err.message);
     }
@@ -51,9 +70,9 @@ export default function ClassGroupScreen() {
                     <input
                       type="text"
                       class="form-control"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      id="abbr"
+                      value={abbr}
+                      onChange={(e) => setAbbr(e.target.value)}
                     />
                   </div>
                   <div class="mb-2">
@@ -211,6 +230,7 @@ export default function ClassGroupScreen() {
               </div>
             </Card>
           </div>
+          <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
     </div>

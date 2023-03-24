@@ -5,7 +5,25 @@ import { Link } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import { Typography } from '@mui/material';
 
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {'Copyright © '}
+      <Link color="inherit" href="#">
+        Johsafe
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 export default function AddCoursesScreen() {
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
@@ -148,6 +166,7 @@ export default function AddCoursesScreen() {
               </div>
             </Card>
           </div>
+          <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
     </div>
