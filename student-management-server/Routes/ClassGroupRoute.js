@@ -5,8 +5,6 @@ const groupRouter = express.Router();
 groupRouter.post('/create', async (req, res) => {
   try {
     const { abbr, title, description } = req.body;
-    console.log(abbr, title, description);
-
     const classGroup = new Group({
       abbr: abbr,
       title: title,
