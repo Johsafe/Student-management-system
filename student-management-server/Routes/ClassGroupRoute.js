@@ -1,12 +1,11 @@
 const express = require('express');
 const Group = require('../Models/ClassGroupSchema.js');
+const Courses = require('../Models/CoursesSchema.js');
 const groupRouter = express.Router();
 
 groupRouter.post('/create', async (req, res) => {
   try {
     const { abbr, title, description } = req.body;
-    console.log(abbr, title, description);
-
     const classGroup = new Group({
       abbr: abbr,
       title: title,
@@ -27,12 +26,24 @@ groupRouter.post('/create', async (req, res) => {
 //get classGroup
 groupRouter.get('/group', async (req, res) => {
   try {
-    const group = await Group.find();
+    const group = await Group.find({});
     res.send(group);
   } catch (error) {
     res
       .status(500)
       .send({ message: ' Error in getting ClassGroup.', error: error.message });
+  }
+});
+
+//get courses
+groupRouter.get('/courses', async (req, res) => {
+  try {
+    const courses = await Courses.find({});
+    res.send(courses);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: ' Error in getting Courses.', error: error.message });
   }
 });
 
