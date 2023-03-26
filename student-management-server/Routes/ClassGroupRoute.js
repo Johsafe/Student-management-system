@@ -5,8 +5,6 @@ const groupRouter = express.Router();
 groupRouter.post('/create', async (req, res) => {
   try {
     const { abbr, title, description } = req.body;
-    console.log(abbr, title, description);
-
     const classGroup = new Group({
       abbr: abbr,
       title: title,
@@ -27,7 +25,7 @@ groupRouter.post('/create', async (req, res) => {
 //get classGroup
 groupRouter.get('/group', async (req, res) => {
   try {
-    const group = await Group.find();
+    const group = await Group.find({});
     res.send(group);
   } catch (error) {
     res
@@ -35,5 +33,9 @@ groupRouter.get('/group', async (req, res) => {
       .send({ message: ' Error in getting ClassGroup.', error: error.message });
   }
 });
+
+//delete classGroup
+
+
 
 module.exports = groupRouter;

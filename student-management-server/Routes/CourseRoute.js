@@ -23,4 +23,16 @@ courseRouter.post('/create', async (req, res) => {
   // }
 });
 
+//get courses
+courseRouter.get('/courses', async (req, res) => {
+  try {
+    const courses = await Courses.find({});
+    res.send(courses);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: ' Error in getting Courses.', error: error.message });
+  }
+});
+
 module.exports = courseRouter;

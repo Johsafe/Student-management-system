@@ -4,7 +4,7 @@ const CoursesSchema = mongoose.Schema(
   {
     code: { type: String, required: true, unique: true },
     title: { type: String, required: true },
-    group: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },
+    group: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
     semester: { type: Number, required: true },
     year: { type: Number, required: true },
     createdAt: Date,
@@ -14,5 +14,5 @@ const CoursesSchema = mongoose.Schema(
   }
 );
 
-const Courses = mongoose.model('Courses', CoursesSchema);
+const Courses = mongoose.model('Course', CoursesSchema);
 module.exports = Courses;

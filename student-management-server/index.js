@@ -1,15 +1,18 @@
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const groupRouter = require('./Routes/ClassGroupRoute.js');
+const courseRouter = require('./Routes/CourseRoute.js');
+require('dotenv').config();
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const cors = require('cors');
-app.use(cors());
-// const bodyParser = require('body-parser');
-// app.use(bodyParser.json());
+app.use(cors({}));
 
-const mongoose = require('mongoose');
-require('dotenv').config();
-const groupRouter = require('./Routes/ClassGroupRoute.js');
+//connecting routes
+app.use('/system/classgroup', groupRouter);
+app.use('/system/course',courseRouter);
 
 //connect to mongodb
 mongoose
@@ -18,17 +21,15 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('connected to db');
+    //run server
+    const port = process.env.PORT || 8000;
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
   })
   .catch((err) => {
     console.log(err.message);
   });
 
-//connecting routes
-app.use('/system/classgroup', groupRouter);
 
-//run server
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`server has started at http://localhost:${port}`);
-});
+
