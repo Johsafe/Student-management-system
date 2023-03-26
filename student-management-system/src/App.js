@@ -1,5 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Route, Routes } from 'react-router-dom';
 import LoginScreen from './Components/Pages/LoginScreen';
 import RegisterScreen from './Components/Pages/RegisterScreen';
 import HomepageDetails from './Components/Layout/HomepageDetails';
