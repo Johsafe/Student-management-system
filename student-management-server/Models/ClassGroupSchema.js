@@ -1,16 +1,14 @@
 const mongoose = require('mongoose');
 
-const classGroupSchema = mongoose.Schema(
-  {
-    abbr: { type: String, required: true, unique: true },
-    title: { type: String, required: true },
-    description: { type: String },
-    updatedAt: Date,
+const classGroupSchema = mongoose.Schema({
+  abbr: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
+  description: { type: String },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  {
-    timestamps: true,
-  }
-);
+});
 
 const Group = mongoose.model('Group', classGroupSchema);
 

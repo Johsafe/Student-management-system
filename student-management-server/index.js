@@ -12,7 +12,7 @@ app.use(cors({}));
 
 //connecting routes
 app.use('/system/classgroup', groupRouter);
-app.use('/system/course',courseRouter);
+app.use('/system/course', courseRouter);
 
 //connect to mongodb
 mongoose
@@ -30,6 +30,3 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
-
-
-
