@@ -1,5 +1,5 @@
 import Card from '@mui/material/Card';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
@@ -31,23 +31,42 @@ export default function AddCoursesScreen() {
   const [semister, setSemister] = useState('');
   const [year, setYear] = useState('');
 
-  const handleSubmit = async (e) => {
+  //add course
+  const handleSubmitCourse = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('code', code);
-    formData.append('title', title);
-    formData.append('group', group);
-    formData.append('semister', semister);
-    formData.append('year', year);
     try {
-      console.log(group, code, title, semister, year);
-
-      // console.log(code);
+      const body = { group, code, title, semister, year };
+      const result = await fetch('http://localhost:8000/system/course/create', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const addcourse = await result.json();
+      console.log(addcourse);
     } catch (err) {
       console.error(err.message);
     }
   };
+
+  //Get Groups
+  const [groups, setGroups] = useState([]);
+  async function getGroups() {
+    try {
+      const response = await fetch(
+        'http://localhost:8000/system/classgroup/group'
+      );
+      const getgroups = await response.json();
+      setGroups(getgroups);
+      // console.log(getgroups);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+
   return (
     <div>
       <div style={{ display: 'flex' }}>
@@ -67,7 +86,6 @@ export default function AddCoursesScreen() {
             >
               <Link to="/course" className="link">
                 {' '}
-                {/* <button className="btn btn-danger">Go to Courses</button> */}
                 <Button variant="contained" size="medium" color="error">
                   Go to Course
                 </Button>
@@ -78,92 +96,88 @@ export default function AddCoursesScreen() {
             </div>
 
             <Card>
-              <div
-                style={{ padding: '2rem' }}
-                // id="exampleForm"
-                // onSubmit={handleSubmit}
-              >
-                <div>
-                  <div class="mb-2">
-                    <label for="code" class="form-label">
-                      Course Code
-                    </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="code"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                    />
-                  </div>
-                  <div class="mb-2">
-                    <label for="title" class="form-label">
-                      Course Title
-                    </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                  </div>
+              <form>
+                <div style={{ padding: '2rem' }}>
+                  <div>
+                    <div class="mb-2">
+                      <label for="code" class="form-label">
+                        Course Code
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="code"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                      />
+                    </div>
+                    <div class="mb-2">
+                      <label for="title" class="form-label">
+                        Course Title
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
 
-                  {/* <div class="mb-2">
-                    <label for="category" class="form-label">
-                      Category
-                    </label>
-                    <input type="text" class="form-control" id="category" />
-                  </div> */}
-                  <div lass="mb-2">
-                    <label for="group" class="form-label">
-                      Class Group
-                    </label>
-                    <select
-                      class="form-select"
-                      aria-label="select example"
-                      onChange={(e) => setGroup(e.target.value)}
+                    <div lass="mb-2">
+                      <label for="group" class="form-label">
+                        Class Group
+                      </label>
+                      <select
+                        class="form-select"
+                        aria-label="select example"
+                        onChange={(e) => setGroup(e.target.value)}
+                        value={group}
+                      >
+                        <option selected>--Select class Group--</option>
+                        {groups.map((group) => (
+                          <>
+                            {/* <option value={}>{group.abbr}</option> */}
+                            <option key={group.id}>{group.abbr}</option>
+                          </>
+                        ))}
+                      </select>
+                    </div>
+                    <div class="mb-2">
+                      <label for="semister" class="form-label">
+                        Semister
+                      </label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="semister"
+                        value={semister}
+                        onChange={(e) => setSemister(e.target.value)}
+                      />
+                    </div>
+                    <div class="mb-2">
+                      <label for="year" class="form-label">
+                        Year
+                      </label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="year"
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      sx={{ width: '100%' }}
+                      onClick={handleSubmitCourse}
                     >
-                      <option selected>--Select class Group--</option>
-                      <option value={group}>CSC</option>
-                      <option value={group}>ASC</option>
-                      <option value={group}>BSC</option>
-                    </select>
+                      Submit
+                    </Button>
                   </div>
-                  <div class="mb-2">
-                    <label for="semister" class="form-label">
-                      Semister
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="semister"
-                      value={semister}
-                      onChange={(e) => setSemister(e.target.value)}
-                    />
-                  </div>
-                  <div class="mb-2">
-                    <label for="year" class="form-label">
-                      Year
-                    </label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="year"
-                      value={year}
-                      onChange={(e) => setYear(e.target.value)}
-                    />
-                  </div>
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    sx={{ width: '100%' }}
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </Button>
                 </div>
-              </div>
+              </form>
             </Card>
           </div>
           <Copyright sx={{ pt: 4 }} />

@@ -1,5 +1,5 @@
 import Avatar from '@mui/material/Avatar';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
@@ -28,17 +28,42 @@ function Copyright(props) {
   );
 }
 export default function CourseScreen() {
+  //get Courses
+  const [courses, setCourses] = useState([]);
+  async function getCourses() {
+    try {
+      const response = await fetch(
+        'http://localhost:8000/system/course/courses'
+      );
+      const getcourses = await response.json();
+      setCourses(getcourses);
+      // console.log(getcourses);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
 
-  
+  useEffect(() => {
+    getCourses();
+  }, []);
+
+  //delete course
+  async function deleteCourse() {
+    try {
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   return (
     <div>
       <div style={{ display: 'flex' }}>
-      <SideBarDetails />
+        <SideBarDetails />
         <Container>
           <Helmet>
             <title>Courses</title>
           </Helmet>
-          <div style={{margin:'3rem'}}>
+          <div style={{ margin: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h1>My Courses</h1>
               <div>
@@ -59,71 +84,42 @@ export default function CourseScreen() {
                       <th scope="col">#</th>
                       <th scope="col">Code</th>
                       <th scope="col">Title</th>
-                      <th scope="col">Class Group</th>
+                      {/* <th scope="col">Class Group</th> */}
                       <th scope="col">Semeter</th>
                       <th scope="col">year</th>
                       <th scope="col">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">
-                        <Avatar>C</Avatar>
-                      </th>
-                      <td>COM 321</td>
-                      <td>SOFTWARE ENGERRING II</td>
-                      <td>CSC</td>
-                      <td>2</td>
-                      <td>3</td>
-                      <td>
-                        <div>
-                          <ButtonGroup
-                            variant="text"
-                            aria-label="text button group"
-                            style={{ display: 'flex' }}
-                          >
-                            {/* <Button>One</Button> */}
-                            <Button>
-                              <Link to="/edit">
-                                <EditIcon />
-                              </Link>
-                            </Button>
-                            <Button>
-                              <DeleteIcon style={{ color: 'red' }} />
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Avatar>M</Avatar>
-                      </th>
-                      <td>MAT 120</td>
-                      <td>LINEAR ALGEBRA</td>
-                      <td>BSC</td>
-                      <td>1</td>
-                      <td>1</td>
-                      <td>
-                        <div>
-                          <ButtonGroup
-                            variant="text"
-                            aria-label="text button group"
-                            style={{ display: 'flex' }}
-                          >
-                            {/* <Button>One</Button> */}
-                            <Button>
-                              <Link to="/edit">
-                                <EditIcon />
-                              </Link>
-                            </Button>
-                            <Button>
-                              <DeleteIcon style={{ color: 'red' }} />
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      </td>
-                    </tr>
+                    {courses.map((course) => (
+                      <tr key={course.id}>
+                        <th scope="row">#</th>
+                        <td>{course.code}</td>
+                        <td>{course.title}</td>
+                        {/* <td>{course.group}</td> */}
+                        <td>{course.semister}</td>
+                        <td>{course.year}</td>
+                        <td>
+                          <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: 'flex' }}
+                            >
+                              {/* <Button>One</Button> */}
+                              <Button>
+                                <Link to="/edit">
+                                  <EditIcon />
+                                </Link>
+                              </Button>
+                              <Button onClick={() => deleteCourse()}>
+                                <DeleteIcon style={{ color: 'red' }} />
+                              </Button>
+                            </ButtonGroup>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
