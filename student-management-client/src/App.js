@@ -14,6 +14,7 @@ import CreateTimeTableScreen from './Dashboard/Pages/CreateTimetableScreen';
 import ExaminationTimetableScreen from './Dashboard/Pages/ExaminationTimetableScreen';
 import ViewTimeTable from './Dashboard/Pages/ViewExaminationTimeTableScreen';
 import EditTimeTableScreen from './Dashboard/Pages/EditExaminationTimeTable';
+import EditCoursesScreen from './Dashboard/Pages/EditCourseScreen';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/course" element={<CourseScreen />} />
         <Route path="/add" element={<AddCoursesScreen />} />
         <Route path="/class" element={<ClassGroupScreen />} />
+        <Route path="/edit" element={<EditCoursesScreen />} />
         <Route path="/create" element={<CreateTimeTableScreen />} />
         <Route path="/examination" element={<ExaminationTimetableScreen />} />
         <Route path="/examination/edit" element={<EditTimeTableScreen />} />

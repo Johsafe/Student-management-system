@@ -9,6 +9,8 @@ import { Link, useParams } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
+import Modal from 'react-bootstrap/Modal';
+import EditClassGroupScreen from './EditClassGroup';
 
 function Copyright(props) {
   return (
@@ -70,6 +72,12 @@ export default function ClassGroupScreen() {
   useEffect(() => {
     getGroups();
   }, []);
+
+  //edit group modal
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   //Delete group
   const params = useParams();
@@ -179,11 +187,8 @@ export default function ClassGroupScreen() {
                               aria-label="text button group"
                               style={{ display: 'flex' }}
                             >
-                              <Button>
-                                <Link to="/edit">
-                                  {' '}
-                                  <EditIcon />
-                                </Link>
+                              <Button onClick={handleShow}>
+                                <EditIcon />
                               </Button>
                               <Button onClick={() => deleteGroup(group._id)}>
                                 <DeleteIcon style={{ color: 'red' }} />
@@ -193,6 +198,39 @@ export default function ClassGroupScreen() {
                         </td>
                       </tr>
                     ))}
+
+                    <Modal
+                      show={show}
+                      onHide={handleClose}
+                      backdrop="static"
+                      keyboard={false}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>Edit Class Group</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <EditClassGroupScreen />
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <div style={{ display: 'flex', gap: '2rem' }}>
+                          <Button
+                            variant="secondary"
+                            size="medium"
+                            sx={{ width: '50%' }}
+                            onClick={handleClose}
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            variant="contained"
+                            size="medium"
+                            sx={{ width: '50%' }}
+                          >
+                            Submit
+                          </Button>
+                        </div>
+                      </Modal.Footer>
+                    </Modal>
                   </tbody>
                 </table>
               </div>
