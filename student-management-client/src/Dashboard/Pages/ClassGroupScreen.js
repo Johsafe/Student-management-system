@@ -5,12 +5,14 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import Modal from 'react-bootstrap/Modal';
 import EditClassGroupScreen from './EditClassGroup';
+import { getError } from '../../Utils.js/GetError';
+import { toast } from 'react-toastify';
 
 function Copyright(props) {
   return (
@@ -47,10 +49,13 @@ export default function ClassGroupScreen() {
           body: JSON.stringify(body),
         }
       );
-      const addgroup = await result.json();
+      await result.json();
+      toast.success('class added successfully');
+
       // console.log(addgroup);
     } catch (err) {
-      console.error(err.message);
+      // console.error(err.message);
+      toast.error(getError(err));
     }
   };
 
@@ -73,28 +78,23 @@ export default function ClassGroupScreen() {
     getGroups();
   }, []);
 
-  //edit group modal
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   //Delete group
-  const params = useParams();
-  async function deleteGroup() {
+  const deleteGroup = async (id) => {
     try {
-      // const response = await fetch(
-      //   `http://localhost:8000/system/classgroup/${params.id}`,
-      //   {
-      //     method: 'DELETE',
-      //   }
-      // );
-      // const deletedgroup = await response.json();
-      // console.log(deletedgroup);
+      // await fetch(`http://localhost:8000/system/classgroup/${id}`, {
+      //   method: 'DELETE',
+      // });
+      // setGroups(groups.filter((groups) => groups._id !== id));
     } catch (err) {
       console.error(err.message);
     }
-  }
+  };
+
+  //edit group modal
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div>
       {/* <SubLayout> */}
@@ -175,7 +175,7 @@ export default function ClassGroupScreen() {
                   </thead>
                   <tbody>
                     {groups.map((group) => (
-                      <tr key={group.id}>
+                      <tr key={group._id}>
                         <th scope="row">#</th>
                         <td>{group.abbr}</td>
                         <td>{group.title}</td>
@@ -187,7 +187,7 @@ export default function ClassGroupScreen() {
                               aria-label="text button group"
                               style={{ display: 'flex' }}
                             >
-                              <Button onClick={handleShow}>
+                              <Button onClick={handleShow} data-toggle="modal">
                                 <EditIcon />
                               </Button>
                               <Button onClick={() => deleteGroup(group._id)}>
@@ -205,31 +205,25 @@ export default function ClassGroupScreen() {
                       backdrop="static"
                       keyboard={false}
                     >
-                      <Modal.Header closeButton>
-                        <Modal.Title>Edit Class Group</Modal.Title>
+                      <Modal.Header>
+                        <Modal.Title>
+                          <div style={{ display: 'flex' }}>
+                            <div>Edit Class Group</div>
+                            <Button
+                              variant="secondary"
+                              size="medium"
+                              sx={{ width: '50%' }}
+                              onClick={handleClose}
+                            >
+                              Close
+                            </Button>
+                          </div>
+                        </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                        <EditClassGroupScreen />
+                        <EditClassGroupScreen theGroups={groups} />
                       </Modal.Body>
-                      <Modal.Footer>
-                        <div style={{ display: 'flex', gap: '2rem' }}>
-                          <Button
-                            variant="secondary"
-                            size="medium"
-                            sx={{ width: '50%' }}
-                            onClick={handleClose}
-                          >
-                            Close
-                          </Button>
-                          <Button
-                            variant="contained"
-                            size="medium"
-                            sx={{ width: '50%' }}
-                          >
-                            Submit
-                          </Button>
-                        </div>
-                      </Modal.Footer>
+                      <Modal.Footer></Modal.Footer>
                     </Modal>
                   </tbody>
                 </table>

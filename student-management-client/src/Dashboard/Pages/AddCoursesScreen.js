@@ -1,11 +1,13 @@
 import Card from '@mui/material/Card';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
+import { getError } from '../../Utils.js/GetError';
+import { toast } from 'react-toastify';
 
 function Copyright(props) {
   return (
@@ -25,6 +27,7 @@ function Copyright(props) {
   );
 }
 export default function AddCoursesScreen() {
+  const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
   const [group, setGroup] = useState('');
@@ -42,9 +45,12 @@ export default function AddCoursesScreen() {
         body: JSON.stringify(body),
       });
       const addcourse = await result.json();
-      console.log(addcourse);
+      // console.log(addcourse);
+      // toast.success('class added successfully');
+      navigate('/course');
     } catch (err) {
-      console.error(err.message);
+      // console.error(err.message);
+      toast.error(getError(err));
     }
   };
 
@@ -132,13 +138,15 @@ export default function AddCoursesScreen() {
                         class="form-select"
                         aria-label="select example"
                         onChange={(e) => setGroup(e.target.value)}
-                        value={group}
+                        value={group._id}
                       >
                         <option selected>--Select class Group--</option>
                         {groups.map((group) => (
                           <>
                             {/* <option value={}>{group.abbr}</option> */}
-                            <option key={group.id}>{group.abbr}</option>
+                            <option key={group._id} value={group._id}>
+                              {group.abbr}
+                            </option>
                           </>
                         ))}
                       </select>

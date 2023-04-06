@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -12,6 +10,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import HeaderBar from '../Layout/HeaderBar';
+import { toast } from 'react-toastify';
+import { getError } from '../../Utils.js/GetError';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -34,15 +35,28 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function LoginScreen() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const navigate = useNavigate();
 
+  const loginForm = async (e) => {
+    e.preventDefault();
+    try {
+      const url = 'http://localhost:8000/system/authenicate/login';
+      const body = { email, password };
+      const result = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const logOn = await result.json();
+      localStorage.setItem('Info', logOn);
+      navigate('/dashboard');
+      toast.success('User Logged Successfully');
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
   return (
     <ThemeProvider theme={theme}>
       <HeaderBar />
@@ -63,12 +77,7 @@ export default function LoginScreen() {
             Sign in
           </Typography>
 
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          <form>
             <TextField
               margin="normal"
               required
@@ -76,8 +85,9 @@ export default function LoginScreen() {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
               autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -87,21 +97,19 @@ export default function LoginScreen() {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              type="submit"
+              // type="submit"
               fullWidth
               variant="contained"
+              onClick={loginForm}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
             </Button>
-          </Box>
+          </form>
         </Box>
         <Container
           maxWidth="md"

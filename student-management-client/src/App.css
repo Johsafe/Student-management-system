@@ -47,3 +47,33 @@ code {
   background-position: center;
   background-size: 45rem;
 }
+
+/* PageError Css */
+
+.Error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: rgb(221, 208, 208); */
+  align-items: center;
+  padding-top: 4rem;
+  padding-bottom: 5rem;
+  
+}
+.ErrorImg img {
+  width: 20rem;
+  margin-top: 5rem;
+}
+.ErrorTxt {
+  margin-top: 5rem;
+}
+.ErrorTxt h1 {
+  font-size: 3rem;
+  color: red;
+}
+.ErrorTxt h2 {
+  font-size: 2rem;
+}
+.ErrorTxt p {
+  font-size: 1.5rem;
+}

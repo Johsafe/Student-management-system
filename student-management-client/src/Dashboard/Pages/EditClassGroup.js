@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Container from '@mui/material/Container';
+import { Button } from '@mui/material';
 
-export default function EditClassGroupScreen() {
-  const [abbr, setAbbr] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+export default function EditClassGroupScreen({ theGroups }) {
+  // const id = theGroups._id;
+  const [abbr, setAbbr] = useState(theGroups.abbr);
+  const [title, setTitle] = useState(theGroups.title);
+  const [description, setDescription] = useState(theGroups.description);
+
+  console.log(abbr, title, description);
+  console.log(theGroups);
+
+  //edit classgroup function
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div>
@@ -24,9 +35,9 @@ export default function EditClassGroupScreen() {
                   <input
                     type="text"
                     class="form-control"
-                    id="abbr"
+                    name="abbr"
                     value={abbr}
-                    onChange={(e) => setAbbr(e.target.value)}
+                    // onChange={(e) => setAbbr(e.target.value)}
                   />
                 </div>
                 <div class="mb-2">
@@ -36,9 +47,9 @@ export default function EditClassGroupScreen() {
                   <input
                     type="text"
                     class="form-control"
-                    id="title"
+                    name="title"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    // onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
 
@@ -48,12 +59,20 @@ export default function EditClassGroupScreen() {
                   </label>
                   <textarea
                     class="form-control"
-                    id="description"
+                    name="description"
                     rows="3"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    // onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
                 </div>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  sx={{ width: '100%' }}
+                  onClick={onSubmitForm}
+                >
+                  Submit
+                </Button>
               </div>
             </form>
           </div>

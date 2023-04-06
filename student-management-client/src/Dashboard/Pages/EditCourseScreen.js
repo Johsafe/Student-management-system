@@ -1,11 +1,13 @@
 import Card from '@mui/material/Card';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
+import { getError } from '../../Utils.js/GetError';
+import { toast } from 'react-toastify';
 
 function Copyright(props) {
   return (
@@ -25,21 +27,45 @@ function Copyright(props) {
   );
 }
 export default function EditCoursesScreen() {
+  //get course Details
+  const [course, setCourse] = useState([]);
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
   const [group, setGroup] = useState('');
   const [semister, setSemister] = useState('');
   const [year, setYear] = useState('');
+  const params = useParams();
 
-  //get course Details
-  
+  async function getACourse() {
+    console.warn(params);
+    try {
+      const response = await fetch(
+        `http://localhost:8000/system/course/${params.id}`
+      );
+      const getacourse = await response.json();
+      setCourse(getacourse);
+      setCode(getacourse.code);
+      setTitle(getacourse.title);
+      setGroup(getacourse.group.abbr);
+      setSemister(getacourse.semister);
+      setYear(getacourse.year);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    getACourse();
+  }, []);
 
   //edit course
   const handleSubmitCourse = async (e) => {
     e.preventDefault();
+    const url = 'http://localhost:8000/system/course/courses';
+
     try {
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   };
 
@@ -100,7 +126,7 @@ export default function EditCoursesScreen() {
                       />
                     </div>
 
-                    <div lass="mb-2">
+                    {/* <div lass="mb-2">
                       <label for="group" class="form-label">
                         Class Group
                       </label>
@@ -116,7 +142,7 @@ export default function EditCoursesScreen() {
                           <option>group</option>
                         </>
                       </select>
-                    </div>
+                    </div> */}
                     <div class="mb-2">
                       <label for="semister" class="form-label">
                         Semister

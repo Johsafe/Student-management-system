@@ -1,4 +1,3 @@
-import Avatar from '@mui/material/Avatar';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -40,6 +39,7 @@ export default function CourseScreen() {
       // console.log(getcourses);
     } catch (err) {
       console.error(err.message);
+      // toast.error(getError(err));
     }
   }
 
@@ -48,8 +48,12 @@ export default function CourseScreen() {
   }, []);
 
   //delete course
-  async function deleteCourse() {
+  async function deleteCourse(id) {
     try {
+      await fetch(`http://localhost:8000/system/course/${id}`, {
+        method: 'DELETE',
+      });
+      setCourses(courses.filter((courses) => courses._id !== id));
     } catch (err) {
       console.error(err.message);
     }
@@ -84,7 +88,7 @@ export default function CourseScreen() {
                       <th scope="col">#</th>
                       <th scope="col">Code</th>
                       <th scope="col">Title</th>
-                      {/* <th scope="col">Class Group</th> */}
+                      <th scope="col">Class Group</th>
                       <th scope="col">Semeter</th>
                       <th scope="col">year</th>
                       <th scope="col">Action</th>
@@ -96,7 +100,7 @@ export default function CourseScreen() {
                         <th scope="row">#</th>
                         <td>{course.code}</td>
                         <td>{course.title}</td>
-                        {/* <td>{course.group}</td> */}
+                        <td>{course.group.abbr}</td>
                         <td>{course.semister}</td>
                         <td>{course.year}</td>
                         <td>
@@ -108,11 +112,11 @@ export default function CourseScreen() {
                             >
                               {/* <Button>One</Button> */}
                               <Button>
-                                <Link to="/edit">
+                                <Link to={`/${course._id}/edit`}>
                                   <EditIcon />
                                 </Link>
                               </Button>
-                              <Button onClick={() => deleteCourse()}>
+                              <Button onClick={() => deleteCourse(course._id)}>
                                 <DeleteIcon style={{ color: 'red' }} />
                               </Button>
                             </ButtonGroup>
