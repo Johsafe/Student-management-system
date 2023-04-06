@@ -34,41 +34,6 @@ authenticateRouter.post('/create', async (req, res) => {
   }
 });
 
-//User Login
-// authenticateRouter.post('/user', async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     const user = await Authenticate.findOne({ email });
-
-//     // !user && res.status(401).json('Wrong Credetials!');
-//     // const enteredpassword = await bcrypt.compareSync(password, user.passwordHash);
-//     // enteredpassword !== user.password &&
-//     //   res.status(401).json('Wrong Credentials!');
-
-//     if (user && (await bcrypt.compare(password, user.passwordHash))) {
-//       //generate token
-//       // const token = jwt.sign(
-//       //   {
-//       //     userId: user.id,
-//       //   },
-//       //   process.env.JWT_SECRET,
-//       //   {
-//       //     expiresIn: '1d',
-//       //   }
-//       // );
-//       res.status(200).send({ user: user.email, token: token });
-//     } else {
-//       res.status(401).send({ message: 'Invalid email or password' });
-//     }
-//   } catch (error) {
-//     res.status(500).send({
-//       message: 'An Unthorized User',
-//       error: error.message,
-//     });
-//   }
-// });
-
 //login
 authenticateRouter.post('/login', async (req, res) => {
   try {

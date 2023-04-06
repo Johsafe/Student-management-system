@@ -56,22 +56,23 @@ groupRouter.get('/group', async (req, res) => {
 });
 
 //delete classGroup
-groupRouter.delete('/:groudId', async (req, res) => {
-  try {
-    Group.findByIdAndRemove(req.params.groudId).then((group) => {
-      if (group) {
-        return res
-          .status(200)
-          .json({ success: true, message: 'group deleted', group });
-      } else {
-        return res
-          .status(404)
-          .json({ success: false, message: 'group not found' });
-      }
-    });
-  } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
-  }
-});
+// groupRouter.delete('/:groudId', async (req, res) => {
+//   try {
+//     Group.findByIdAndRemove(req.params.groudId)
+//       .then((group) => {
+//         if (group) {
+//           return res
+//             .status(200)
+//             .json({ success: true, message: 'group deleted', group });
+//         } else {
+//           return res
+//             .status(404)
+//             .json({ success: false, message: 'group not found' });
+//         }
+//       });
+//   } catch (error) {
+//     res.status(500).send({ success: false, error: error.message });
+//   }
+// });
 
 module.exports = groupRouter;
