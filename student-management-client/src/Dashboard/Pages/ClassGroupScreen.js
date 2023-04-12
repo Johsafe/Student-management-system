@@ -49,10 +49,11 @@ export default function ClassGroupScreen() {
           body: JSON.stringify(body),
         }
       );
-      await result.json();
+      const addgroup = await result.json();
       toast.success('class added successfully');
+      console.log(abbr, title, description);
 
-      // console.log(addgroup);
+      console.log(addgroup);
     } catch (err) {
       // console.error(err.message);
       toast.error(getError(err));

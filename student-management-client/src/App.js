@@ -18,16 +18,16 @@ import ExaminationTimetableScreen from './Dashboard/Pages/ExaminationTimetableSc
 import ViewTimeTable from './Dashboard/Pages/ViewExaminationTimeTableScreen';
 import EditTimeTableScreen from './Dashboard/Pages/EditExaminationTimeTable';
 import EditCoursesScreen from './Dashboard/Pages/EditCourseScreen';
+import AddStudentScreen from './Dashboard/Pages/AddStudentScreen';
+import StudentsScreen from './Dashboard/Pages/StudentsScreen';
 
 import PageError from './Utils.js/PageError';
-
 
 function App() {
   return (
     <div>
-       <ToastContainer position="top-right" limit={1} />
+      <ToastContainer position="top-right" limit={1} />
       <Routes>
-        
         <Route path="/" element={<HomepageDetails />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/signup" element={<RegisterScreen />} />
@@ -42,6 +42,9 @@ function App() {
         <Route path="/examination" element={<ExaminationTimetableScreen />} />
         <Route path="/examination/edit" element={<EditTimeTableScreen />} />
         <Route path="/examination/view" element={<ViewTimeTable />} />
+        <Route path="/addStudent" element={<AddStudentScreen />} />
+        <Route path="/student" element={<StudentsScreen />} />
+
         <Route path="*" element={<PageError />} />
       </Routes>
     </div>

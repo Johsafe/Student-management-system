@@ -72,13 +72,13 @@ export default function EditTimeTableScreen() {
                 justifyContent: 'space-between',
               }}
             >
-              {/* <Link to="/course" className="link">
+              <Link to="/examination" className="link">
                 {' '}
                 
                 <Button variant="contained" size="medium" color="error">
-                  Go to Course
+                  Go to Created Timetable
                 </Button>
-              </Link> */}
+              </Link>
               <div>
                 <h1>Edit TimeTable</h1>
               </div>

@@ -44,9 +44,11 @@ export default function AddCoursesScreen() {
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(body),
       });
+
       const addcourse = await result.json();
       // console.log(addcourse);
-      // toast.success('class added successfully');
+      
+      toast.success('class added successfully');
       navigate('/course');
     } catch (err) {
       // console.error(err.message);
@@ -93,7 +95,7 @@ export default function AddCoursesScreen() {
               <Link to="/course" className="link">
                 {' '}
                 <Button variant="contained" size="medium" color="error">
-                  Go to Course
+                  Go to Courses
                 </Button>
               </Link>
               <div>
