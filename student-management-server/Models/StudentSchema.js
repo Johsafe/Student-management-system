@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
 const StudentSchema = mongoose.Schema({
-  name: { type: String, required: true },
-
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
   email: {
     type: String,
-    required: true,
-    unique: true,
     lowerCase: true,
+    default:"student@gmail.com",
     validate: {
       validator: function (emailUsed) {
         return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(emailUsed);
@@ -16,7 +15,7 @@ const StudentSchema = mongoose.Schema({
     },
   },
   password: { type: String, required: true, minLength: 6 },
-  admission: { type: String },
+  admission: { type: String, required: true, unique: true },
   group: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',

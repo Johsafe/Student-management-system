@@ -5,6 +5,7 @@ const groupRouter = require('./Routes/ClassGroupRoute.js');
 const courseRouter = require('./Routes/CourseRoute.js');
 const authenticateRouter = require('./Routes/AuthenticationRoute.js');
 const examRouter = require('./Routes/ExamTimeTableRoute.js');
+const studentRouter = require('./Routes/StudentRoute.js');
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(`${api}/classgroup`, groupRouter);
 app.use(`${api}/course`, courseRouter);
 app.use(`${api}/authenicate`, authenticateRouter);
 app.use(`${api}/timetable`, examRouter);
+app.use(`${api}/student`, studentRouter);
 
 //connect to mongodb
 mongoose
