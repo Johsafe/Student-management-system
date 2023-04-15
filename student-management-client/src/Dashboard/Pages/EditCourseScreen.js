@@ -6,7 +6,7 @@ import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
-import { getError } from '../../Utils.js/GetError';
+import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
 
 function Copyright(props) {

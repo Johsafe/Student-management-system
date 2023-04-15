@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 
 import SideBarDetails from './SideBarDetails';
-
+import { motion } from 'framer-motion';
 function Copyright(props) {
   return (
     <Typography
@@ -104,5 +104,12 @@ function DashboardContent() {
 }
 
 export default function OverviewScreen() {
-  return <DashboardContent />;
+  return(
+  <motion.div
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 1 }}
+  >
+    <DashboardContent />
+  </motion.div>);
 }

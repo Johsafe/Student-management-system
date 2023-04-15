@@ -6,8 +6,9 @@ import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
-import { getError } from '../../Utils.js/GetError';
+import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
 
 function Copyright(props) {
   return (
@@ -47,8 +48,9 @@ export default function AddCoursesScreen() {
 
       const addcourse = await result.json();
       // console.log(addcourse);
-      
+
       toast.success('class added successfully');
+      window.reload();
       navigate('/course');
     } catch (err) {
       // console.error(err.message);
@@ -76,7 +78,12 @@ export default function AddCoursesScreen() {
   }, []);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -193,6 +200,6 @@ export default function AddCoursesScreen() {
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </div>
+    </motion.div>
   );
 }

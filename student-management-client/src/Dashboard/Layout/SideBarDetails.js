@@ -111,7 +111,7 @@ export default function SideBarDetails() {
                 </li>
               </Link>
               <h3 className="sidebarTitle">Departments</h3>
-              <Link to={'/registration'} className="link">
+              <Link to={'/addstudent'} className="link">
                 <li className="sidebarListItem">
                   <People className="sidebarIcon" />
                   Registration

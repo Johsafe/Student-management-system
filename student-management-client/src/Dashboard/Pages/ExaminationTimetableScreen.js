@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
@@ -9,6 +9,8 @@ import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Typography } from '@mui/material';
+import LoadingBox from '../../Utils/LoadingBox';
+import { motion } from 'framer-motion';
 
 function Copyright(props) {
   return (
@@ -29,8 +31,17 @@ function Copyright(props) {
 }
 
 export default function ExaminationTimetableScreen() {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+  }, []);
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+    >
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -50,59 +61,64 @@ export default function ExaminationTimetableScreen() {
               </div>
             </div>
 
-            <div className="dashboard">
-              <div>
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Academic Year</th>
-                      <th scope="col">Exam Month</th>
-                      <th scope="col">DepartMent</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>#</td>
-                      <td>END OF SEMISTER </td>
-                      <td>2022/2023</td>
-                      <td>APRIL 2023</td>
-                      <td>SSAES</td>
-                      <td>
-                        <div>
-                          <ButtonGroup
-                            variant="text"
-                            aria-label="text button group"
-                            style={{ display: 'flex' }}
-                          >
-                            {/* <Button>One</Button> */}
-                            <Button>
-                              <Link to="/examination/edit">
-                                <EditIcon />
-                              </Link>
-                            </Button>
-                            <Button>
-                              <DeleteIcon style={{ color: 'red' }} />
-                            </Button>
-                            <Button>
-                            <Link to="/examination/view">
-                              <VisibilityIcon />
-                            </Link>
-                          </Button>
-                          </ButtonGroup>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {loading ? (
+              <div className="dashboard">
+                <div>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Academic Year</th>
+                        <th scope="col">Exam Month</th>
+                        <th scope="col">DepartMent</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>#</td>
+                        <td>END OF SEMISTER </td>
+                        <td>2022/2023</td>
+                        <td>APRIL 2023</td>
+                        <td>SSAES</td>
+                        <td>
+                          <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: 'flex' }}
+                            >
+                              {/* <Button>One</Button> */}
+                              <Button>
+                                <Link to="/examination/edit">
+                                  <EditIcon />
+                                </Link>
+                              </Button>
+                              <Button>
+                                <DeleteIcon style={{ color: 'red' }} />
+                              </Button>
+                              <Button>
+                                <Link to="/examination/view">
+                                  <VisibilityIcon />
+                                </Link>
+                              </Button>
+                            </ButtonGroup>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            ) : (
+              <LoadingBox />
+            )}
           </div>
+
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -9,6 +9,8 @@ import FeaturedDetails from './FeaturedDetails';
 import HeaderBar from './HeaderBar';
 import { Container } from '@mui/material';
 
+import { motion } from 'framer-motion';
+
 function Copyright(props) {
   return (
     <Typography
@@ -100,5 +102,13 @@ function HomepageDetails() {
 }
 
 export default function HomePageDetails() {
-  return <HomepageDetails />;
+  return (
+    <motion.div
+      intial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <HomepageDetails />
+    </motion.div>
+  );
 }

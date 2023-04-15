@@ -8,8 +8,7 @@ import { getError } from '../../Utils/GetError';
 import { Helmet } from 'react-helmet-async';
 import SideBarDetails from '../Layout/SideBarDetails';
 import { Card } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -28,8 +27,8 @@ function Copyright(props) {
     </Typography>
   );
 }
-export default function AddStudentScreen() {
-  const navigate = useNavigate();
+
+export default function EditStudentScreen() {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   // const [email, setEmail] = React.useState('');
@@ -38,77 +37,47 @@ export default function AddStudentScreen() {
   const [gender, setGender] = useState('');
   const [password, setPassword] = useState('');
 
-  const registerStudent = async (e) => {
-    e.preventDefault();
-    try {
-      //   const url = ';
-      const body = {
-        firstname,
-        lastname,
-        // email,
-        admission,
-        group,
-        gender,
-        password,
-      };
-      const result = await fetch(
-        'http://localhost:8000/system/student/create',
-        {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify(body),
-        }
-      );
-      const addstudents = await result.json();
-      console.log(
-        firstname,
-        lastname,
-        // email,
-        admission,
-        group,
-        gender,
-        password
-      );
-      navigate('/student');
-      console.log(addstudents);
-      toast.success('Student Registered Successfully');
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
+  const params = useParams();
 
-  //get groups
-  const [groups, setGroups] = useState([]);
-  async function getGroups() {
+  async function getAStudent() {
+    console.warn(params);
     try {
       const response = await fetch(
-        'http://localhost:8000/system/classgroup/group'
+        `http://localhost:8000/system/student/${params.id}`
       );
-      const getgroups = await response.json();
-      setGroups(getgroups);
-      // console.log(getgroups);
+      const getastudent = await response.json();
+      setFirstname(getastudent);
+      setLastname(getastudent.code);
+      setAdmission(getastudent.title);
+      setGroup(getastudent.group.abbr);
+      setGender(getastudent.semister);
+      setPassword(getastudent.year);
     } catch (err) {
       console.error(err.message);
-      toast.error(getError(err));
     }
   }
 
   useEffect(() => {
-    getGroups();
+    getAStudent();
   }, []);
 
+  //edit student details
+  const editStudent = async (e) => {
+    e.preventDefault();
+    const url = 'http://localhost:8000/system/student/courses';
+
+    try {
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
   return (
-    <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 1 }}
-    >
+    <div>
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
           <Helmet>
-            <title>StudentsScreen</title>
+            <title>EditStudent</title>
           </Helmet>
           <div style={{ padding: '3rem' }}>
             <div
@@ -127,7 +96,7 @@ export default function AddStudentScreen() {
               </Link>
 
               <div>
-                <h1>Register New Student</h1>
+                <h1>Edit Student</h1>
               </div>
             </div>
 
@@ -162,17 +131,17 @@ export default function AddStudentScreen() {
                       </div>
                     </div>
                     {/* <div class="mb-2">
-                      <label for="title" class="form-label">
-                        Student Email
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </div> */}
+                  <label for="title" class="form-label">
+                    Student Email
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div> */}
 
                     <div lass="mb-2">
                       <label for="group" class="form-label">
@@ -182,17 +151,11 @@ export default function AddStudentScreen() {
                         class="form-select"
                         aria-label="select example"
                         onChange={(e) => setGroup(e.target.value)}
-                        value={group._id}
+                        value={group}
                       >
                         <option selected>--Select class Group--</option>
-                        {groups.map((group) => (
-                          <>
-                            {/* <option value={}>{group.abbr}</option> */}
-                            <option key={group._id} value={group._id}>
-                              {group.abbr}
-                            </option>
-                          </>
-                        ))}
+
+                        <option>group</option>
                       </select>
                     </div>
                     <div class="mb-2">
@@ -235,9 +198,9 @@ export default function AddStudentScreen() {
                       variant="contained"
                       size="medium"
                       sx={{ width: '100%' }}
-                      onClick={registerStudent}
+                      onClick={editStudent}
                     >
-                      Register Student
+                      Edit Student
                     </Button>
                   </div>
                 </div>
@@ -247,6 +210,6 @@ export default function AddStudentScreen() {
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

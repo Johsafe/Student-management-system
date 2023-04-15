@@ -11,8 +11,10 @@ import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import Modal from 'react-bootstrap/Modal';
 import EditClassGroupScreen from './EditClassGroup';
-import { getError } from '../../Utils.js/GetError';
+import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
+import LoadingBox from '../../Utils/LoadingBox';
+import { motion } from 'framer-motion';
 
 function Copyright(props) {
   return (
@@ -61,6 +63,7 @@ export default function ClassGroupScreen() {
   };
 
   //Get Groups
+  const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
@@ -69,6 +72,7 @@ export default function ClassGroupScreen() {
       );
       const getgroups = await response.json();
       setGroups(getgroups);
+      setLoading(true);
       // console.log(getgroups);
     } catch (err) {
       console.error(err.message);
@@ -97,8 +101,11 @@ export default function ClassGroupScreen() {
   const handleShow = () => setShow(true);
 
   return (
-    <div>
-      {/* <SubLayout> */}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+    >
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container component="main">
@@ -165,75 +172,82 @@ export default function ClassGroupScreen() {
 
               <div style={{ width: '60%' }}>
                 {/* <div> */}
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Abbr.</th>
-                      <th scope="col">Programme Name</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groups.map((group) => (
-                      <tr key={group._id}>
-                        <th scope="row">#</th>
-                        <td>{group.abbr}</td>
-                        <td>{group.title}</td>
-
-                        <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: 'flex' }}
-                            >
-                              <Button onClick={handleShow} data-toggle="modal">
-                                <EditIcon />
-                              </Button>
-                              <Button onClick={() => deleteGroup(group._id)}>
-                                <DeleteIcon style={{ color: 'red' }} />
-                              </Button>
-                            </ButtonGroup>
-                          </div>
-                        </td>
+                {loading ? (
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Abbr.</th>
+                        <th scope="col">Programme Name</th>
+                        <th scope="col">Action</th>
                       </tr>
-                    ))}
+                    </thead>
+                    <tbody>
+                      {groups.map((group) => (
+                        <tr key={group._id}>
+                          <th scope="row">#</th>
+                          <td>{group.abbr}</td>
+                          <td>{group.title}</td>
 
-                    <Modal
-                      show={show}
-                      onHide={handleClose}
-                      backdrop="static"
-                      keyboard={false}
-                    >
-                      <Modal.Header>
-                        <Modal.Title>
-                          <div style={{ display: 'flex' }}>
-                            <div>Edit Class Group</div>
-                            <Button
-                              variant="secondary"
-                              size="medium"
-                              sx={{ width: '50%' }}
-                              onClick={handleClose}
-                            >
-                              Close
-                            </Button>
-                          </div>
-                        </Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <EditClassGroupScreen theGroups={groups} />
-                      </Modal.Body>
-                      <Modal.Footer></Modal.Footer>
-                    </Modal>
-                  </tbody>
-                </table>
+                          <td>
+                            <div>
+                              <ButtonGroup
+                                variant="text"
+                                aria-label="text button group"
+                                style={{ display: 'flex' }}
+                              >
+                                <Button
+                                  onClick={handleShow}
+                                  data-toggle="modal"
+                                >
+                                  <EditIcon />
+                                </Button>
+                                <Button onClick={() => deleteGroup(group._id)}>
+                                  <DeleteIcon style={{ color: 'red' }} />
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+
+                      <Modal
+                        show={show}
+                        onHide={handleClose}
+                        backdrop="static"
+                        keyboard={false}
+                      >
+                        <Modal.Header>
+                          <Modal.Title>
+                            <div style={{ display: 'flex' }}>
+                              <div>Edit Class Group</div>
+                              <Button
+                                variant="secondary"
+                                size="medium"
+                                sx={{ width: '50%' }}
+                                onClick={handleClose}
+                              >
+                                Close
+                              </Button>
+                            </div>
+                          </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <EditClassGroupScreen theGroups={groups} />
+                        </Modal.Body>
+                        <Modal.Footer></Modal.Footer>
+                      </Modal>
+                    </tbody>
+                  </table>
+                ) : (
+                  <LoadingBox />
+                )}
               </div>
             </Card>
           </div>
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -11,7 +11,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import HeaderBar from '../Layout/HeaderBar';
 import { toast } from 'react-toastify';
-import { getError } from '../../Utils.js/GetError';
+import { getError } from '../../Utils/GetError';
 import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {

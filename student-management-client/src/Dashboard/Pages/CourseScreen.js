@@ -8,6 +8,8 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
+import LoadingBox from '../../Utils/LoadingBox';
+import { motion } from 'framer-motion';
 
 function Copyright(props) {
   return (
@@ -28,6 +30,7 @@ function Copyright(props) {
 }
 export default function CourseScreen() {
   //get Courses
+  const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   async function getCourses() {
     try {
@@ -36,6 +39,7 @@ export default function CourseScreen() {
       );
       const getcourses = await response.json();
       setCourses(getcourses);
+      setLoading(true);
       // console.log(getcourses);
     } catch (err) {
       console.error(err.message);
@@ -60,7 +64,11 @@ export default function CourseScreen() {
   }
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1}}
+    >
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -80,58 +88,64 @@ export default function CourseScreen() {
               </div>
             </div>
 
-            <div className="dashboard">
-              <div>
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Code</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Class Group</th>
-                      <th scope="col">Semeter</th>
-                      <th scope="col">year</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course) => (
-                      <tr key={course.id}>
-                        <th scope="row">#</th>
-                        <td>{course.code}</td>
-                        <td>{course.title}</td>
-                        <td>{course.group.abbr}</td>
-                        <td>{course.semister}</td>
-                        <td>{course.year}</td>
-                        <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: 'flex' }}
-                            >
-                              {/* <Button>One</Button> */}
-                              <Button>
-                                <Link to={`/${course._id}/edit`}>
-                                  <EditIcon />
-                                </Link>
-                              </Button>
-                              <Button onClick={() => deleteCourse(course._id)}>
-                                <DeleteIcon style={{ color: 'red' }} />
-                              </Button>
-                            </ButtonGroup>
-                          </div>
-                        </td>
+            {loading ? (
+              <div className="dashboard">
+                <div>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Class Group</th>
+                        <th scope="col">Semeter</th>
+                        <th scope="col">year</th>
+                        <th scope="col">Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {courses.map((course) => (
+                        <tr key={course.id}>
+                          <th scope="row">#</th>
+                          <td>{course.code}</td>
+                          <td>{course.title}</td>
+                          <td>{course.group.abbr}</td>
+                          <td>{course.semister}</td>
+                          <td>{course.year}</td>
+                          <td>
+                            <div>
+                              <ButtonGroup
+                                variant="text"
+                                aria-label="text button group"
+                                style={{ display: 'flex' }}
+                              >
+                                {/* <Button>One</Button> */}
+                                <Button>
+                                  <Link to={`/${course._id}/edit`}>
+                                    <EditIcon />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  onClick={() => deleteCourse(course._id)}
+                                >
+                                  <DeleteIcon style={{ color: 'red' }} />
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            ) : (
+              <LoadingBox />
+            )}
           </div>
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </div>
+    </motion.div>
   );
 }

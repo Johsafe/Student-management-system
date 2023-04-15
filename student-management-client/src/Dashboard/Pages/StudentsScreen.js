@@ -9,7 +9,9 @@ import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { getError } from '../../Utils.js/GetError';
+import { getError } from '../../Utils/GetError';
+import LoadingBox from '../../Utils/LoadingBox';
+import { motion } from 'framer-motion';
 
 function Copyright(props) {
   return (
@@ -30,6 +32,7 @@ function Copyright(props) {
 }
 export default function StudentsScreen() {
   //get Students
+  const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   async function getStudents() {
     try {
@@ -38,6 +41,7 @@ export default function StudentsScreen() {
       );
       const getstudents = await response.json();
       setStudents(getstudents);
+      setLoading(true);
       // console.log(getstudents);
     } catch (err) {
       //   console.error(err.message);
@@ -56,14 +60,18 @@ export default function StudentsScreen() {
         method: 'DELETE',
       });
       setStudents(students.filter((students) => students._id !== id));
-      toast.success('student deleted successfully')
+      toast.success('student deleted successfully');
     } catch (err) {
       toast.error(getError(err));
     }
   }
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+    >
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -83,60 +91,64 @@ export default function StudentsScreen() {
               </div>
             </div>
 
-            <div className="dashboard">
-              <div>
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Lastname</th>
-                      <th scope="col">Firstname</th>
-                      <th scope="col">Admission</th>
-                      <th scope="col">Group</th>
-                      <th scope="col">Gender</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.map((student) => (
-                      <tr key={student._id}>
-                        <th scope="row">#</th>
-                        <td>{student.lastname}</td>
-                        <td>{student.firstname}</td>
-                        <td>{student.admission}</td>
-                        <td>#</td>
-                        <td>{student.gender}</td>
-                        <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: 'flex' }}
-                            >
-                              {/* <Button>One</Button> */}
-                              <Button>
-                                <Link to={'/edit:/id'}>
-                                  <EditIcon />
-                                </Link>
-                              </Button>
-                              <Button
-                                onClick={() => deleteStudent(student._id)}
-                              >
-                                <DeleteIcon style={{ color: 'red' }} />
-                              </Button>
-                            </ButtonGroup>
-                          </div>
-                        </td>
+            {loading ? (
+              <div className="dashboard">
+                <div>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Lastname</th>
+                        <th scope="col">Firstname</th>
+                        <th scope="col">Admission</th>
+                        <th scope="col">Group</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {students.map((student) => (
+                        <tr key={student._id}>
+                          <th scope="row">#</th>
+                          <td>{student.lastname}</td>
+                          <td>{student.firstname}</td>
+                          <td>{student.admission}</td>
+                          <td>#</td>
+                          <td>{student.gender}</td>
+                          <td>
+                            <div>
+                              <ButtonGroup
+                                variant="text"
+                                aria-label="text button group"
+                                style={{ display: 'flex' }}
+                              >
+                                {/* <Button>One</Button> */}
+                                <Button>
+                                  <Link to={`/edit/${student._id}`}>
+                                    <EditIcon />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  onClick={() => deleteStudent(student._id)}
+                                >
+                                  <DeleteIcon style={{ color: 'red' }} />
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            ) : (
+              <LoadingBox />
+            )}
           </div>
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </div>
+    </motion.div>
   );
 }
