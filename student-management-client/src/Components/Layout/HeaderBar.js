@@ -27,7 +27,10 @@ function HeaderBar() {
           </Typography>
 
           <Button href="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-            Login
+            Admin
+          </Button>
+          <Button href="/studentlogin" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+            Student
           </Button>
         </Toolbar>
       </AppBar>

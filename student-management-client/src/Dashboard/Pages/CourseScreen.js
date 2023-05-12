@@ -10,24 +10,11 @@ import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import LoadingBox from '../../Utils/LoadingBox';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import { getError } from '../../Utils/GetError';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 export default function CourseScreen() {
   //get Courses
   const [loading, setLoading] = useState(false);
@@ -42,8 +29,8 @@ export default function CourseScreen() {
       setLoading(true);
       // console.log(getcourses);
     } catch (err) {
-      console.error(err.message);
-      // toast.error(getError(err));
+      // console.error(err.message);
+      toast.error(getError(err));
     }
   }
 
@@ -58,8 +45,10 @@ export default function CourseScreen() {
         method: 'DELETE',
       });
       setCourses(courses.filter((courses) => courses._id !== id));
+      toast.success('course deleted successfully');
     } catch (err) {
-      console.error(err.message);
+      // console.error(err.message);
+      toast.error(getError(err));
     }
   }
 

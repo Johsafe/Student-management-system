@@ -13,12 +13,15 @@ import HeaderBar from '../Layout/HeaderBar';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Copyright from '../../Utils/Copyright';
+
+
 
 const theme = createTheme();
 
-export default function LoginScreen() {
-  const [email, setEmail] = React.useState('');
+export default function StudentLoginScreen() {
+  const [admission, setAdmission] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [toggle, setToggle] = React.useState(false);
   const navigate = useNavigate();
@@ -30,19 +33,16 @@ export default function LoginScreen() {
   const loginForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { email, password };
-      const result = await fetch(
-        'http://localhost:8000/system/authenicate/login',
+      const { data } = await axios.post(
+        'http://localhost:8000/system/student/login',
         {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify(body),
+          admission,
+          password,
         }
       );
-      const logOn = await result.json();
-      localStorage.setItem('Info', logOn);
-      navigate('/dashboard');
-      toast.success('User Logged Successfully');
+      localStorage.setItem('Details', JSON.stringify(data));
+      navigate('/profile');
+      toast.success('Student Logged Successfully');
     } catch (err) {
       toast.error(getError(err));
     }
@@ -65,31 +65,25 @@ export default function LoginScreen() {
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
-            <div>Auth [email : admin@gmail.com pass : passwd@123]</div>
           </Typography>
+          <div>
+            <h6>Auth [adm : CSC/001/2023 pass : student@123]</h6>
+            <h6>Auth [adm : FGC/036/2020 pass : student@123]</h6>
+          </div>
 
-          <form>
+          <form onSubmit={loginForm}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
+              id="admission"
+              label="Admission"
               name="email"
               autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={admission}
+              onChange={(e) => setAdmission(e.target.value)}
             />
-            {/* <TextField
-             
-              required
-              
-              
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            /> */}
+
             <div className="password-eye">
               <TextField
                 margin="normal"
@@ -118,10 +112,9 @@ export default function LoginScreen() {
               )}
             </div>
             <Button
-              // type="submit"
               fullWidth
               variant="contained"
-              onClick={loginForm}
+              type="submit"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In

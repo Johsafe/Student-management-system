@@ -8,28 +8,13 @@ import { getError } from '../../Utils/GetError';
 import { Helmet } from 'react-helmet-async';
 import SideBarDetails from '../Layout/SideBarDetails';
 import { Card } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 export default function AddStudentScreen() {
   const navigate = useNavigate();
+  const params = useParams();
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   // const [email, setEmail] = React.useState('');
@@ -52,7 +37,7 @@ export default function AddStudentScreen() {
         password,
       };
       const result = await fetch(
-        'http://localhost:8000/system/student/create',
+        `http://localhost:8000/system/student/group/${params.id}/student`,
         {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
@@ -69,7 +54,7 @@ export default function AddStudentScreen() {
         gender,
         password
       );
-      navigate('/student');
+      navigate(`/groups/${params.id}/students`);
       console.log(addstudents);
       toast.success('Student Registered Successfully');
     } catch (err) {

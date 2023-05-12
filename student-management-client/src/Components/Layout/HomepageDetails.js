@@ -41,7 +41,6 @@ const mainFeaturedPost = {
 const featuredPosts = [
   {
     title: 'Booking',
-    // date: 'Nov 12',
     description:
       'Lectures can book rooms where there students would take exams from.',
     image: 'https://source.unsplash.com/random',
@@ -49,7 +48,6 @@ const featuredPosts = [
   },
   {
     title: 'Letting',
-    // date: 'Nov 11',
     description:
       'Alows for other lectures and other teachers to book rooms in the school for there use.',
     image: 'https://source.unsplash.com/random',

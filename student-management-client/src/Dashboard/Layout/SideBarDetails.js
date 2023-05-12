@@ -135,7 +135,7 @@ export default function SideBarDetails() {
                   Examination
                 </li>
               </Link>
-              <Link to={'/student'} className="link">
+              <Link to={'/groups'} className="link">
                 <li className="sidebarListItem">
                   <Vaccines className="sidebarIcon" />
                   Students

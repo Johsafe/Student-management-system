@@ -11,24 +11,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Typography } from '@mui/material';
 import LoadingBox from '../../Utils/LoadingBox';
 import { motion } from 'framer-motion';
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from '../../Utils/Copyright';
 
 export default function ExaminationTimetableScreen() {
   const [loading, setLoading] = useState(false);

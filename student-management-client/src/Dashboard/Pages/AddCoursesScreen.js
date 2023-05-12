@@ -9,24 +9,8 @@ import { Typography } from '@mui/material';
 import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 export default function AddCoursesScreen() {
   const navigate = useNavigate();
   const [code, setCode] = useState('');
@@ -49,8 +33,8 @@ export default function AddCoursesScreen() {
       const addcourse = await result.json();
       // console.log(addcourse);
 
-      toast.success('class added successfully');
-      window.reload();
+      toast.success('course added successfully');
+      // window.reload();
       navigate('/course');
     } catch (err) {
       // console.error(err.message);

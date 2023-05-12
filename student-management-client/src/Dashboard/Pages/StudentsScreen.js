@@ -1,48 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
+import {Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import LoadingBox from '../../Utils/LoadingBox';
 import { motion } from 'framer-motion';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-export default function StudentsScreen() {
+export default function AllStudentsScreen() {
   //get Students
+  const params = useParams();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   async function getStudents() {
     try {
       const response = await fetch(
-        'http://localhost:8000/system/student/students'
+        `http://localhost:8000/system/student/group/${params.id}/students`
       );
       const getstudents = await response.json();
       setStudents(getstudents);
       setLoading(true);
-      // console.log(getstudents);
+      console.log(getstudents);
     } catch (err) {
       //   console.error(err.message);
       toast.error(getError(err));
@@ -56,7 +41,7 @@ export default function StudentsScreen() {
   //delete course
   async function deleteStudent(id) {
     try {
-      await fetch(`http://localhost:8000/system/student/${id}`, {
+      await fetch(`http://localhost:8000/system/student/group/${params.id}/students/${id}`, {
         method: 'DELETE',
       });
       setStudents(students.filter((students) => students._id !== id));
@@ -82,7 +67,7 @@ export default function StudentsScreen() {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h1>Registered Students</h1>
               <div>
-                <Link to="/addstudent" className="link">
+                <Link to={`/group/${params.id}/student`} className="link">
                   {' '}
                   <Button variant="contained" size="medium">
                     Add Student
@@ -101,7 +86,7 @@ export default function StudentsScreen() {
                         <th scope="col">Lastname</th>
                         <th scope="col">Firstname</th>
                         <th scope="col">Admission</th>
-                        <th scope="col">Group</th>
+                        {/* <th scope="col">Group</th> */}
                         <th scope="col">Gender</th>
                         <th scope="col">Action</th>
                       </tr>
@@ -113,7 +98,7 @@ export default function StudentsScreen() {
                           <td>{student.lastname}</td>
                           <td>{student.firstname}</td>
                           <td>{student.admission}</td>
-                          <td>#</td>
+                          {/* <td>#</td> */}
                           <td>{student.gender}</td>
                           <td>
                             <div>

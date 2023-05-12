@@ -15,36 +15,21 @@ import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
 import LoadingBox from '../../Utils/LoadingBox';
 import { motion } from 'framer-motion';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 export default function ClassGroupScreen() {
   const [abbr, setAbbr] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [numberOfStudents,setNumberOfStudents]= useState('');
 
   //create new group
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { abbr, title, description };
+      const body = { abbr, title, description,numberOfStudents };
       const result = await fetch(
-        'http://localhost:8000/system/classgroup/create',
+        'http://localhost:8000/system/classgroup/group',
         {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
@@ -53,9 +38,9 @@ export default function ClassGroupScreen() {
       );
       const addgroup = await result.json();
       toast.success('class added successfully');
-      console.log(abbr, title, description);
+      // console.log(abbr, title, description);
 
-      console.log(addgroup);
+      // console.log(addgroup);
     } catch (err) {
       // console.error(err.message);
       toast.error(getError(err));
@@ -86,12 +71,14 @@ export default function ClassGroupScreen() {
   //Delete group
   const deleteGroup = async (id) => {
     try {
-      // await fetch(`http://localhost:8000/system/classgroup/${id}`, {
-      //   method: 'DELETE',
-      // });
-      // setGroups(groups.filter((groups) => groups._id !== id));
+      await fetch(`http://localhost:8000/system/classgroup/course/${id}`, {
+        method: 'DELETE',
+      });
+      setGroups(groups.filter((groups) => groups._id !== id));
+      toast.success('group deleted successfully');
     } catch (err) {
-      console.error(err.message);
+      // console.error(err.message);
+      toast.error(getError(err));
     }
   };
 
@@ -146,6 +133,19 @@ export default function ClassGroupScreen() {
                     </div>
 
                     <div class="mb-2">
+                      <label for="numberOfStudents" class="form-label">
+                        Class numberOfStudents
+                      </label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="numberOfStudents"
+                        value={numberOfStudents}
+                        onChange={(e) => setNumberOfStudents(e.target.value)}
+                      />
+                    </div>
+
+                    <div class="mb-2">
                       <label for="description" class="form-label">
                         Class Description
                       </label>
@@ -157,6 +157,8 @@ export default function ClassGroupScreen() {
                         onChange={(e) => setDescription(e.target.value)}
                       ></textarea>
                     </div>
+
+                    
 
                     <Button
                       variant="contained"
@@ -216,10 +218,11 @@ export default function ClassGroupScreen() {
                         onHide={handleClose}
                         backdrop="static"
                         keyboard={false}
+                        
                       >
                         <Modal.Header>
                           <Modal.Title>
-                            <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex',gap:'2rem' }}>
                               <div>Edit Class Group</div>
                               <Button
                                 variant="secondary"

@@ -5,9 +5,11 @@ import { Button } from '@mui/material';
 
 export default function EditClassGroupScreen({ theGroups }) {
   // const id = theGroups._id;
-  const [abbr, setAbbr] = useState(theGroups.abbr);
+  const [data,setData]=useState('');
+  const [abbr, setAbbr] = useState('');
   const [title, setTitle] = useState(theGroups.title);
   const [description, setDescription] = useState(theGroups.description);
+  const [numberOfStudents,setNumberOfStudents]= useState('');
 
   console.log(abbr, title, description);
   console.log(theGroups);
@@ -52,6 +54,19 @@ export default function EditClassGroupScreen({ theGroups }) {
                     // onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
+
+                <div class="mb-2">
+                      <label for="numberOfStudents" class="form-label">
+                        Class numberOfStudents
+                      </label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="numberOfStudents"
+                        value={numberOfStudents}
+                        onChange={(e) => setNumberOfStudents(e.target.value)}
+                      />
+                    </div>
 
                 <div class="mb-2">
                   <label for="description" class="form-label">

@@ -1,33 +1,19 @@
 import Card from '@mui/material/Card';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useParams } from 'react-router-dom';
+import { Link,useNavigate, useParams } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
+import Copyright from '../../Utils/Copyright';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 export default function EditCoursesScreen() {
   //get course Details
+  const navigate = useNavigate();
   const [course, setCourse] = useState([]);
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
@@ -58,12 +44,44 @@ export default function EditCoursesScreen() {
     getACourse();
   }, []);
 
+  // //get group details
+  // const [groups, setGroups] = useState([]);
+  // async function getGroups() {
+  //   try {
+  //     const response = await fetch(
+  //       'http://localhost:8000/system/classgroup/group'
+  //     );
+  //     const getgroups = await response.json();
+  //     setGroups(getgroups);
+  //     // console.log(getgroups);
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getGroups();
+  // }, []);
+
   //edit course
   const handleSubmitCourse = async (e) => {
     e.preventDefault();
-    const url = 'http://localhost:8000/system/course/courses';
-
     try {
+      let updatecourse = await fetch(
+        `http://localhost:8000/system/course/${params.id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ code,title,semister,year}),
+          headers: {
+            'Content-Type': 'Application/json',
+            // authorization: `Bearer ${Info.token}`,
+          },
+        }
+      );
+      const result = await updatecourse.json();
+      // console.warn(result);
+      toast.success('course updated successfully');
+      navigate('/course');
     } catch (err) {
       toast.error(getError(err));
     }
@@ -126,7 +144,7 @@ export default function EditCoursesScreen() {
                       />
                     </div>
 
-                    {/* <div lass="mb-2">
+                    {/* <div class="mb-2">
                       <label for="group" class="form-label">
                         Class Group
                       </label>
@@ -136,11 +154,8 @@ export default function EditCoursesScreen() {
                         onChange={(e) => setGroup(e.target.value)}
                         value={group}
                       >
-                        <option selected>--Select class Group--</option>
-
-                        <>
-                          <option>group</option>
-                        </>
+                        <option selected>group</option>
+                        
                       </select>
                     </div> */}
                     <div class="mb-2">

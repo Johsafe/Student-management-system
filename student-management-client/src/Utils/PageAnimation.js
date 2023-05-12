@@ -12,14 +12,19 @@ import CreateTimeTableScreen from '../Dashboard/Pages/CreateTimetableScreen';
 import EditCoursesScreen from '../Dashboard/Pages/EditCourseScreen';
 import EditTimeTableScreen from '../Dashboard/Pages/EditExaminationTimeTable';
 import ExaminationTimetableScreen from '../Dashboard/Pages/ExaminationTimetableScreen';
-import StudentsScreen from '../Dashboard/Pages/StudentsScreen';
 import ViewTimeTable from '../Dashboard/Pages/ViewExaminationTimeTableScreen';
 import DashboardContent from '../Dashboard/Layout/OverviewScreen';
 import ReportScreen from '../Dashboard/Pages/ReportsScreen';
 import PageError from './PageError';
 
 import { AnimatePresence } from 'framer-motion';
-import EditStudentScreen from '../Dashboard/Pages/EditStudentScreen';
+import ProfileInfoScreen from '../Dashboard/StudentPages/ProfileInfoScreen';
+import StudentLoginScreen from '../Components/Pages/StudentLoginScreen';
+import StudentsGroupScreen from '../Dashboard/Pages/StudentsGroupScreen';
+import AllStudentsScreen from '../Dashboard/Pages/StudentsScreen';
+import EditStudentScreen from '../Dashboard/StudentPages/EditStudentScreen';
+// import PrivateRoute from './PrivateRoutes';
+import ChangePassword from '../Dashboard/StudentPages/ChangePassword';
 
 export default function PageAnimation() {
   const location = useLocation();
@@ -38,13 +43,19 @@ export default function PageAnimation() {
           <Route path="/add" element={<AddCoursesScreen />} />
           <Route path="/class" element={<ClassGroupScreen />} />
           <Route path="/:id/edit" element={<EditCoursesScreen />} />
-          <Route path="/edit/:id" element={<EditStudentScreen />} />
+
           <Route path="/create" element={<CreateTimeTableScreen />} />
           <Route path="/examination" element={<ExaminationTimetableScreen />} />
           <Route path="/examination/edit" element={<EditTimeTableScreen />} />
           <Route path="/examination/view" element={<ViewTimeTable />} />
-          <Route path="/addStudent" element={<AddStudentScreen />} />
-          <Route path="/student" element={<StudentsScreen />} />
+          <Route path="/group/:id/student" element={<AddStudentScreen />} />
+          <Route path="/studentlogin" element={<StudentLoginScreen />} />
+          <Route path="/groups" element={<StudentsGroupScreen />} />
+          <Route path="/profile" element={<ProfileInfoScreen />} exact />
+          <Route path="/groups/:id/students" element={<AllStudentsScreen />} />
+          <Route path="/myprofile/update" element={<EditStudentScreen />} />
+          <Route path="/changepassword" element={<ChangePassword/>}/>
+
           <Route path="*" element={<PageError />} />
         </Routes>
       </AnimatePresence>
