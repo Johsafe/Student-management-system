@@ -8,8 +8,8 @@ const courseRouter = express.Router();
 courseRouter.post('/create', async (req, res) => {
   try {
     // validate group
-    const group = await Group.findById(req.body.group);
-    if (!group) return res.status(400).send('Invalid Group');
+    // const group = await Group.findById(req.body.group);
+    // if (!group) return res.status(400).send('Invalid Group');
 
     const { code, title, semister, year } = req.body;
 
@@ -21,14 +21,10 @@ courseRouter.post('/create', async (req, res) => {
       year,
     });
     course = await course.save();
-    if (!course)
-     
-      return res.status(500).send('Product Cannot Be created');
+    if (!course) return res.status(500).send('Course Cannot Be created');
     res.send(course);
-   
   } catch (error) {
     res.status(500).send({
-
       error: error.message,
     });
   }
@@ -43,10 +39,10 @@ courseRouter.put('/:id', async (req, res) => {
       return res.status(400).send('Invalid Course Id');
     }
     //Validate group id
-    const group = await Group.findById(req.body.group);
-    if (!group) {
-      return res.status(400).send('Invalid Group');
-    }
+    // const group = await Group.findById(req.body.group);
+    // if (!group) {
+    //   return res.status(400).send('Invalid Group');
+    // }
     const course = await Courses.findByIdAndUpdate(
       req.params.id,
       {
@@ -123,6 +119,5 @@ courseRouter.delete('/:courseId', async (req, res) => {
     res.status(500).send({ success: false, error: error.message });
   }
 });
-
 
 module.exports = courseRouter;

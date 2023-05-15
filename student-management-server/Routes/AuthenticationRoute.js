@@ -2,7 +2,11 @@ const express = require('express');
 const Authenticate = require('../Models/AuthenticationSchema');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const isAuth = require('../Middleware/Auth');
 authenticateRouter = express.Router();
+const sendConfirmationEmail = require('../Utils/sendEmail');
+const { generateToken } = require('../Utils/GenerateToken');
+// const { signupValidation } = require('../Middleware/validator');
 
 //Create new User
 
@@ -17,25 +21,72 @@ authenticateRouter.post('/create', async (req, res) => {
       res.status(400);
       throw new Error('User already exists');
     }
-
-    //create new user
+    // create new user
     const user = await Authenticate.create({
       name,
       email,
       password: bcrypt.hashSync(password, 10),
     });
+
     const newuser = await user.save();
-    res.status(201).json(newuser);
+    // res.status(201).json(newuser);
+    if (newuser) {
+      // Send varification email
+      // const link = `${process.env.BASE_URL}/verify?id=${user_id}`;
+      // const link = `${process.env.BASE_URL}/verify?id=joseph`;
+      // await sendConfirmationEmail(name, email, link, newuser._id);
+      // res.json({
+      //   message: 'User Registration success, PLEASE VERIFY YOUR EMAIL',
+      // });
+      res.status(201).json(newuser);
+    } else {
+      res.json({ message: 'User Registration failure' });
+    }
   } catch (error) {
     res.status(500).send({
-      message: 'User Cannot be Created',
+      message: 'User registration failure',
+      error: error.message,
+    });
+  }
+});
+
+//verify mail
+authenticateRouter.get('/verify/:id', async (req, res, next) => {
+  try {
+    // User.findOne({
+    //   confirmationCode: req.params.confirmationCode,
+    // }).then((user) => {
+    //   if (!user) {
+    //     return res.status(404).send({ message: 'User Not found.' });
+    //   }
+    //   user.status = 'Active';
+    //   user.save((err) => {
+    //     if (err) {
+    //       res.status(500).send({ message: err });
+    //       return;
+    //     }
+    //   });
+    // });
+    // /verify/:confirmCode
+    // const {confirmCode}=req.params
+    // const user =await User.findOne({confirmCode:confirmCode})
+    // if(user){
+    //   //mark email as verified
+    //   user.isValid = true
+    //   await user.save()
+    //   //redirect to homepage or anywhere
+    //   res.redirect("/")
+    // }
+  } catch (error) {
+    res.status(500).send({
+      message: 'Email Verification Failure',
       error: error.message,
     });
   }
 });
 
 //login
-authenticateRouter.post('/login', async (req, res) => {
+authenticateRouter.post('/login', isAuth, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -47,21 +98,11 @@ authenticateRouter.post('/login', async (req, res) => {
     const user = await Authenticate.findOne({ email });
     const secret = process.env.JWT_SECRET;
     if (user && (await bcrypt.compare(password, user.password))) {
-      //generate token
-      const token = jwt.sign(
-        {
-          userId: user.id,
-        },
-        secret,
-        {
-          expiresIn: '1d',
-        }
-      );
       res.send({
         message: 'Success user authorized',
         email: user.email,
         isAdmin: user.isAdmin,
-        token: token,
+        token: generateToken(user._id),
       });
       return;
     }
@@ -73,6 +114,29 @@ authenticateRouter.post('/login', async (req, res) => {
     });
   }
 });
+
+//update user
+// authenticateRouter.put(
+//   '/profile',async (req, res) => {
+//     const user = await Authenticate.findById(req.user._id);
+//     if (user) {
+//       user.name = req.body.name || user.name;
+//       user.email = req.body.email || user.email;
+//       if (req.body.password) {
+//         user.password = bcrypt.hashSync(req.body.password, 8);
+//       }
+
+//       const updatedUser = await user.save();
+//       res.send({
+//         message: 'Success user updated',
+//         email:  updatedUser.email,
+//         isAdmin:  updatedUser.isAdmin,
+//         token: token,
+//       });
+//     } else {
+//       res.status(404).send({ message: 'User not found' });
+//     }
+//   });
 
 //get users
 authenticateRouter.get('/users', async (req, res) => {
@@ -98,9 +162,9 @@ authenticateRouter.put('/profile', async (req, res) => {
 });
 
 //User Delete Details
-authenticateRouter.delete('/:id', async (req, res) => {
+authenticateRouter.delete('/:userId', async (req, res) => {
   try {
-    Authenticate.findByIdAndRemove(req.params.id).then((user) => {
+    Authenticate.findByIdAndRemove(req.params.userId).then((user) => {
       if (user) {
         return res
           .status(200)

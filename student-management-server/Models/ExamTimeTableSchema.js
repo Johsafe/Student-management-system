@@ -1,28 +1,60 @@
 const mongoose = require('mongoose');
 
 const ExamTimetableSchema = mongoose.Schema({
-  title: { type: String, required: true, unique: true },
-  academicyear: { type: String, required: true },
-  month: { type: String, required: true },
-  department: { type: String, required: true },
-
-  examdate: { type: Date, required: true },
-  
+  session: { type: Number, required: true },
   starttime: { type: String, required: true },
   stoptime: { type: String, required: true },
-  group: {
+  noofexaminas: { type: Number, required: true, min: 1, max: 500 },
+  invigilator: {
+    invigilator1: { type: String },
+    invigilator2: { type: String },
+    invigilator3: { type: String },
+    invigilator4: { type: String },
+  },
+  examdate :{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ExamDate',
+    required: true,
+  },
+  //   {
+  //     month: { type: String, required: true },
+      
+  //     },
+  //   },
+  // ],
+  group:  {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',
     required: true,
   },
+  // [
+  //   {
+  //     abbr: { type: String, required: true },
+  //     groupId:
+  //   },
+  // ],
   course: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Courses',
     required: true,
   },
-  room: { type: String, required: true },
-  noofexaminas: { type: Number, required: true, min: 1, max: 500 },
-  invigilator: { type: String, required: true},
+  // [
+  //   {
+  //     code: { type: String, required: true },
+  //     courseId: 
+  //   },
+  // ],
+  room: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Room',
+    required: true,
+  },
+  // [
+  //   {
+  //     title: { type: String, required: true },
+  //     roomId: 
+  //   },
+  // ],
   createdOn: {
     type: Date,
     default: Date.now,

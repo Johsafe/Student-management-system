@@ -1,6 +1,6 @@
-const jwt =require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-const isAuth = (req, res, next) => {
+module.exports.isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
@@ -17,4 +17,20 @@ const isAuth = (req, res, next) => {
   }
 };
 
-module.exports = isAuth;
+module.exports.userMiddleware = (req, res, next) => {
+  if (req.user.role !== 'user') {
+    return res.status(400).json({
+      message: 'user access denied',
+    });
+  }
+  next();
+};
+
+module.exports.adminMiddleware = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(400).json({
+      message: 'Access denied',
+    });
+  }
+  next();
+};

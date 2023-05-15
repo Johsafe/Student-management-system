@@ -2,48 +2,41 @@ const express = require('express');
 const ExamTimetable = require('../Models/ExamTimeTableSchema');
 const examRouter = express.Router();
 
-// examRouter.post('/create', async (req, res) => {
-//   try {
-//     const {
-//       title,
-//       academicyear,
-//       month,
-//       department,
-//       examdate,
-//       starttime,
-//       stoptime,
-//       group,
-//       course,
-//       room,
-//       noofexaminas,
-//       invigilator,
-//     } = req.body;
-//     const examTimetable = new ExamTimetable({
-//       title,
-//       academicyear,
-//       month,
-//       department,
-//       examdate,
-//       starttime,
-//       stoptime,
-//       group,
-//       course,
-//       room,
-//       noofexaminas,
-//       invigilator,
-//     });
-//     const examtimetable = await examTimetable.save();
-//     res
-//       .status(201)
-//       .send({ message: 'New Examtimetable Created', examtimetable });
-//   } catch (error) {
-//     res.status(500).send({
-//       message: ' Error in Creating Examtimetable.',
-//       error: error.message,
-//     });
-//   }
-// });
-
+examRouter.post('/exam', async (req, res) => {
+  try {
+    const {
+      examdate,
+      session,
+      starttime,
+      stoptime,
+      group,
+      course,
+      room,
+      noofexaminas,
+      invigilator,
+    } = req.body;
+    const examTimetable = new ExamTimetable({
+      examdate,
+      session,
+      starttime,
+      stoptime,
+      group,
+      course,
+      room,
+      noofexaminas,
+      invigilator,
+    });
+    const examtimetable = await examTimetable.save();
+    res
+      .status(201)
+      .send({ message: 'New Examtimetable Created', examtimetable });
+  } catch (error) {
+    res.status(500).send({
+      message: ' Error in Creating Examtimetable.',
+      error: error.message,
+    });
+  }
+});
 
 //get examtimetables
 examRouter.get('/examtimetables', async (req, res) => {
@@ -60,9 +53,8 @@ examRouter.get('/examtimetables', async (req, res) => {
   }
 });
 
-
 //get a examtimetable by id
-examRouter.get('/:id', async (req, res) => {
+examRouter.get('/:timetableId', async (req, res) => {
   try {
     const examtimetable = await ExamTimetable.findById(req.params.id).populate(
       'group course'
@@ -76,6 +68,10 @@ examRouter.get('/:id', async (req, res) => {
   }
 });
 
+examRouter.put('/:timetableId', async (req, res) => {
+  try {
+  } catch (error) {}
+});
 //delete a examtimetable
 examRouter.delete('/:timetableId', async (req, res) => {
   try {

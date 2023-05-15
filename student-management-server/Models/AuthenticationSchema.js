@@ -15,8 +15,23 @@ const authenticationSchema = mongoose.Schema({
     },
   },
   password: { type: String, required: true, minLength: 6 },
-  isAdmin: { type: Boolean, default: false },
+  isAdmin: { type: Boolean, required: true, default: false },
+  status: {
+    type: String,
+    enum: ['Pending', 'Active'],
+    default: 'Pending',
+  },
+  isEmailVerified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 const Authenticate = mongoose.model('Authenticate', authenticationSchema);
 module.exports = Authenticate;
+
+// confirmationCode: {
+//   type: String,
+//   unique: true,
+// },
