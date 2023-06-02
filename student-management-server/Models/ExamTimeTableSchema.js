@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
 
 const ExamTimetableSchema = mongoose.Schema({
-  session: { type: Number, required: true },
-  starttime: { type: String, required: true },
-  stoptime: { type: String, required: true },
   noofexaminas: { type: Number, required: true, min: 1, max: 500 },
   invigilator: {
     invigilator1: { type: String },
     invigilator2: { type: String },
     invigilator3: { type: String },
     invigilator4: { type: String },
+  },
+  period:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Period',
+    required: true,
+
   },
   examdate :{
     type: mongoose.Schema.Types.ObjectId,
