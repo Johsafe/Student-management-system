@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import { Helmet } from 'react-helmet-async';
-import SideBarDetails from '../Layout/SideBarDetails';
-import { Card } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import Copyright from '../../Utils/Copyright';
+import { Card } from '@mui/material';
 
 export default function AddStudentScreen() {
   const navigate = useNavigate();
   const params = useParams();
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-  // const [email, setEmail] = React.useState('');
   const [admission, setAdmission] = useState('');
   const [group, setGroup] = useState('');
   const [gender, setGender] = useState('');
@@ -26,11 +22,9 @@ export default function AddStudentScreen() {
   const registerStudent = async (e) => {
     e.preventDefault();
     try {
-      //   const url = ';
       const body = {
         firstname,
         lastname,
-        // email,
         admission,
         group,
         gender,
@@ -45,15 +39,7 @@ export default function AddStudentScreen() {
         }
       );
       const addstudents = await result.json();
-      console.log(
-        firstname,
-        lastname,
-        // email,
-        admission,
-        group,
-        gender,
-        password
-      );
+      console.log(firstname, lastname, admission, group, gender, password);
       navigate(`/groups/${params.id}/students`);
       console.log(addstudents);
       toast.success('Student Registered Successfully');
@@ -83,19 +69,13 @@ export default function AddStudentScreen() {
   }, []);
 
   return (
-    <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 1 }}
-    >
-      <div style={{ display: 'flex' }}>
-        <SideBarDetails />
+    <div>
+      <div>
         <Container>
           <Helmet>
             <title>StudentsScreen</title>
           </Helmet>
-          <div style={{ padding: '3rem' }}>
+          <div style={{ padding: '2rem' }}>
             <div
               style={{
                 display: 'flex',
@@ -104,7 +84,7 @@ export default function AddStudentScreen() {
                 justifyContent: 'space-between',
               }}
             >
-              <Link to="/student" className="link">
+              <Link to="/studentreg" className="link">
                 {' '}
                 <Button variant="contained" size="medium" color="error">
                   Go to Students
@@ -116,16 +96,17 @@ export default function AddStudentScreen() {
               </div>
             </div>
 
-            <Card>
+            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
               <form>
-                <div style={{ padding: '2rem' }}>
+                <div style={{ padding: '1.5rem' }}>
                   <div>
-                    <div style={{ display: 'flex', gap: '5rem' }}>
+                    <div style={{ display: 'flex', gap: '4rem' }}>
                       <div>
                         <label for="code" class="form-label">
                           Student First Name
                         </label>
                         <input
+                          style={{ width: '460px' }}
                           type="text"
                           class="form-control"
                           id="firstname"
@@ -138,6 +119,7 @@ export default function AddStudentScreen() {
                           Student Last Name
                         </label>
                         <input
+                          style={{ width: '480px' }}
                           type="text"
                           class="form-control"
                           id="lastname"
@@ -146,18 +128,6 @@ export default function AddStudentScreen() {
                         />
                       </div>
                     </div>
-                    {/* <div class="mb-2">
-                      <label for="title" class="form-label">
-                        Student Email
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </div> */}
 
                     <div lass="mb-2">
                       <label for="group" class="form-label">
@@ -229,9 +199,9 @@ export default function AddStudentScreen() {
               </form>
             </Card>
           </div>
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

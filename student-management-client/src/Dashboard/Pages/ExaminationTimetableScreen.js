@@ -8,9 +8,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Typography } from '@mui/material';
 import LoadingBox from '../../Utils/LoadingBox';
-import { motion } from 'framer-motion';
 import Copyright from '../../Utils/Copyright';
 
 export default function ExaminationTimetableScreen() {
@@ -20,11 +18,7 @@ export default function ExaminationTimetableScreen() {
     setLoading(true);
   }, []);
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1 }}
-    >
+    <div>
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -32,7 +26,13 @@ export default function ExaminationTimetableScreen() {
             <title>EXAMINATION TIMETABLE</title>
           </Helmet>
           <div style={{ margin: '3rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                borderBottom: '4px solid #42a5f5',
+              }}
+            >
               <h1>EXAMINATION TIMETABLE</h1>
               <div>
                 <Link to="/create" className="link">
@@ -72,7 +72,6 @@ export default function ExaminationTimetableScreen() {
                               aria-label="text button group"
                               style={{ display: 'flex' }}
                             >
-                              {/* <Button>One</Button> */}
                               <Button>
                                 <Link to="/examination/edit">
                                   <EditIcon />
@@ -98,10 +97,9 @@ export default function ExaminationTimetableScreen() {
               <LoadingBox />
             )}
           </div>
-
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

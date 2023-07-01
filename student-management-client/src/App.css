@@ -14,7 +14,7 @@ code {
 
 /* Course Screen */
 
-.link{
+.link {
   text-decoration: none;
   color: inherit;
 }
@@ -27,7 +27,6 @@ code {
   width: 100%;
   min-height: 60vh;
   top: 0;
-
   position: relative;
 }
 .dashboard::after {
@@ -35,12 +34,9 @@ code {
   position: absolute;
   width: 100%;
   height: 75vh;
-  /* background-color: blue; */
-  /* background-image: url('./images/watermark.png'); */
   top: 0;
   left: 0;
   background-repeat: no-repeat;
-  /* background-attachment: fixed; */
   pointer-events: none;
   z-index: -1;
   opacity: 0.4;
@@ -54,11 +50,9 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: rgb(221, 208, 208); */
   align-items: center;
   padding-top: 4rem;
   padding-bottom: 5rem;
-  
 }
 .ErrorImg img {
   width: 20rem;
@@ -81,11 +75,11 @@ code {
 /* login */
 .password-eye {
   display: grid;
-  grid-template-columns: 1fr 0.1fr ;
+  grid-template-columns: 1fr 0.1fr;
   /* gap:-5px; */
 }
-.password-eye input{
-  border:none;
+.password-eye input {
+  border: none;
   /* border:2px solid red; */
   /* margin-right: 4px; */
 }
@@ -93,13 +87,110 @@ code {
   font-size: 20px;
   color:red;
 } */
-#eye{
-  /* border:2px solid red; */
-  margin:auto;
+#eye {
+  margin: auto;
   background: white;
-  padding:10px;
+  padding: 10px;
   margin-top: 10px;
-  border:none;
-  outline:none;
-  cursor:pointer;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* classprofile card */
+a,
+a:hover,
+a:focus {
+  color: inherit;
+}
+.profile-card-2 {
+  max-width: 220px;
+  height: 320px;
+  background-color: #e6d5d5;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+  background-position: center;
+  overflow: hidden;
+  position: relative;
+  margin: 14px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.profile-card-2 img {
+  transition: all linear 0.25s;
+  width: 100%;
+}
+
+.profile-card-2 .profile-name {
+  position: absolute;
+  left: 30px;
+  bottom: 40px;
+  font-size: 22px;
+  color: #cf2828;
+  text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-icons {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  color: #b84141;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-username {
+  position: absolute;
+  bottom: 20px;
+  left: 30px;
+  color: #c92323;
+  font-size: 13px;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-icons .fa {
+  margin: 5px;
+}
+
+.profile-card-2:hover img {
+  filter: grayscale(100%);
+}
+
+.profile-card-2:hover .profile-name {
+  bottom: 90px;
+}
+
+.profile-card-2:hover .profile-username {
+  bottom: 70px;
+}
+
+.profile-card-2:hover .profile-icons {
+  right: 40px;
+}
+
+/* overview main */
+.nav {
+  width: 100%;
+  height: 65px;
+  background-color: rgb(250, 250, 250);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.main {
+  width: 100%;
+  padding: 30px 0;
+  max-height: calc(100vh - 46px);
+}
+.main h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--dark);
 }

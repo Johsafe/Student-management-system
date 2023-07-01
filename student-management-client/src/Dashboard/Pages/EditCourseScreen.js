@@ -5,7 +5,6 @@ import { Link,useNavigate, useParams } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
 import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
 import Copyright from '../../Utils/Copyright';
@@ -43,25 +42,6 @@ export default function EditCoursesScreen() {
   useEffect(() => {
     getACourse();
   }, []);
-
-  // //get group details
-  // const [groups, setGroups] = useState([]);
-  // async function getGroups() {
-  //   try {
-  //     const response = await fetch(
-  //       'http://localhost:8000/system/classgroup/group'
-  //     );
-  //     const getgroups = await response.json();
-  //     setGroups(getgroups);
-  //     // console.log(getgroups);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   getGroups();
-  // }, []);
 
   //edit course
   const handleSubmitCourse = async (e) => {
@@ -115,7 +95,7 @@ export default function EditCoursesScreen() {
               </div>
             </div>
 
-            <Card>
+            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
               <form>
                 <div style={{ padding: '2rem' }}>
                   <div>

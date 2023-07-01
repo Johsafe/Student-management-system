@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
@@ -10,9 +9,7 @@ import { Card } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Grid, Paper } from '@mui/material';
-import profile from '../../Static/profile.png';
 import Copyright from '../../Utils/Copyright';
-
 
 export default function EditStudentScreen() {
   const navigate = useNavigate();
@@ -125,7 +122,6 @@ export default function EditStudentScreen() {
           </div>
 
           <div>
-            {/* <Card> */}
             <div style={{ padding: '2rem' }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={3}>
@@ -134,7 +130,7 @@ export default function EditStudentScreen() {
                       p: 2,
                       display: 'flex',
                       flexDirection: 'column',
-                      // height: 240,
+                      borderTop: '4px solid #42a5f5',
                     }}
                   >
                     <div>
@@ -143,7 +139,6 @@ export default function EditStudentScreen() {
                           <img
                             className="media"
                             src={
-                            
                               'http://localhost:8000/' + student.studentPhoto
                             }
                             style={{ borderRadius: '50%', width: '100%' }}
@@ -159,18 +154,15 @@ export default function EditStudentScreen() {
                         />
                       </div>
 
-                      
                       <div>
                         <h5>
                           <b> ADM: {user.admission} </b>
                         </h5>
                         <h5>
-                          <b>CLASS: { user.group}</b>
+                          <b>CLASS: {user.group}</b>
                         </h5>
                       </div>
-                      <div style={{ textAlign: 'center' }}>
-                        
-                      </div>
+                      <div style={{ textAlign: 'center' }}></div>
                     </div>
                   </Card>
                   <div style={{ marginTop: '1rem' }}>
@@ -193,7 +185,7 @@ export default function EditStudentScreen() {
                       p: 2,
                       display: 'flex',
                       flexDirection: 'column',
-                      // height: 240,
+                      borderTop: '4px solid #42a5f5',
                     }}
                   >
                     <b>
@@ -318,7 +310,6 @@ export default function EditStudentScreen() {
                       p: 2,
                       display: 'flex',
                       flexDirection: 'column',
-                      // height: 240,
                       marginTop: '2rem',
                     }}
                   >
@@ -326,7 +317,6 @@ export default function EditStudentScreen() {
                       <h3>Other Information</h3>
                     </b>
                     <div>
-                      {/* Religion:<p>Muslim</p> */}
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Quas reprehenderit nobis beatae necessitatibus amet
                       officiis obcaecati tempore. Deleniti odit distinctio
@@ -337,7 +327,6 @@ export default function EditStudentScreen() {
                 </Grid>
               </Grid>
             </div>
-            {/* </Card> */}
           </div>
 
           <Copyright sx={{ pt: 4 }} />

@@ -2,17 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
-import { Card, Typography } from '@mui/material';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import LoadingBox from '../../Utils/LoadingBox';
+import { Card } from '@mui/material';
 import { motion } from 'framer-motion';
 import Copyright from '../../Utils/Copyright';
+import bg2 from '../../Static/bg2.png';
 
 export default function StudentsGroupScreen() {
   //get Students
@@ -40,11 +35,7 @@ export default function StudentsGroupScreen() {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1 }}
-    >
+    <div>
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -53,39 +44,59 @@ export default function StudentsGroupScreen() {
           </Helmet>
           <div style={{ margin: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <h1>Registered Students Groups</h1>
-              {/* <div>
-                <Link to="/addstudent" className="link">
+              <h1>Students Class Groups</h1>
+              <div>
+                <Link to="/class" className="link">
                   {' '}
-                  <Button variant="contained" size="medium">
-                    Add Student
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{ width: '200px' }}
+                  >
+                    Add Class
                   </Button>
                 </Link>
-              </div> */}
+              </div>
             </div>
-          <div>
-            {groups.map((group)=>(
-               <Card style={{
-                width:'20rem',
-                padding:'0.5rem'
-               }}>
-                <Link to={`/groups/${group._id}/students`}>
-               <div>
-                <h5>Title:{group.title}</h5>
-                <h5>Students:{group.numberOfStudents}</h5>
-                <h5>Description:{group.description}</h5>
-               </div>
-               </Link>
- 
-             </Card>
-
-            ))}
-           
+            <div>
+              <Card
+                style={{
+                  padding: '2rem',
+                  display: 'flex',
+                  borderTop: '4px solid #42a5f5',
+                }}
+              >
+                <div className="profile-card-2">
+                  <img src={bg2} className="img img-responsive" />
+                  <Link to="/viewclass">
+                    <div class="profile-name">JOHN DOE PETERSON</div>
+                    <div class="profile-username">@johndoesurname</div>
+                  </Link>
+                </div>
+              </Card>
+              <Card
+                style={{
+                  padding: '2rem',
+                  display: 'flex',
+                }}
+              >
+                {groups.map((group) => (
+                  <div style={{ display: 'flex' }}>
+                    <div className="profile-card-2">
+                      <img src={bg2} className="img img-responsive" />
+                      <Link to={`/groups/${group._id}/students`}>
+                        <div class="profile-name">{group.title}</div>
+                      </Link>
+                      <div class="profile-username">@johndoesurname</div>
+                    </div>
+                  </div>
+                ))}
+              </Card>
             </div>
-            </div>
+          </div>
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

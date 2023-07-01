@@ -7,13 +7,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
 import LoadingBox from '../../Utils/LoadingBox';
-import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import Copyright from '../../Utils/Copyright';
-
 
 export default function CourseScreen() {
   //get Courses
@@ -29,7 +26,6 @@ export default function CourseScreen() {
       setLoading(true);
       // console.log(getcourses);
     } catch (err) {
-      // console.error(err.message);
       toast.error(getError(err));
     }
   }
@@ -47,31 +43,36 @@ export default function CourseScreen() {
       setCourses(courses.filter((courses) => courses._id !== id));
       toast.success('course deleted successfully');
     } catch (err) {
-      // console.error(err.message);
       toast.error(getError(err));
     }
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1}}
-    >
+    <div>
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
           <Helmet>
-            <title>Courses</title>
+            <title>Units</title>
           </Helmet>
           <div style={{ margin: '3rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <h1>My Courses</h1>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                borderBottom: '4px solid #42a5f5',
+              }}
+            >
+              <h1>My Units</h1>
               <div>
                 <Link to="/add" className="link">
                   {' '}
-                  <Button variant="contained" size="medium">
-                    Add Course
+                  <Button
+                    sx={{ width: '200px' }}
+                    variant="contained"
+                    size="medium"
+                  >
+                    Add Unit
                   </Button>
                 </Link>
               </div>
@@ -108,7 +109,6 @@ export default function CourseScreen() {
                                 aria-label="text button group"
                                 style={{ display: 'flex' }}
                               >
-                                {/* <Button>One</Button> */}
                                 <Button>
                                   <Link to={`/${course._id}/edit`}>
                                     <EditIcon />
@@ -135,6 +135,6 @@ export default function CourseScreen() {
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

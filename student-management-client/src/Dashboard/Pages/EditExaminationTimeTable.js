@@ -4,10 +4,8 @@ import { Container } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Copyright from '../../Utils/Copyright';
-
 
 export default function EditTimeTableScreen() {
   const [title, setTitle] = useState('');
@@ -59,7 +57,6 @@ export default function EditTimeTableScreen() {
             >
               <Link to="/examination" className="link">
                 {' '}
-                
                 <Button variant="contained" size="medium" color="error">
                   Go to Created Timetable
                 </Button>
@@ -69,7 +66,7 @@ export default function EditTimeTableScreen() {
               </div>
             </div>
 
-            <Card>
+            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
               <form style={{ padding: '2rem' }}>
                 <div style={{ display: 'flex', gap: '2rem' }}>
                   <div>
@@ -126,8 +123,6 @@ export default function EditTimeTableScreen() {
                       </div>
                     </div>
                   </div>
-
-                  {/* <Divider  color="initial" sx={{height:'0.2rem',margin:'1rem'}} /> */}
                   <div>
                     <div style={{ display: 'flex', gap: '2.1rem' }}>
                       <div class="mb-2">

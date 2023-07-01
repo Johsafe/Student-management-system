@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
 import { getError } from '../../Utils/GetError';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
@@ -34,10 +33,8 @@ export default function AddCoursesScreen() {
       // console.log(addcourse);
 
       toast.success('course added successfully');
-      // window.reload();
       navigate('/course');
     } catch (err) {
-      // console.error(err.message);
       toast.error(getError(err));
     }
   };
@@ -62,12 +59,7 @@ export default function AddCoursesScreen() {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
-    >
+    <div>
       <div style={{ display: 'flex' }}>
         <SideBarDetails />
         <Container>
@@ -94,7 +86,7 @@ export default function AddCoursesScreen() {
               </div>
             </div>
 
-            <Card>
+            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
               <form>
                 <div style={{ padding: '2rem' }}>
                   <div>
@@ -184,6 +176,6 @@ export default function AddCoursesScreen() {
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

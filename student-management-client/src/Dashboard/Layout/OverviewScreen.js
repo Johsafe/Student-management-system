@@ -2,86 +2,97 @@ import * as React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
-
 import SideBarDetails from './SideBarDetails';
-import { motion } from 'framer-motion';
-import { Avatar, Button, ButtonGroup } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import PaidIcon from '@mui/icons-material/Paid';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import Copyright from '../../Utils/Copyright';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Johsafe
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(2),
-  maxWidth: 250,
-  color: theme.palette.text.primary,
-}));
+const settings = ['Profile', 'Account', 'Logout'];
 
 const mdTheme = createTheme();
-
 function DashboardContent() {
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
 
         <Divider />
-        <List component="nav">
-          {/* mainListItems */}
-          <SideBarDetails />
-          <Divider sx={{ my: 1 }} />
-          {/* secondaryListItems */}
-        </List>
-        {/* </Drawer> */}
+        <SideBarDetails />
+        <Divider sx={{ my: 1 }} />
         <Box
           component="main"
           sx={{
             backgroundColor: (theme) =>
               theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
+                ? theme.palette.grey[300]
                 : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
           }}
         >
-          <Toolbar />
-          <Container sx={{ mt: 2, mb: 2 }}>
-            <div style={{ display: 'flex' }}>
+          <div className="nav">
+            <div>
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt="Remy Sharp"
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            </div>
+          </div>
+          <Container sx={{ mt: 0 }}>
+            <div className="main">
+              <h1>Dashboard</h1>
+            </div>
+
+            <div style={{ display: 'flex', gap: '5px' }}>
               {/* Total Courses */}
               <div class="col-xl-3 col-lg-5">
                 <div
@@ -265,6 +276,7 @@ function DashboardContent() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: 240,
+                    borderTop: '4px solid #42a5f5',
                   }}
                 >
                   Examination Rooms
@@ -278,6 +290,7 @@ function DashboardContent() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: 240,
+                    borderTop: '4px solid #42a5f5',
                   }}
                 >
                   Courses Chart
@@ -285,7 +298,14 @@ function DashboardContent() {
               </Grid>
               {/* Examination TimeTables */}
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderTop: '4px solid #42a5f5',
+                  }}
+                >
                   <b> Examination TimeTables </b>
                   <div className="dashboard">
                     <div>
@@ -297,7 +317,6 @@ function DashboardContent() {
                             <th scope="col">Academic Year</th>
                             <th scope="col">Exam Month</th>
                             <th scope="col">DepartMent</th>
-                            <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -307,30 +326,6 @@ function DashboardContent() {
                             <td>2022/2023</td>
                             <td>APRIL 2023</td>
                             <td>SSAES</td>
-                            <td>
-                              <div>
-                                <ButtonGroup
-                                  variant="text"
-                                  aria-label="text button group"
-                                  style={{ display: 'flex' }}
-                                >
-                                  {/* <Button>One</Button> */}
-                                  <Button>
-                                    <Link to="/examination/edit">
-                                      <EditIcon />
-                                    </Link>
-                                  </Button>
-                                  <Button>
-                                    <DeleteIcon style={{ color: 'red' }} />
-                                  </Button>
-                                  <Button>
-                                    <Link to="/examination/view">
-                                      <VisibilityIcon />
-                                    </Link>
-                                  </Button>
-                                </ButtonGroup>
-                              </div>
-                            </td>
                           </tr>
 
                           <tr>
@@ -339,30 +334,6 @@ function DashboardContent() {
                             <td>2022/2023</td>
                             <td>APRIL 2023</td>
                             <td>SSTE</td>
-                            <td>
-                              <div>
-                                <ButtonGroup
-                                  variant="text"
-                                  aria-label="text button group"
-                                  style={{ display: 'flex' }}
-                                >
-                                  {/* <Button>One</Button> */}
-                                  <Button>
-                                    <Link to="/examination/edit">
-                                      <EditIcon />
-                                    </Link>
-                                  </Button>
-                                  <Button>
-                                    <DeleteIcon style={{ color: 'red' }} />
-                                  </Button>
-                                  <Button>
-                                    <Link to="/examination/view">
-                                      <VisibilityIcon />
-                                    </Link>
-                                  </Button>
-                                </ButtonGroup>
-                              </div>
-                            </td>
                           </tr>
 
                           <tr>
@@ -371,30 +342,6 @@ function DashboardContent() {
                             <td>2022/2023</td>
                             <td>APRIL 2023</td>
                             <td>INFOCOMS</td>
-                            <td>
-                              <div>
-                                <ButtonGroup
-                                  variant="text"
-                                  aria-label="text button group"
-                                  style={{ display: 'flex' }}
-                                >
-                                  {/* <Button>One</Button> */}
-                                  <Button>
-                                    <Link to="/examination/edit">
-                                      <EditIcon />
-                                    </Link>
-                                  </Button>
-                                  <Button>
-                                    <DeleteIcon style={{ color: 'red' }} />
-                                  </Button>
-                                  <Button>
-                                    <Link to="/examination/view">
-                                      <VisibilityIcon />
-                                    </Link>
-                                  </Button>
-                                </ButtonGroup>
-                              </div>
-                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -413,12 +360,8 @@ function DashboardContent() {
 
 export default function OverviewScreen() {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1 }}
-    >
+    <div>
       <DashboardContent />
-    </motion.div>
+    </div>
   );
 }

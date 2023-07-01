@@ -9,8 +9,6 @@ import FeaturedDetails from './FeaturedDetails';
 import HeaderBar from './HeaderBar';
 import { Container } from '@mui/material';
 
-import { motion } from 'framer-motion';
-
 function Copyright(props) {
   return (
     <Typography
@@ -60,16 +58,11 @@ const theme = createTheme();
 function HomepageDetails() {
   return (
     <React.Fragment>
-      {/* <GlobalStyles
-        styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }}
-      />
-      <CssBaseline /> */}
       <HeaderBar />
       {/* Hero unit */}
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Container maxWidth="lg" sx={{ pt: 3, pb: 2 }}>
-          {/* <Header title="Blog" sections={sections} /> */}
           <main>
             <MainFeaturedPost post={mainFeaturedPost} />
             <Grid container spacing={4}>
@@ -80,8 +73,6 @@ function HomepageDetails() {
           </main>
         </Container>
       </ThemeProvider>
-
-      {/* Footer */}
       <Container
         maxWidth="md"
         component="footer"
@@ -93,20 +84,14 @@ function HomepageDetails() {
       >
         <Copyright sx={{ mt: 2 }} />
       </Container>
-
-      {/* End footer */}
     </React.Fragment>
   );
 }
 
 export default function HomePageDetails() {
   return (
-    <motion.div
-      intial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <div>
       <HomepageDetails />
-    </motion.div>
+    </div>
   );
 }

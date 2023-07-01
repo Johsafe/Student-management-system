@@ -3,7 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
@@ -14,6 +13,7 @@ import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import { useNavigate } from 'react-router-dom';
 import Copyright from '../../Utils/Copyright';
+import axios from 'axios';
 
 const theme = createTheme();
 
@@ -30,23 +30,21 @@ export default function LoginScreen() {
   const loginForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { email, password };
-      const result = await fetch(
+      const result = await axios.post(
         'http://localhost:8000/system/authenicate/login',
         {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify(body),
+          email,
+          password,
         }
       );
-      const logOn = await result.json();
-      localStorage.setItem('Info', logOn);
+      localStorage.setItem('Info', JSON.stringify(result));
       navigate('/dashboard');
-      toast.success('User Logged Successfully');
+      toast.success('Logged Successfully');
     } catch (err) {
       toast.error(getError(err));
     }
   };
+
   return (
     <ThemeProvider theme={theme}>
       <HeaderBar />
@@ -65,8 +63,10 @@ export default function LoginScreen() {
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
-            <div>Auth [email : admin@gmail.com pass : passwd@123]</div>
           </Typography>
+          <div>
+            <h6>Auth [email : admin@gmail.com pass : passwd@123]</h6>
+          </div>
 
           <form>
             <TextField
@@ -80,16 +80,7 @@ export default function LoginScreen() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {/* <TextField
-             
-              required
-              
-              
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            /> */}
+          
             <div className="password-eye">
               <TextField
                 margin="normal"
@@ -118,7 +109,6 @@ export default function LoginScreen() {
               )}
             </div>
             <Button
-              // type="submit"
               fullWidth
               variant="contained"
               onClick={loginForm}

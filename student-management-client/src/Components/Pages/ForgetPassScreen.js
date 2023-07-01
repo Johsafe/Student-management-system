@@ -70,9 +70,13 @@ export default function ForgetPassScreen() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/" variant="body3" sx={{textDecoration:'none',display:'flex'}}>
-                <ArrowBack/>Back
-
+                <Link
+                  href="/"
+                  variant="body3"
+                  sx={{ textDecoration: 'none', display: 'flex' }}
+                >
+                  <ArrowBack />
+                  Back
                 </Link>
               </Grid>
             </Grid>

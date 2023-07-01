@@ -22,14 +22,6 @@ export default function MainFeaturedPost(props) {
         backgroundImage: `url(${bg})`,
       }}
     >
-      {/* Increase the priority of the hero background image */}
-      {/* {
-        <img
-          style={{ display: 'none' }}
-          src={post.image}
-          alt={post.imageText}
-        />
-      } */}
       <Box
         sx={{
           position: 'absolute',
