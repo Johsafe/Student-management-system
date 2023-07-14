@@ -9,10 +9,11 @@ const Dashboard = require('../Models/DashboardSchema');
 const path = require('path');
 const { isAuth } = require('../Middleware/Auth');
 const { generateToken } = require('../Utils/GenerateToken');
+// const __dirname = path.resolve();
 
 //register a new Student into a class
 
-studentRouter.post('/student', async (req, res) => {
+studentRouter.post('/group/:groupId/student', async (req, res) => {
   try {
     const { firstname, lastname, gender, password } = req.body;
     //capitalize admission
@@ -31,11 +32,12 @@ studentRouter.post('/student', async (req, res) => {
       firstname,
       lastname,
       admission: adm,
-      group: req.body.group,
+      group: req.params.groupId,
       gender,
       password: bcrypt.hashSync(password, 10),
     });
     const newStudent = await student.save();
+    // res.status(201).json(newStudent);
     if (newStudent) {
       const total_students = (await Student.find()).length;
       await Dashboard.findOneAndUpdate(
@@ -48,7 +50,6 @@ studentRouter.post('/student', async (req, res) => {
         // newStudent,
         _id: newStudent.id,
         admission: newStudent.admission,
-        group: newStudent.group,
         token: generateToken(newStudent._id),
       });
     } else {
@@ -64,33 +65,8 @@ studentRouter.post('/student', async (req, res) => {
     });
   }
 });
-//get all students
-studentRouter.get('/students', async (req, res) => {
-  try {
-    const students = await Student.find({});
-    res.send(students);
-  } catch (error) {
-    res
-      .status(500)
-      .send({ message: ' Error in getting Students.', error: error.message });
-  }
-});
-//get a student
-studentRouter.get('/student/:studentId', async (req, res) => {
-  try {
-    const student = await Student.findById(req.params.studentId);
-    if (student) {
-      res.send(student);
-    } else {
-      res.status(404).send({ message: 'student not found' });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .send({ message: ' Error in getting student.', error: error.message });
-  }
-});
-//get all student from spaecific group/class
+
+//get all student from a groupId
 studentRouter.get('/group/:groupId/students', async (req, res) => {
   try {
     const students = await Student.find({ group: req.params.groupId }).select(
@@ -110,30 +86,29 @@ studentRouter.get('/group/:groupId/students', async (req, res) => {
     });
   }
 });
-//update a student by admin
-studentRouter.put('/student/:studentId', async (req, res) => {
+//get one student
+studentRouter.get('/students/:studentId', async (req, res) => {
   try {
-    const student = await Student.findByIdAndUpdate(
-      req.params.studentId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-
-    const newStudent = await student.save();
-    res
-      .status(201)
-      .send({ success: true, message: 'Student updated', newStudent });
+    // /group/:groupId/
+    // group: req.params.groupId,
+    const student = await Student.findOne({
+      _id: req.params.studentId,
+    }).select('-password')
+    .then((student) => res.send(student));
+    // if (student.length > 0) {
+    //   res.send(student);
+    // } else {
+    //   res.status(404).send({
+    //     message: 'No Student Currently Available. Please Add new Students',
+    //   });
+    // }
   } catch (error) {
     res.status(500).send({
-      success: false,
-      message: ' Error in Updating Student.',
+      message: 'Student not found',
       error: error.message,
     });
   }
 });
-
 //get student by searching the students with the given name ,class and admission
 // studentRouter.get('/search/:name/:classgroup/:admission', async (req, res) => {
 //   // console.log(req.params.name, req.params.classgroup, req.params.admission)
@@ -152,7 +127,6 @@ studentRouter.put('/student/:studentId', async (req, res) => {
 //     res.json({ message: 'No student found with the given information.' });
 //   }
 // });
-
 //upload student photo
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -175,8 +149,9 @@ studentRouter.patch(
   upload.single('studentPhoto'),
   async (req, res) => {
     try {
+      
       const formatKenyanPhoneNumber = (phoneNumber) => {
-        // Remove any non-digit
+        // Remove any non-digit 
         phoneNumber = phoneNumber.replace(/\D/g, '');
 
         // phone number has 10 digits
@@ -215,7 +190,7 @@ studentRouter.patch(
         res.status(201).send({
           success: true,
           message: 'Student updated',
-          newStudent,
+          // newStudent,
           token: generateToken(newStudent),
         });
       } else {
@@ -233,101 +208,31 @@ studentRouter.patch(
   }
 );
 
-//update student password
-studentRouter.put('/:studentId/pass', async (req, res) => {
-  console.log('change pass');
-
-  // try {
-  //   const {studentId} =req.params;
-  //   const salt = await bcrypt.genSalt(10);
-  //   const password = await bcrypt.hash(req.body.password, salt);
-  //   const userpass = await Student.findByIdAndUpdate({_id:studentId},{password:password},{new:true});
-  //   return res.status(200).json({status:true,data:userpass})
-  // } catch (error) {
-
-  // }
-  try {
-    const student = await Student.findById(req.params.studentId).select(
-      '+password'
-    );
-    const isPasswordMatched = await student.compareSync(
-      req.body.oldPassword,
-      student.password
-    );
-    if (!isPasswordMatched) {
-      return res.status(400).send('Old Password is incorrect');
-    }
-    if (req.body.newPassword !== req.body.confirmPassword) {
-      return res.status(400).send('Password not matched with each other');
-    }
-    student.password = req.body.newPassword;
-
-    const newpass = await student.save();
-    res.send(newpass);
-  } catch (error) {
-    res.status(500).send({
-      message: 'failed to update your password!!!',
-      error: error.message,
-    });
-  }
-});
-
-//update pass
-// studentRouter.post('/:studentId/updatepass',async(req,res)=>{
+// //update student password
+// studentRouter.put('/pass', async (req, res) => {
 //   try {
-//     const studentId = req.params.studentId;
-//     // const password = req.body.password;
-
-//     const data = await Student.findOne({
-//       studentId
-//     })
-//     if(data){
-//       // bcrypt.hashSync(password, 10)
-//       newpass = await bcrypt.hashSync(password, 10)
-//       const user = await Student.findByIdAndUpdate
-//       ({studentId},{$set:{password:newpass}});
-
-//       res.status(200).send({success:true,msg:'you changed your pass'})
-
-//     }else{
-//       res.status(200).send({success:false,msg:"userid not found"})
+//     const student = await Student.findById(req.user.id).select('+password');
+//     const isPasswordMatched = await student.comparePassword(
+//       req.body.oldPassword
+//     );
+//     if (!isPasswordMatched) {
+//       return res.status(400).send('Old Password is incorrect');
 //     }
+//     if (req.body.newPassword !== req.body.confirmPassword) {
+//       return res.status(400).send('Password not matched with each other');
+//     }
+//     student.password = req.body.newPassword;
 
+//     const newpass = await student.save();
+//     res.send(newpass);
 //   } catch (error) {
 //     res.status(500).send({
-//       message: 'failed to update your password!!!',
+//       message: 'Failed to update student password!!!',
 //       error: error.message,
 //     });
-
 //   }
-// })
-
+// });
 //delete student info
-studentRouter.delete('/student/:studentId', async (req, res) => {
-  try {
-    await Student.findByIdAndDelete({
-      _id: req.params.studentId,
-    }).then((student) => {
-      if (student) {
-        return res
-          .status(200)
-          .json({ success: true, message: 'Student removed', student });
-      } else {
-        return res
-          .status(404)
-          .json({ success: false, message: 'Student not found' });
-      }
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: 'Error Student not found',
-      error: error.message,
-    });
-  }
-});
-
-//delete student from a assiged class
 studentRouter.delete(
   '/group/:groupId/students/:studentId',
   async (req, res) => {
@@ -355,7 +260,6 @@ studentRouter.delete(
     }
   }
 );
-
 //login
 studentRouter.post('/login', async (req, res) => {
   try {
@@ -373,9 +277,9 @@ studentRouter.post('/login', async (req, res) => {
         message: 'student authorized',
         admission: student.admission,
         isStudent: student.isStudent,
-        firstname: student.firstname,
-        lastname: student.lastname,
-        _id: student.id,
+        firstname:student.firstname,
+        lastname:student.lastname,
+        _id:student.id,
         token: generateToken(student),
       });
       return;
@@ -390,5 +294,29 @@ studentRouter.post('/login', async (req, res) => {
     });
   }
 });
+
+
+//get all student in a specific class
+
+/////######
+studentRouter.get('/students', async (req, res) => {
+    try {
+      const students = await Student.find({ student: req.body.group })
+        .toArray()
+        .select('-password');
+      if (students.length > 0) {
+        res.send(students);
+      } else {
+        res.status(404).send({
+          message: 'No Student Currently Available. Please Add new Students',
+        });
+      }
+    } catch (error) {
+      res.status(500).send({
+        message: 'Student not found',
+        error: error.message,
+      });
+    }
+  });
 
 module.exports = studentRouter;

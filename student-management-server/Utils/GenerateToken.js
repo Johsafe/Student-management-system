@@ -4,7 +4,7 @@ module.exports.generateToken = (user) => {
     { userId: user._id, email: user.email },
     process.env.JWT_SECRET,
     {
-      expiresIn: '30d',
+      expiresIn: '1d',
     }
   );
 };

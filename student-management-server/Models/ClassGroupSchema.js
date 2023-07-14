@@ -9,6 +9,7 @@ const classGroupSchema = mongoose.Schema({
     trim: true,
     minlength: 3,
   },
+  academicYear: { type: String, required: true },
   createdAt: {
     type: Date,
     default: Date.now,

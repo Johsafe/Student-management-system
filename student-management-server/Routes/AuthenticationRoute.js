@@ -3,14 +3,14 @@ const Authenticate = require('../Models/AuthenticationSchema');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const isAuth = require('../Middleware/Auth');
-authenticateRouter = express.Router();
+const authRouter = express.Router();
 const sendConfirmationEmail = require('../Utils/sendEmail');
 const { generateToken } = require('../Utils/GenerateToken');
 // const { signupValidation } = require('../Middleware/validator');
 
 //Create new User
 
-authenticateRouter.post('/create', async (req, res) => {
+authRouter.post('/create', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -51,7 +51,7 @@ authenticateRouter.post('/create', async (req, res) => {
 });
 
 //verify mail
-authenticateRouter.get('/verify/:id', async (req, res, next) => {
+authRouter.get('/verify/:id', async (req, res, next) => {
   try {
     // User.findOne({
     //   confirmationCode: req.params.confirmationCode,
@@ -86,7 +86,7 @@ authenticateRouter.get('/verify/:id', async (req, res, next) => {
 });
 
 //login
-authenticateRouter.post('/login', isAuth, async (req, res) => {
+authRouter.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -116,7 +116,7 @@ authenticateRouter.post('/login', isAuth, async (req, res) => {
 });
 
 //update user
-// authenticateRouter.put(
+// authRouter.put(
 //   '/profile',async (req, res) => {
 //     const user = await Authenticate.findById(req.user._id);
 //     if (user) {
@@ -139,7 +139,7 @@ authenticateRouter.post('/login', isAuth, async (req, res) => {
 //   });
 
 //get users
-authenticateRouter.get('/users', async (req, res) => {
+authRouter.get('/users', async (req, res) => {
   try {
     const userList = await Authenticate.find().select('-password');
     res.send(userList);
@@ -151,7 +151,7 @@ authenticateRouter.get('/users', async (req, res) => {
 });
 
 //User Details Update
-authenticateRouter.put('/profile', async (req, res) => {
+authRouter.put('/profile', async (req, res) => {
   try {
   } catch (error) {
     res.status(500).send({
@@ -162,7 +162,7 @@ authenticateRouter.put('/profile', async (req, res) => {
 });
 
 //User Delete Details
-authenticateRouter.delete('/:userId', async (req, res) => {
+authRouter.delete('/:userId', async (req, res) => {
   try {
     Authenticate.findByIdAndRemove(req.params.userId).then((user) => {
       if (user) {
@@ -183,4 +183,4 @@ authenticateRouter.delete('/:userId', async (req, res) => {
   }
 });
 
-module.exports = authenticateRouter;
+module.exports = authRouter;

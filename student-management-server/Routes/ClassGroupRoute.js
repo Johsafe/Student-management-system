@@ -7,8 +7,10 @@ const groupRouter = express.Router();
 //create new classgroup
 groupRouter.post('/group', async (req, res) => {
   try {
-    const { abbr, title, description, numberOfStudents } = req.body;
-
+    const { abbr, title, description, numberOfStudents,academicYear } = req.body;
+     //capitalize abbr
+     let abbrev = req.body.abbr;
+     let abbrv = abbrev.toUpperCase();
     //confirm Iif group exists in the system
     const isgroup = await Group.findOne({ abbr });
 
@@ -18,10 +20,11 @@ groupRouter.post('/group', async (req, res) => {
     }
 
     const classGroup = await Group.create({
-      abbr: abbr,
+      abbr: abbrv,
       title: title,
       description: description,
       numberOfStudents: numberOfStudents,
+      academicYear:academicYear,
     });
     const newGroup = await classGroup.save();
     res.status(201).send({ message: 'New Group Created', newGroup });
@@ -69,7 +72,6 @@ groupRouter.put('/group/:groupId', async (req, res) => {
       {
         $set: req.body,
       },
-      //return new updated data
       { new: true }
     );
     const newGroup = await group.save();
@@ -100,19 +102,19 @@ groupRouter.delete('/group/:groupId', async (req, res) => {
 });
 //delete classGroup with  courses
 
-groupRouter.delete('/course/:groupId', async (req, res) => {
-  try {
-    const deleteCourses = (group) => {
-      Courses.deleteMany({ group: req.params.groupId })
-        .then(() => group)
-        .catch((error) => console.log(error));
-    };
-    await Group.findByIdAndDelete({ _id: req.params.groupId })
-      .then((group) => res.send(deleteCourses(group)))
-      .catch((error) => console.log(error));
-  } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
-  }
-});
+// groupRouter.delete('/course/:groupId', async (req, res) => {
+//   try {
+//     const deleteCourses = (group) => {
+//       Courses.deleteMany({ group: req.params.groupId })
+//         .then(() => group)
+//         .catch((error) => console.log(error));
+//     };
+//     await Group.findByIdAndDelete({ _id: req.params.groupId })
+//       .then((group) => res.send(deleteCourses(group)))
+//       .catch((error) => console.log(error));
+//   } catch (error) {
+//     res.status(500).send({ success: false, error: error.message });
+//   }
+// });
 
 module.exports = groupRouter;
