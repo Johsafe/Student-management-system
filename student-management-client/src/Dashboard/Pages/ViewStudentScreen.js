@@ -7,9 +7,9 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import profile from '../../Static/profile.png';
 import Copyright from '../../Utils/Copyright';
 import PropTypes from 'prop-types';
@@ -17,6 +17,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import StudentUnitRegitration from '../StudentPages/StudentUnitRegitration ';
+import { getError } from '../../Utils/GetError';
+import { toast } from 'react-toastify';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +54,41 @@ function a11yProps(index) {
 }
 
 export default function ViewStudentScreen() {
+  const params = useParams();
+  const [student, setStudent] = useState([]);
+  async function getGroups() {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/system/student/student/${params.studentId}`
+      );
+      const getstudent = await response.json();
+      setStudent(getstudent);
+      console.log(getstudent);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+
+  //delete student
+  const navigate = useNavigate();
+  async function deleteStudent(id) {
+    try {
+      await fetch(
+        `http://localhost:8000/system/student/group/${params.id}/students/${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      toast.success('student deleted successfully');
+      navigate('/studentreg');
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
   //mui tabs
   const [value, setValue] = React.useState(0);
 
@@ -84,23 +121,23 @@ export default function ViewStudentScreen() {
               }}
             >
               <div>
-                <b>Firstname:</b> <p>Mwamuye</p>
+                <b>Firstname:</b> <p>{student.firstname}</p>
                 <b>Admission:</b>
-                <p>CSC/034/2034</p>
+                <p>{student.admission}</p>
                 <b>Class:</b>
-                <p>BSC CSC</p>
+                <p>{student.group}</p>
                 <b>PresentAddress:</b>
-                <p>Likoni</p>
-                <b>Gender:</b> <p>Male</p>
+                <p>{student.presentAddress}</p>
+                <b>Gender:</b> <p>{student.gender}</p>
               </div>
               <div>
-                <b>Lastname:</b> <p> Johsafe</p>
+                <b>Lastname:</b> <p>{student.lastname}</p>
                 <b>Email:</b>
-                <p>Johsafe@gmail</p>
+                <p>{student.email}</p>
                 <b> DOB:</b>
-                <p>12-12-12</p>
+                <p>{student.DOB}</p>
                 <b> Phone:</b>
-                <p>09876544</p>
+                <p>{student.phone}</p>
               </div>
             </div>
           </Paper>
@@ -180,37 +217,40 @@ export default function ViewStudentScreen() {
               >
                 <div>
                   <img
-                    src={profile}
-                    style={{
-                      width: '100%',
-                    }}
+                    className="media"
+                    src={'http://localhost:8000/' + student.studentPhoto}
+                    style={{ borderRadius: '50%', width: '100%' }}
                   />
                   <div style={{ textAlign: 'center' }}>
                     <h4>
-                      <b>Joseph Mwamuye</b>
+                      <b>
+                        {student.firstname}
+                        <t /> {student.lastname}
+                      </b>
                     </h4>
-                    <b> BSC CSC</b>
+                    <b>{student.group}</b>
                   </div>
                 </div>
               </Card>
               <div>
-                <Button
-                  variant="contained"
-                  size="medium"
-                  sx={{ width: '100%', marginTop: '0.5rem' }}
+                <Link
+                  to={`/${student._id}/editstudent`}
+                  style={{ textDecoration: 'none', color: 'white' }}
                 >
-                  <Link
-                    to="/:id/student"
-                    style={{ textDecoration: 'none', color: 'white' }}
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{ width: '100%', marginTop: '0.5rem' }}
                   >
                     Update Student
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
                 <Button
                   variant="contained"
                   color="error"
                   size="medium"
                   sx={{ width: '100%', marginTop: '0.5rem' }}
+                  onClick={() => deleteStudent(student._id)}
                 >
                   <Link style={{ textDecoration: 'none', color: 'white' }}>
                     Delete Student

@@ -8,13 +8,14 @@ import { Card } from '@mui/material';
 import { motion } from 'framer-motion';
 import Copyright from '../../Utils/Copyright';
 import bg2 from '../../Static/bg2.png';
+import { toast } from 'react-toastify';
+import { getError } from '../../Utils/GetError';
+import { Grid } from '@mui/material';
 
 export default function StudentsGroupScreen() {
-  //get Students
-  const [loading, setLoading] = useState(false);
-  const [students, setStudents] = useState([]);
-
+ 
   //getstudent groups
+  const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
@@ -26,7 +27,7 @@ export default function StudentsGroupScreen() {
       setLoading(true);
       // console.log(getgroups);
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
 
@@ -40,11 +41,11 @@ export default function StudentsGroupScreen() {
         <SideBarDetails />
         <Container>
           <Helmet>
-            <title>StudentsGroupScreen</title>
+            <title>Classes</title>
           </Helmet>
           <div style={{ margin: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <h1>Students Class Groups</h1>
+              <h1>Students Classes</h1>
               <div>
                 <Link to="/class" className="link">
                   {' '}
@@ -66,31 +67,21 @@ export default function StudentsGroupScreen() {
                   borderTop: '4px solid #42a5f5',
                 }}
               >
-                <div className="profile-card-2">
-                  <img src={bg2} className="img img-responsive" />
-                  <Link to="/viewclass">
-                    <div class="profile-name">JOHN DOE PETERSON</div>
-                    <div class="profile-username">@johndoesurname</div>
-                  </Link>
-                </div>
-              </Card>
-              <Card
-                style={{
-                  padding: '2rem',
-                  display: 'flex',
-                }}
-              >
-                {groups.map((group) => (
-                  <div style={{ display: 'flex' }}>
+                <Grid
+                  container
+                  spacing={1}
+                  sx={{ flexWrap: 'wrap' }}
+                >
+                  {groups.map((group) => (
                     <div className="profile-card-2">
                       <img src={bg2} className="img img-responsive" />
-                      <Link to={`/groups/${group._id}/students`}>
+                      <Link to={`/groups/${group._id}/viewclass`}>
                         <div class="profile-name">{group.title}</div>
+                        <div class="profile-username">{group.academicYear}</div>
                       </Link>
-                      <div class="profile-username">@johndoesurname</div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </Grid>
               </Card>
             </div>
           </div>

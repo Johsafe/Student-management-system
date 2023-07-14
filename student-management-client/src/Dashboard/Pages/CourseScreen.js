@@ -87,7 +87,7 @@ export default function CourseScreen() {
                         <th scope="col">#</th>
                         <th scope="col">Code</th>
                         <th scope="col">Title</th>
-                        <th scope="col">Class Group</th>
+                        <th scope="col">Department</th>
                         <th scope="col">Semeter</th>
                         <th scope="col">year</th>
                         <th scope="col">Action</th>

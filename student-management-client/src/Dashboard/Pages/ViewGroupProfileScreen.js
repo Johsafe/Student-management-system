@@ -6,9 +6,9 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import profile from '../../Static/profile.png';
 import Copyright from '../../Utils/Copyright';
 import PropTypes from 'prop-types';
@@ -17,6 +17,8 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import AdminUnitRegitration from './AdminUnitRegitration';
 import ClassStudentsScreen from './ClassStudentsScreen';
+import { toast } from 'react-toastify';
+import { getError } from '../../Utils/GetError';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -68,15 +70,73 @@ export default function ViewGroupProfileScreen() {
             display: 'flex',
             flexDirection: 'column',
             width: '800px',
+            textAlign: 'start',
           }}
         >
           <b>
-            <h3>General Information</h3>
+            <h2 style={{textDecoration:' 1px underline',textDecorationStyle:'double'}}>General Information</h2>
           </b>
+
+          <div style={{fontSize:'18px',paddingTop:'1.5rem'}}>
+            <p>
+              {/* Class Title: <t /> */}
+              {groups.title}
+            </p>
+            <p>
+              {/* Total Students: */}
+              <t />
+              {groups.numberOfStudents} <t /> Students
+            </p>
+            <p>
+              {/* Academic Year: */}
+              <t />
+              {groups.academicYear}
+            </p>
+            <p>
+              {/* Description: */}
+              <t />
+              {groups.description}
+            </p>
+          </div>
         </Paper>
       </div>
     );
   }
+
+  //Get Groups
+  const params = useParams();
+  const [loading, setLoading] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const navigate =useNavigate();
+  async function getGroups() {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/system/classgroup/group/${params.groupId}`
+      );
+      const getgroups = await response.json();
+      setGroups(getgroups);
+      setLoading(true);
+      // console.log(getgroups);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+  //Delete class
+  const deleteGroup = async (id) => {
+    try {
+      await fetch(`http://localhost:8000/system/classgroup/group/${id}`, {
+        method: 'DELETE',
+      });
+      toast.success('group deleted successfully');
+      navigate('/groups')
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
 
   return (
     <div>
@@ -125,10 +185,17 @@ export default function ViewGroupProfileScreen() {
                     }}
                   />
                   <div style={{ textAlign: 'center' }}>
-                    <h4>
-                      <b>Bachelor of Computer Science</b>
-                    </h4>
-                    <b> 40 Students </b>
+                    <div>
+                      <h3>
+                        <b>{groups.abbr}</b>
+                      </h3>
+                    </div>
+                    {/* <div>
+                      <h3>{groups.numberOfStudents}<t/> Students</h3>
+                    </div> */}
+                    <div>
+                      <h4>{groups.academicYear}</h4>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -139,7 +206,7 @@ export default function ViewGroupProfileScreen() {
                   sx={{ width: '100%', marginTop: '0.5rem' }}
                 >
                   <Link
-                    to="/:id/classedit"
+                    to={`/groups/${groups._id}/classedit`}
                     style={{ textDecoration: 'none', color: 'white' }}
                   >
                     Update Class
@@ -150,10 +217,9 @@ export default function ViewGroupProfileScreen() {
                   color="error"
                   size="medium"
                   sx={{ width: '100%', marginTop: '0.5rem' }}
+                  onClick={() => deleteGroup(groups._id)}
                 >
-                  <Link style={{ textDecoration: 'none', color: 'white' }}>
-                    Delete Class
-                  </Link>
+                  Delete Class
                 </Button>
               </div>
             </div>

@@ -71,7 +71,7 @@ export default function ProfileInfoScreen() {
   async function getAstudent() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/students/${user._id}`
+        `http://localhost:8000/system/student/student/${user._id}`
       );
       const astudent = await response.json();
       setStudent(astudent);
@@ -237,19 +237,22 @@ export default function ProfileInfoScreen() {
                 }}
               >
                 <div>
-                  {/* // src={'http://localhost:8000/' + student.studentPhoto} */}
                   <img
+                    src={'http://localhost:8000/' + student.studentPhoto}
+                    style={{
+                      width: '100%',borderRadius:'50%'
+                    }}
+                  />
+                  {/* <img
                     src={profile}
                     style={{
                       width: '100%',
-                    }}
-                  />
+                    }} */}
                   <div style={{ textAlign: 'center' }}>
                     <h3>
                       <b>
-                        {/* {student.firstname} {student.lastname}
-                         */}
-                        Joseph Mwamuye
+                        {student.firstname} {student.lastname}
+                        {/* Joseph Mwamuye */}
                       </b>
                     </h3>
                     Student
@@ -316,15 +319,15 @@ export default function ProfileInfoScreen() {
               >
                 <div>
                   <h3 style={{ textAlign: 'center' }}>
-                    <b>About Joseph</b>
+                    <b>About {student.firstname}</b>
                   </h3>
                   <h4>
                     <b>
                       <School /> Education
                     </b>
                   </h4>
-                  <p>Course: Bachelor of Graphics</p>
-                  <p>Roll : CSC/089/2034</p>
+                  <p>Course: {student.group}</p>
+                  <p>Roll : {student.admission}</p>
                 </div>
               </Card>
             </div>

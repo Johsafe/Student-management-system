@@ -2,7 +2,7 @@ import Card from '@mui/material/Card';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SideBarDetails from '../Layout/SideBarDetails';
 import Container from '@mui/material/Container';
 import { getError } from '../../Utils/GetError';
@@ -10,17 +10,18 @@ import { toast } from 'react-toastify';
 import Copyright from '../../Utils/Copyright';
 
 export default function ClassGroupScreen() {
+  const navigate = useNavigate();
   const [abbr, setAbbr] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [numberOfStudents, setNumberOfStudents] = useState('');
-  const [Academicyear, setAcademicyear] = useState('');
+  const [academicYear, setAcademicYear] = useState('');
 
   //create new group
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { abbr, title, description, numberOfStudents };
+      const body = { abbr, title, description, academicYear, numberOfStudents };
       const result = await fetch(
         'http://localhost:8000/system/classgroup/group',
         {
@@ -31,42 +32,9 @@ export default function ClassGroupScreen() {
       );
       const addgroup = await result.json();
       toast.success('class added successfully');
+      navigate('/groups');
 
-      // console.log(addgroup);
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
-
-  //Get Groups
-  const [loading, setLoading] = useState(false);
-  const [groups, setGroups] = useState([]);
-  async function getGroups() {
-    try {
-      const response = await fetch(
-        'http://localhost:8000/system/classgroup/group'
-      );
-      const getgroups = await response.json();
-      setGroups(getgroups);
-      setLoading(true);
-      // console.log(getgroups);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
-  useEffect(() => {
-    getGroups();
-  }, []);
-
-  //Delete group
-  const deleteGroup = async (id) => {
-    try {
-      await fetch(`http://localhost:8000/system/classgroup/course/${id}`, {
-        method: 'DELETE',
-      });
-      setGroups(groups.filter((groups) => groups._id !== id));
-      toast.success('group deleted successfully');
+      console.log(addgroup);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -156,11 +124,11 @@ export default function ClassGroupScreen() {
                           Academic Year
                         </label>
                         <input
-                          type="number"
+                          type="text"
                           class="form-control"
                           id="academicyear"
-                          value={Academicyear}
-                          onChange={(e) => setAcademicyear(e.target.value)}
+                          value={academicYear}
+                          onChange={(e) => setAcademicYear(e.target.value)}
                         />
                       </div>
                       <div class="mb-2">

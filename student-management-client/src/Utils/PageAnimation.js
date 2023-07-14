@@ -33,6 +33,8 @@ import DepartmentScreen from '../Dashboard/Pages/DepartmentScreen';
 import ViewGroupProfileScreen from '../Dashboard/Pages/ViewGroupProfileScreen';
 import EditClassGroupScreen from '../Dashboard/Pages/EditClassGroup';
 import ViewStudentScreen from '../Dashboard/Pages/ViewStudentScreen';
+import AdminEditStudentScreen from '../Dashboard/Pages/EditStudentScreen';
+import PrivateRoute from './PrivateRoute';
 
 export default function PageAnimation() {
   return (
@@ -43,13 +45,16 @@ export default function PageAnimation() {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/signup" element={<RegisterScreen />} />
         <Route path="/forget" element={<ForgetPassScreen />} />
-        <Route path="/dashboard" element={<DashboardContent />} />
+        <Route exact path="/dashboard" element={<DashboardContent />} />
         <Route path="/reports" element={<ReportScreen />} />
         <Route path="/course" element={<CourseScreen />} />
         <Route path="/add" element={<AddCoursesScreen />} />
         <Route path="/class" element={<ClassGroupScreen />} />
         <Route path="/:id/edit" element={<EditCoursesScreen />} />
-        <Route path="/:id/classedit" element={<EditClassGroupScreen />} />
+        <Route
+          path="/groups/:groupId/classedit"
+          element={<EditClassGroupScreen />}
+        />
         <Route path="/create" element={<CreateTimeTableScreen />} />
         <Route path="/examination" element={<ExaminationTimetableScreen />} />
         <Route path="/examination/edit" element={<EditTimeTableScreen />} />
@@ -65,12 +70,19 @@ export default function PageAnimation() {
         <Route path="/search" element={<SearchStudent />} />
         <Route path="/department" element={<DepartmentScreen />} />
         <Route path="/studentreg" element={<AllStudentsScreen />} />
-        <Route path="/viewstudent" element={<ViewStudentScreen />} />
+        <Route path="/:studentId/viewstudent" element={<ViewStudentScreen />} />
+        <Route
+          path="/:studentId/editstudent"
+          element={<AdminEditStudentScreen />}
+        />
         <Route
           path="/adminunitregistration"
           element={<AdminUnitRegitration />}
         />
-        <Route path="/viewclass" element={<ViewGroupProfileScreen />} />
+        <Route
+          path="/groups/:groupId/viewclass"
+          element={<ViewGroupProfileScreen />}
+        />
         <Route path="*" element={<PageError />} />
       </Routes>
     </div>

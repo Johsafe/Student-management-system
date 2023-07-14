@@ -58,7 +58,7 @@ export default function EditStudentScreen() {
   async function getAstudent() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/students/${user._id}`,
+        `http://localhost:8000/system/student/student/${user._id}`,
         {
           method: 'GET',
           headers: {

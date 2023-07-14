@@ -11,7 +11,6 @@ import { Card } from '@mui/material';
 
 export default function AddStudentScreen() {
   const navigate = useNavigate();
-  const params = useParams();
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [admission, setAdmission] = useState('');
@@ -31,7 +30,7 @@ export default function AddStudentScreen() {
         password,
       };
       const result = await fetch(
-        `http://localhost:8000/system/student/group/${params.id}/student`,
+        `http://localhost:8000/system/student/student`,
         {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
@@ -39,15 +38,14 @@ export default function AddStudentScreen() {
         }
       );
       const addstudents = await result.json();
-      console.log(firstname, lastname, admission, group, gender, password);
-      navigate(`/groups/${params.id}/students`);
-      console.log(addstudents);
+      // console.log(firstname, lastname, admission, group, gender, password);
+      navigate('/studentreg');
+      // console.log(addstudents);
       toast.success('Student Registered Successfully');
     } catch (err) {
       toast.error(getError(err));
     }
   };
-
   //get groups
   const [groups, setGroups] = useState([]);
   async function getGroups() {
@@ -57,16 +55,17 @@ export default function AddStudentScreen() {
       );
       const getgroups = await response.json();
       setGroups(getgroups);
-      // console.log(getgroups);
     } catch (err) {
       console.error(err.message);
       toast.error(getError(err));
     }
   }
-
   useEffect(() => {
     getGroups();
   }, []);
+
+  const numberOfStudents = 10;
+  const length = 15;
 
   return (
     <div>
@@ -111,6 +110,7 @@ export default function AddStudentScreen() {
                           class="form-control"
                           id="firstname"
                           value={firstname}
+                          required
                           onChange={(e) => setFirstname(e.target.value)}
                         />
                       </div>
@@ -186,14 +186,38 @@ export default function AddStudentScreen() {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
-                    <Button
+                    {/* <Button
                       variant="contained"
                       size="medium"
                       sx={{ width: '100%' }}
                       onClick={registerStudent}
+                      disabled={length === numberOfStudents}
                     >
                       Register Student
-                    </Button>
+                    </Button> */}
+
+                    <div>
+                      {numberOfStudents < length ? (
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          sx={{ width: '100%' }}
+                          onClick={registerStudent}
+                          // disabled={length === numberOfStudents}
+                        >
+                          Register Student
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          sx={{ width: '100%' }}
+                          color="error"
+                        >
+                          Student Registration Ended
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </form>

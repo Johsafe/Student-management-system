@@ -30,14 +30,14 @@ export default function LoginScreen() {
   const loginForm = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
+      const {data}= await axios.post(
         'http://localhost:8000/system/authenicate/login',
         {
           email,
           password,
         }
       );
-      localStorage.setItem('Info', JSON.stringify(result));
+      localStorage.setItem('Info', JSON.stringify(data));
       navigate('/dashboard');
       toast.success('Logged Successfully');
     } catch (err) {

@@ -10,16 +10,16 @@ import { getError } from '../../Utils/GetError';
 import Copyright from '../../Utils/Copyright';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import LoadingBox from '../../Utils/LoadingBox';
 
 export default function AllStudentsScreen() {
   //get Students
-  const params = useParams();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   async function getStudents() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/group/${params.id}/students`
+        "http://localhost:8000/system/student/students"
       );
       const getstudents = await response.json();
       setStudents(getstudents);
@@ -33,22 +33,6 @@ export default function AllStudentsScreen() {
   useEffect(() => {
     getStudents();
   }, []);
-
-  //delete student
-  async function deleteStudent(id) {
-    try {
-      await fetch(
-        `http://localhost:8000/system/student/group/${params.id}/students/${id}`,
-        {
-          method: 'DELETE',
-        }
-      );
-      setStudents(students.filter((students) => students._id !== id));
-      toast.success('student deleted successfully');
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  }
 
   return (
     <div>
@@ -81,56 +65,54 @@ export default function AllStudentsScreen() {
                 </Link>
               </div>
             </div>
-            {/* {loading ? ( */}
-            <div className="dashboard">
-              <div>
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Lastname</th>
-                      <th scope="col">Firstname</th>
-                      <th scope="col">Admission</th>
-                      <th scope="col">Group</th>
-                      <th scope="col">Gender</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* {students.map((student) => ( */}
-                    <tr
-                    //  key={student._id}
-                    >
-                      <th scope="row">#</th>
-                      <td>{/* {student.lastname} */} Mwamuye</td>
-                      <td>{/* {student.firstname} */} Joseph</td>
-                      <td>{/* {student.admission} */} csc/034/675</td>
-                      <td>{/* {student.admission} */} BSC CSC</td>
-                      <td>{/* {student.gender} */} Male</td>
-                      <td>
-                        <div>
-                          <ButtonGroup
-                            variant="text"
-                            aria-label="text button group"
-                            style={{ display: 'flex' }}
-                          >
-                            <Button>
-                              <Link to="/viewstudent">
-                                <VisibilityIcon />
-                              </Link>
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      </td>
-                    </tr>
-                    {/* ))} */}
-                  </tbody>
-                </table>
+            {loading ? (
+              <div className="dashboard">
+                <div>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Lastname</th>
+                        <th scope="col">Firstname</th>
+                        <th scope="col">Admission</th>
+                        <th scope="col">Group</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {students.map((student) => (
+                        <tr key={student._id}>
+                          <th scope="row">#</th>
+                          <td>{student.lastname}</td>
+                          <td>{student.firstname} </td>
+                          <td>{student.admission} </td>
+                          <td>{student.group} </td>
+                          <td> {student.gender} </td>
+                          <td>
+                            <div>
+                              <ButtonGroup
+                                variant="text"
+                                aria-label="text button group"
+                                style={{ display: 'flex' }}
+                              >
+                                <Button>
+                                  <Link to={`/${student._id}/viewstudent`}>
+                                    <VisibilityIcon />
+                                  </Link>
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            {/* // ) : (
-          //   <LoadingBox />
-          // )} */}
+            ) : (
+              <LoadingBox />
+            )}
           </div>
           <Copyright sx={{ pt: 4 }} />
         </Container>
