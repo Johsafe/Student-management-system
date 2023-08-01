@@ -2,10 +2,30 @@ const express = require('express');
 const Group = require('../Models/ClassGroupSchema.js');
 const Courses = require('../Models/CoursesSchema.js');
 const Student = require('../Models/StudentSchema.js');
+const multer = require('multer');
+const shortid = require('shortid');
 const groupRouter = express.Router();
+const path = require('path');
+
+
+//upload student photo
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(path.dirname(__dirname), './classprofile'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, shortid.generate() + '-' + file.originalname);
+  },
+});
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+});
 
 //create new classgroup
-groupRouter.post('/group', async (req, res) => {
+groupRouter.post('/group',upload.single('classPhoto'), async (req, res) => {
   try {
     const { abbr, title, description, numberOfStudents,academicYear } = req.body;
      //capitalize abbr
@@ -25,6 +45,7 @@ groupRouter.post('/group', async (req, res) => {
       description: description,
       numberOfStudents: numberOfStudents,
       academicYear:academicYear,
+      classPhoto: req.file.filename,
     });
     const newGroup = await classGroup.save();
     res.status(201).send({ message: 'New Group Created', newGroup });

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const classGroupSchema = mongoose.Schema({
+  classPhoto: { type: String },
   abbr: { type: String, required: true, unique: true },
   title: { type: String, required: true },
   description: { type: String },

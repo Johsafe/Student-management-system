@@ -64,11 +64,18 @@ studentRouter.post('/student', async (req, res) => {
     });
   }
 });
+
 //get all students
 studentRouter.get('/students', async (req, res) => {
   try {
     const students = await Student.find({});
-    res.send(students);
+    // res.send(students);
+    if (students.length > 0) {
+      // console.log(students);
+      res.json(students);
+    } else {
+      res.status(404).json({ message: 'No students found.' });
+    }
   } catch (error) {
     res
       .status(500)
@@ -110,6 +117,42 @@ studentRouter.get('/group/:groupId/students', async (req, res) => {
     });
   }
 });
+
+// the following route is for loading attendance and students info.
+// studentRouter.get('/class/:id/attendance', async (req, res) => {
+//   const students = await StudentAttendance.findOne({
+//     attendance_date: new Date.now(),
+//     group: req.params.id,
+//   });
+//   // console.log("students",students.length())
+//   if (students) {
+//     console.log(students);
+
+//     res.json(students);
+//   } else {
+//     res.status(404).json({ message: 'No students found.' });
+//   }
+// });
+
+//get student by searching the students with the given name ,class and admission
+// studentRouter.get('/search/:name/:classgroup/:admission', async (req, res) => {
+//   // console.log(req.params.name, req.params.classgroup, req.params.admission)
+//   const student = await Student.findOne({
+//     lastname: req.params.name,
+//     group: req.params.classgroup,
+//     admission: req.params.admission,
+//   });
+//   // res.send(student);
+//   res.status(201).send({ message: 'student found', student });
+
+//   if (student) {
+//     res.json(student);
+//   } else {
+//     res.status(404);
+//     res.json({ message: 'No student found with the given information.' });
+//   }
+// });
+
 //update a student by admin
 studentRouter.put('/student/:studentId', async (req, res) => {
   try {
@@ -133,25 +176,6 @@ studentRouter.put('/student/:studentId', async (req, res) => {
     });
   }
 });
-
-//get student by searching the students with the given name ,class and admission
-// studentRouter.get('/search/:name/:classgroup/:admission', async (req, res) => {
-//   // console.log(req.params.name, req.params.classgroup, req.params.admission)
-//   const student = await Student.findOne({
-//     lastname: req.params.name,
-//     group: req.params.classgroup,
-//     admission: req.params.admission,
-//   });
-//   // res.send(student);
-//   res.status(201).send({ message: 'student found', student });
-
-//   if (student) {
-//     res.json(student);
-//   } else {
-//     res.status(404);
-//     res.json({ message: 'No student found with the given information.' });
-//   }
-// });
 
 //upload student photo
 const storage = multer.diskStorage({
@@ -302,21 +326,29 @@ studentRouter.put('/:studentId/pass', async (req, res) => {
 //   }
 // })
 
-//delete student info
+const fs = require('fs');
+const StudentAttendance = require('../Models/StudentAttendanceSchema');
+//delete student info with image
 studentRouter.delete('/student/:studentId', async (req, res) => {
   try {
-    await Student.findByIdAndDelete({
-      _id: req.params.studentId,
-    }).then((student) => {
-      if (student) {
-        return res
-          .status(200)
-          .json({ success: true, message: 'Student removed', student });
-      } else {
-        return res
-          .status(404)
-          .json({ success: false, message: 'Student not found' });
-      }
+    // await Student.findByIdAndDelete({
+    //   _id: req.params.studentId,
+    // }).then((student) => {
+    //   if (student) {
+    //     return res
+    //       .status(200)
+    //       .json({ success: true, message: 'Student removed', student });
+    //   } else {
+    //     return res
+    //       .status(404)
+    //       .json({ success: false, message: 'Student not found' });
+    //   }
+    // });
+    await Student.findById({ _id: req.params.studentId }, (err, res) => {
+      if (err) return res.status(500).send({ success: false });
+      fs.unlink(__dirname + './uploads' + res.image, (err) => {
+        if (err) return res.status(500).send({ message: 'Error' });
+      });
     });
   } catch (error) {
     res.status(500).send({
