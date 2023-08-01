@@ -16,29 +16,36 @@ export default function ClassGroupScreen() {
   const [description, setDescription] = useState('');
   const [numberOfStudents, setNumberOfStudents] = useState('');
   const [academicYear, setAcademicYear] = useState('');
+  const [classPhoto,setClassPhoto] =useState('')
 
   //create new group
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    formData.append('classPhoto', classPhoto);
+    formData.append('abbr', abbr);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('numberOfStudents', numberOfStudents);
+    formData.append('academicYear', academicYear);
     try {
-      const body = { abbr, title, description, academicYear, numberOfStudents };
       const result = await fetch(
         'http://localhost:8000/system/classgroup/group',
         {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify(body),
+          method: 'POST', 
+          body: formData,
+          // headers: { 'Content-type': 'application/json' },
         }
       );
-      const addgroup = await result.json();
+      sessionStorage.setItem('pic', classPhoto);
       toast.success('class added successfully');
       navigate('/groups');
-
-      console.log(addgroup);
     } catch (err) {
       toast.error(getError(err));
     }
   };
+
 
   return (
     <div>
@@ -64,7 +71,7 @@ export default function ClassGroupScreen() {
                 </Button>
               </Link>
               <div>
-                <h1>My Class Group</h1>
+                <h1>Add Class Group</h1>
               </div>
             </div>
 
@@ -116,6 +123,15 @@ export default function ClassGroupScreen() {
                           value={numberOfStudents}
                           onChange={(e) => setNumberOfStudents(e.target.value)}
                         />
+                        {/* <div>
+                        <img
+                            className="media"
+                            src={
+                              
+                            }
+                            style={{ borderRadius: '50%', width: '100%' }}
+                          />
+                        </div> */}
                       </div>
                     </div>
                     <div style={{ width: '50%' }}>
@@ -151,6 +167,9 @@ export default function ClassGroupScreen() {
                           class="form-control"
                           id="photo"
                           name="photo"
+                          accept="image/*"
+                          onChange={(e)=>setClassPhoto(e.target.files[0])}
+
                         />
                       </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +14,9 @@ import { getError } from '../../Utils/GetError';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Copyright from '../../Utils/Copyright';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { Helmet } from 'react-helmet-async';
 
 const theme = createTheme();
 
@@ -22,6 +25,12 @@ export default function StudentLoginScreen() {
   const [password, setPassword] = React.useState('');
   const [toggle, setToggle] = React.useState(false);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const toggleVisibility = () => {
     setToggle(!toggle);
@@ -48,6 +57,9 @@ export default function StudentLoginScreen() {
     <ThemeProvider theme={theme}>
       <HeaderBar />
       <Container component="main" maxWidth="xs">
+        <Helmet>
+          <title>Student Page</title>
+        </Helmet>
         <CssBaseline />
         <Box
           sx={{
@@ -61,11 +73,10 @@ export default function StudentLoginScreen() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign In
           </Typography>
           <div>
-            <h6>Auth [adm : CSC/001/2023 pass : student@123]</h6>
-            <h6>Auth [adm : FGC/036/2020 pass : student@123]</h6>
+            <h6>Auth [ pass : student@123]</h6>
           </div>
 
           <form onSubmit={loginForm}>
@@ -95,17 +106,17 @@ export default function StudentLoginScreen() {
                 required
               />
               {toggle ? (
-                <i
-                  id="eye"
-                  className="fas fa-eye"
-                  onClick={toggleVisibility}
-                ></i>
+                <i id="eye" className="fas fa-eye" onClick={toggleVisibility}>
+                  <VisibilityOffOutlinedIcon />
+                </i>
               ) : (
                 <i
                   className="fas fa-eye-slash"
                   id="eye"
                   onClick={toggleVisibility}
-                ></i>
+                >
+                  <VisibilityOutlinedIcon />
+                </i>
               )}
             </div>
             <Button

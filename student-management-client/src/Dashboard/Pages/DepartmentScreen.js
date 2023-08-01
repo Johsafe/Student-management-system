@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import { Link, useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import { Box } from '@mui/material';
+import Header from '../../Utils/Header';
 
 export default function DepartmentScreen() {
   //get Courses
@@ -38,8 +40,9 @@ export default function DepartmentScreen() {
         }
       );
       const adddepartment = await result.json();
-      console.log(abbr, title);
-      console.log(adddepartment);
+      // console.log(abbr, title);
+      // console.log(adddepartment);
+      navigate('/department')
       toast.success('Department Registered Successfully');
     } catch (err) {
       toast.error(getError(err));
@@ -80,9 +83,21 @@ export default function DepartmentScreen() {
     }
   }
 
+  var i = 1
+
   return (
     <div style={{ display: 'flex' }}>
       <SideBarDetails />
+      <Box
+          component="main"
+          sx={{
+            // backgroundColor: '#eceff1',
+            flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto',
+          }}
+        >
+          <Header />
       <Container sx={{ mt: 0 }}>
         <Helmet>
           <title>Department</title>
@@ -144,7 +159,7 @@ export default function DepartmentScreen() {
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">S/N</th>
                   <th scope="col">Abbr.</th>
                   <th scope="col">Title</th>
                 </tr>
@@ -152,7 +167,7 @@ export default function DepartmentScreen() {
               <tbody>
                 {department.map((depts) => (
                   <tr>
-                    <th scope="row">#</th>
+                    <th scope="row">{i++}</th>
                     <td>{depts.abbr}</td>
                     <td>{depts.title}</td>
                     <td>
@@ -189,6 +204,7 @@ export default function DepartmentScreen() {
 
         <Copyright sx={{ pt: 4 }} />
       </Container>
+      </Box>
     </div>
   );
 }

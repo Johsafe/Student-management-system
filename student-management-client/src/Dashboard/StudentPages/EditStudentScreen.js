@@ -86,12 +86,8 @@ export default function EditStudentScreen() {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
-    >
+    
+    <div>
       <div style={{ padding: '2rem' }}>
         <Container>
           <Helmet>
@@ -149,6 +145,7 @@ export default function EditStudentScreen() {
                           class="form-control"
                           id="photo"
                           name="photo"
+                          accept="image/*"
                           defaultValue={student.studentPhoto}
                           onChange={(e) => setStudentPhoto(e.target.files[0])}
                         />
@@ -332,6 +329,6 @@ export default function EditStudentScreen() {
           <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
-    </motion.div>
+    </div>
   );
 }

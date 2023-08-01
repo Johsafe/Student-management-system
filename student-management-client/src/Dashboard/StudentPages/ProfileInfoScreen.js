@@ -231,7 +231,7 @@ export default function ProfileInfoScreen() {
               <Card
                 sx={{
                   p: 2,
-                  height: 380,
+                  height: 350,
                   width: 250,
                   borderTop: '4px solid #42a5f5',
                 }}
@@ -285,7 +285,7 @@ export default function ProfileInfoScreen() {
               </div>
             </div>
             <div>
-              <Box sx={{ width: '100%', textAlign: 'center' }}>
+              <Box sx={{ width: '900px', textAlign: 'center' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <Tabs value={value} onChange={handleChange}>
                     <Tab label="Information" {...a11yProps(0)} />
@@ -308,7 +308,7 @@ export default function ProfileInfoScreen() {
                 </TabPanel>
               </Box>
             </div>
-            <div>
+            {/* <div>
               <Card
                 sx={{
                   p: 2,
@@ -330,7 +330,7 @@ export default function ProfileInfoScreen() {
                   <p>Roll : {student.admission}</p>
                 </div>
               </Card>
-            </div>
+            </div> */}
           </div>
           <Copyright sx={{ pb: 4 }} />
         </Container>

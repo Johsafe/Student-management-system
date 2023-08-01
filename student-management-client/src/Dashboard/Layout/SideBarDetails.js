@@ -24,7 +24,7 @@ export default function SideBarDetails() {
                 <b>Dashboard</b>
               </li>
             </Link>
-            <Link href="/reports" className="link">
+            <Link to={'/reports'} className="link">
               <li className="sidebarListItem">
                 <BarChartIcon className="sidebarIcon" />
                 Reports
