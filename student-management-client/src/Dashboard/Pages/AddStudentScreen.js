@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Container from '@mui/material/Container';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import { Helmet } from 'react-helmet-async';
-import { useNavigate, useParams } from 'react-router-dom';
-import Copyright from '../../Utils/Copyright';
-import { Card } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Container from "@mui/material/Container";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import Copyright from "../../Utils/Copyright";
+import { Card } from "@mui/material";
+import { base_url } from "../../Utils/baseUrl";
+import SideBarDetails from "../Layout/SideBarDetails";
 
 export default function AddStudentScreen() {
   const navigate = useNavigate();
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [admission, setAdmission] = useState('');
-  const [group, setGroup] = useState('');
-  const [gender, setGender] = useState('');
-  const [password, setPassword] = useState('');
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [admission, setAdmission] = useState("");
+  const [group, setGroup] = useState("");
+  const [gender, setGender] = useState("");
+  const [password, setPassword] = useState("");
 
   const registerStudent = async (e) => {
     e.preventDefault();
@@ -29,19 +31,14 @@ export default function AddStudentScreen() {
         gender,
         password,
       };
-      const result = await fetch(
-        `http://localhost:8000/system/student/student`,
-        {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify(body),
-        }
-      );
-      const addstudents = await result.json();
-      // console.log(firstname, lastname, admission, group, gender, password);
-      navigate('/studentreg');
-      // console.log(addstudents);
-      toast.success('Student Registered Successfully');
+      const result = await fetch(`${base_url}student/student`, {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      await result.json();
+      navigate("/studentreg");
+      toast.success("Student Registered Successfully");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -50,13 +47,10 @@ export default function AddStudentScreen() {
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
-      const response = await fetch(
-        'http://localhost:8000/system/classgroup/group'
-      );
+      const response = await fetch(`${base_url}classgroup/group`);
       const getgroups = await response.json();
       setGroups(getgroups);
     } catch (err) {
-      console.error(err.message);
       toast.error(getError(err));
     }
   }
@@ -69,43 +63,43 @@ export default function AddStudentScreen() {
 
   return (
     <div>
-      <div>
+      <div style={{ display: "flex" }}>
+        <SideBarDetails />
         <Container>
           <Helmet>
             <title>StudentsScreen</title>
           </Helmet>
-          <div style={{ padding: '2rem' }}>
+          <div style={{ padding: "2rem" }}>
             <div
               style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                gap: "5rem",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Link to="/studentreg" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
+              {" "}
+              <Button variant="contained" size="medium" color="error">
+                <Link to="/studentreg" className="link">
                   Go to Students
-                </Button>
-              </Link>
-
+                </Link>
+              </Button>
               <div>
                 <h1>Register New Student</h1>
               </div>
             </div>
 
-            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
+            <Card sx={{ borderTop: "4px solid #42a5f5" }}>
               <form>
-                <div style={{ padding: '1.5rem' }}>
+                <div style={{ padding: "1.5rem" }}>
                   <div>
-                    <div style={{ display: 'flex', gap: '4rem' }}>
+                    <div style={{ display: "flex", gap: "4rem" }}>
                       <div>
                         <label for="code" class="form-label">
                           Student First Name
                         </label>
                         <input
-                          style={{ width: '460px' }}
+                          style={{ width: "460px" }}
                           type="text"
                           class="form-control"
                           id="firstname"
@@ -119,7 +113,7 @@ export default function AddStudentScreen() {
                           Student Last Name
                         </label>
                         <input
-                          style={{ width: '480px' }}
+                          style={{ width: "480px" }}
                           type="text"
                           class="form-control"
                           id="lastname"
@@ -142,7 +136,6 @@ export default function AddStudentScreen() {
                         <option selected>--Select class Group--</option>
                         {groups.map((group) => (
                           <>
-                            {/* <option value={}>{group.abbr}</option> */}
                             <option key={group._id} value={group._id}>
                               {group.abbr}
                             </option>
@@ -186,22 +179,13 @@ export default function AddStudentScreen() {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
-                    {/* <Button
-                      variant="contained"
-                      size="medium"
-                      sx={{ width: '100%' }}
-                      onClick={registerStudent}
-                      disabled={length === numberOfStudents}
-                    >
-                      Register Student
-                    </Button> */}
 
                     <div>
                       {numberOfStudents < length ? (
                         <Button
                           variant="contained"
                           size="medium"
-                          sx={{ width: '100%' }}
+                          sx={{ width: "100%" }}
                           onClick={registerStudent}
                           // disabled={length === numberOfStudents}
                         >
@@ -211,7 +195,7 @@ export default function AddStudentScreen() {
                         <Button
                           variant="contained"
                           size="medium"
-                          sx={{ width: '100%' }}
+                          sx={{ width: "100%" }}
                           color="error"
                         >
                           Student Registration Ended

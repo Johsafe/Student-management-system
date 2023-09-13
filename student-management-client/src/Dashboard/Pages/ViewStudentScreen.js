@@ -6,19 +6,21 @@ import {
   Grid,
   Paper,
   Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import profile from '../../Static/profile.png';
-import Copyright from '../../Utils/Copyright';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import StudentUnitRegitration from '../StudentPages/StudentUnitRegitration ';
-import { getError } from '../../Utils/GetError';
-import { toast } from 'react-toastify';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import profile from "../../Static/profile.png";
+import Copyright from "../../Utils/Copyright";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import StudentUnitRegitration from "../StudentPages/StudentUnitRegitration ";
+import { getError } from "../../Utils/GetError";
+import { toast } from "react-toastify";
+import { base_url } from "../../Utils/baseUrl";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,42 +51,51 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
 export default function ViewStudentScreen() {
   const params = useParams();
+  const navigate = useNavigate();
   const [student, setStudent] = useState([]);
-  async function getGroups() {
+
+  //get student
+  async function getStudent() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/student/${params.studentId}`
+        `${base_url}student/student/${params.studentId}`
       );
       const getstudent = await response.json();
       setStudent(getstudent);
-      console.log(getstudent);
     } catch (err) {
       toast.error(getError(err));
     }
   }
 
   useEffect(() => {
-    getGroups();
+    getStudent();
   }, []);
 
   //delete student
-  const navigate = useNavigate();
   async function deleteStudent(id) {
     try {
-      await fetch(
-        `http://localhost:8000/system/student/group/${params.id}/students/${id}`,
-        {
-          method: 'DELETE',
-        }
-      );
-      toast.success('student deleted successfully');
-      navigate('/studentreg');
+      await fetch(`${base_url}student/group/${params.id}/students/${id}`, {
+        method: "DELETE",
+      });
+      toast.success("student deleted successfully");
+      navigate("/studentreg");
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+  //suspend student
+  async function suspendStudent(id) {
+    try {
+      await fetch(`${base_url}student/suspend/${id}`, {
+        method: "PUT",
+      });
+      toast.success("student is suspended");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -104,10 +115,10 @@ export default function ViewStudentScreen() {
           <Paper
             sx={{
               p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              width: '800px',
-              textAlign: 'center',
+              display: "flex",
+              flexDirection: "column",
+              width: "800px",
+              justifyContent: "center",
             }}
           >
             <b>
@@ -115,9 +126,9 @@ export default function ViewStudentScreen() {
             </b>
             <div
               style={{
-                display: 'flex',
-                gap: '3rem',
-                padding: '1rem',
+                display: "flex",
+                gap: "3rem",
+                padding: "1rem",
               }}
             >
               <div>
@@ -125,7 +136,8 @@ export default function ViewStudentScreen() {
                 <b>Admission:</b>
                 <p>{student.admission}</p>
                 <b>Class:</b>
-                <p>{student.group}</p>
+                {/* <p>{student.group.title}</p> */}
+                <p></p>
                 <b>PresentAddress:</b>
                 <p>{student.presentAddress}</p>
                 <b>Gender:</b> <p>{student.gender}</p>
@@ -141,12 +153,23 @@ export default function ViewStudentScreen() {
               </div>
             </div>
           </Paper>
+        </Grid>
+      </div>
+    );
+  }
+
+  //general info
+  function OtherInfo() {
+    return (
+      <div>
+        <Grid item xs={12} md={8} lg={9}>
           <Paper
             sx={{
               p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              marginTop: '2rem',
+              display: "flex",
+              flexDirection: "column",
+              width: "800px",
+              marginTop: "2rem",
             }}
           >
             <b>
@@ -154,12 +177,12 @@ export default function ViewStudentScreen() {
             </b>
             <div
               style={{
-                display: 'flex',
-                gap: '3rem',
-                padding: '1rem',
+                display: "flex",
+                gap: "3rem",
+                padding: "1rem",
               }}
             >
-              <div>
+              {/* <div>
                 <b>Mother's Names:</b> <p></p>
                 <b>Father's Names:</b>
                 <p></p>
@@ -168,114 +191,147 @@ export default function ViewStudentScreen() {
                 <b>Mother's Contact:</b> <p></p>
                 <b>Father's Contact:</b>
                 <p></p>
-              </div>
+              </div> */}
             </div>
           </Paper>
         </Grid>
       </div>
     );
   }
-
   return (
     <div>
-      {' '}
+      {" "}
       <div>
         <Container sx={{ pt: 4 }}>
           <Helmet>
             <title>Student Profile</title>
           </Helmet>
-          <div>
-            <div
-              style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid #42a5f5",
+            }}
+          >
+            {" "}
+            <Button variant="contained" size="medium" color="error">
               <Link to="/studentreg" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
-                  Go to Students
-                </Button>
+                Go to Students
               </Link>
-              <div>
-                <h1>Student Profile</h1>
-              </div>
+            </Button>
+            <div>
+              <h1>Student Profile</h1>
             </div>
-            <Divider sx={{ backgroundColor: 'blue' }} />
           </div>
-          <div style={{ display: 'flex', gap: '1rem', margin: '2rem' }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "space-between",
+              marginTop: "1rem",
+            }}
+          >
             <div>
               <Card
                 sx={{
-                  p: 2,
-                  height: 350,
                   width: 250,
-                  borderTop: '4px solid #42a5f5',
+                      height: 420,
+                      borderTop: "4px solid #42a5f5",
                 }}
               >
                 <div>
                   <img
-                    className="media"
-                    src={'http://localhost:8000/' + student.studentPhoto}
-                    style={{ borderRadius: '50%', width: '100%' }}
+                    src={"http://localhost:8000/" + student.studentPhoto}
+                    style={{
+                      width: "100%", height: "320px" 
+                    }}
+                    alt={profile}
                   />
-                  <div style={{ textAlign: 'center' }}>
-                    <h4>
-                      <b>
-                        {student.firstname}
-                        <t /> {student.lastname}
-                      </b>
-                    </h4>
-                    <b>{student.group}</b>
-                  </div>
+                <Divider />
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginBottom: "0.5rem",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <h4>
+                    <b>
+                      {student.firstname}
+                      <t /> {student.lastname}
+                    </b>
+                  </h4>
+                  <h4>
+                    <b>{student.admission}</b>
+                  </h4>
+                </div>
                 </div>
               </Card>
               <div>
-                <Link
-                  to={`/${student._id}/editstudent`}
-                  style={{ textDecoration: 'none', color: 'white' }}
+                <Button
+                  variant="contained"
+                  size="medium"
+                  sx={{ width: "100%", marginTop: "0.5rem" }}
                 >
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    sx={{ width: '100%', marginTop: '0.5rem' }}
-                  >
+                  <Link to={`/${student._id}/editstudent`} className="link">
                     Update Student
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
+
                 <Button
                   variant="contained"
                   color="error"
                   size="medium"
-                  sx={{ width: '100%', marginTop: '0.5rem' }}
+                  sx={{ width: "100%", marginTop: "0.5rem" }}
                   onClick={() => deleteStudent(student._id)}
+                  startIcon={<DeleteIcon />}
                 >
-                  <Link style={{ textDecoration: 'none', color: 'white' }}>
-                    Delete Student
-                  </Link>
+                  <Link className="link">Delete Student</Link>
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="medium"
+                  sx={{ width: "100%", marginTop: "0.5rem" }}
+                  onClick={() => suspendStudent(student._id)}
+                >
+                  <Link className="link">Suspend Student</Link>
                 </Button>
               </div>
             </div>
             <div>
-              <Box sx={{ width: '100%', textAlign: 'center' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Box sx={{ width: "100%", textAlign: "center" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs value={value} onChange={handleChange}>
                     <Tab label="Information" {...a11yProps(0)} />
-                    <Tab label="Unit Registration" {...a11yProps(1)} />
+                    <Tab label="Other Information" {...a11yProps(1)} />
+                    <Tab label="Unit Registration" {...a11yProps(2)} />
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
                   <GeneralInfo />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
+                  <OtherInfo />
+                </TabPanel>
+                <TabPanel value={value} index={2}>
                   <StudentUnitRegitration />
                 </TabPanel>
               </Box>
             </div>
           </div>
-          <Copyright sx={{ pt: 2 }} />
+          <Container
+            maxWidth="md"
+            component="footer"
+            sx={{
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+              mt: 2,
+              py: [1, 4],
+            }}
+          >
+            <Copyright />
+          </Container>
         </Container>
       </div>
     </div>

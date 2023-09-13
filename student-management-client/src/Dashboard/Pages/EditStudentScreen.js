@@ -5,10 +5,11 @@ import Container from '@mui/material/Container';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import { Helmet } from 'react-helmet-async';
-import { Card } from '@mui/material';
+import { Card, Divider } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import Copyright from '../../Utils/Copyright';
+import { base_url } from '../../Utils/baseUrl';
 
 export default function AdminEditStudentScreen() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function AdminEditStudentScreen() {
     e.preventDefault();
     try {
       let updateastudent = await fetch(
-        `http://localhost:8000/system/student/student/${params.studentId}`,
+        `${base_url}student/student/${params.studentId}`,
         {
           method: 'PUT',
           body: JSON.stringify({
@@ -40,12 +41,10 @@ export default function AdminEditStudentScreen() {
           }),
           headers: {
             'Content-Type': 'Application/json',
-            // authorization: `Bearer ${Info.token}`,
           },
         }
       );
-      const result = await updateastudent.json();
-      console.warn(result);
+      await updateastudent.json();
       toast.success('student editted successfully');
       navigate(`/${params.studentId}/viewstudent`);
     } catch (err) {
@@ -58,7 +57,7 @@ export default function AdminEditStudentScreen() {
   async function getAstudent() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/student/${params.studentId}`,
+        `${base_url}student/student/${params.studentId}`,
         {
           method: 'GET',
         }
@@ -73,7 +72,7 @@ export default function AdminEditStudentScreen() {
       setDOB(astudent.DOB);
       setPresentAddress(astudent.presentAddress);
       setAdmission(astudent.admission);
-      setGroup(astudent.group);
+      setGroup(astudent.group.abbr);
     } catch (err) {
       console.error(err.message);
     }
@@ -85,7 +84,7 @@ export default function AdminEditStudentScreen() {
 
   return (
     <div>
-      <div style={{ padding: '2rem' }}>
+      <div style={{ padding: '1rem' }}>
         <Container>
           <Helmet>
             <title>Edit Student Profile</title>
@@ -115,38 +114,37 @@ export default function AdminEditStudentScreen() {
           </div>
 
           <div>
-            <div style={{ padding: '2rem' }}>
+            <div style={{ padding: '1rem' }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
                       borderTop: '4px solid #42a5f5',
+                      width: 250,
+                      height: 420,
                     }}
                   >
                     <div>
                       <div class="mb-2">
                         <img
                           className="media"
+                          alt='profile'
                           src={'http://localhost:8000/' + student.studentPhoto}
-                          style={{ borderRadius: '50%', width: '100%' }}
+                          style={{width: '100%' ,height: "320px" }}
                         />
                       </div>
-
-                      <div>
+                      <Divider/>
+                      <div style={{ textAlign: 'center',marginTop: '0.5rem' }}>
                         <h5>
-                          <b> ADM: {admission} </b>
+                          <b>{admission} </b>
                         </h5>
                         <h5>
-                          <b>CLASS: {group}</b>
+                          <b>  {group}</b>
                         </h5>
                       </div>
-                      <div style={{ textAlign: 'center' }}></div>
                     </div>
                   </Card>
-                  <div style={{ marginTop: '1rem' }}>
+                  <div style={{ marginTop: '0.5rem' }}>
                     <Button
                       variant="contained"
                       size="medium"
@@ -155,7 +153,7 @@ export default function AdminEditStudentScreen() {
                       value="send"
                       onClick={editStudent}
                     >
-                      Edit Profile
+                      Edit Student Profile
                     </Button>
                   </div>
                 </Grid>

@@ -34,13 +34,26 @@ export default function ExaminationTimetableScreen() {
               }}
             >
               <h1>EXAMINATION TIMETABLE</h1>
+              
               <div>
-                <Link to="/create" className="link">
+                
                   {' '}
                   <Button variant="contained" size="medium">
-                    CREATE NEW TIMETABLE
+                    <Link to="/examdates" className="link">
+                    Create Examdates
+                    </Link>
                   </Button>
-                </Link>
+                
+              </div>
+              <div>
+                
+                  {' '}
+                  <Button variant="contained" size="medium">
+                  <Link to="/create" className="link">
+                    Create New Timetable
+                    </Link>
+                  </Button>
+                
               </div>
             </div>
 

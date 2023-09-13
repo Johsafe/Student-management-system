@@ -5,22 +5,23 @@ import {
   Divider,
   Paper,
   Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import profile from '../../Static/profile.png';
-import Copyright from '../../Utils/Copyright';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import AdminUnitRegitration from './AdminUnitRegitration';
-import ClassStudentsScreen from './ClassStudentsScreen';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import StudentAttendance from './StudentAttendance';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import profile from "../../Static/profile.png";
+import Copyright from "../../Utils/Copyright";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import AdminUnitRegitration from "./AdminUnitRegitration";
+import ClassStudentsScreen from "./ClassStudentsScreen";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import StudentAttendance from "./StudentAttendance";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { base_url } from "../../Utils/baseUrl";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,7 +52,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -69,24 +70,17 @@ export default function ViewGroupProfileScreen() {
         <Paper
           sx={{
             p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            width: '800px',
-            textAlign: 'start',
+            display: "flex",
+            flexDirection: "column",
+            width: "800px",
+            textAlign: "start",
           }}
         >
           <b>
-            <h2
-              style={{
-                textDecoration: ' 1px underline',
-                textDecorationStyle: 'double',
-              }}
-            >
-              General Information
-            </h2>
+            <h3>General Information</h3>
           </b>
 
-          <div style={{ fontSize: '18px', paddingTop: '1.5rem' }}>
+          <div style={{ fontSize: "17px"}}>
             <p>
               {/* Class Title: <t /> */}
               {groups.title}
@@ -114,18 +108,15 @@ export default function ViewGroupProfileScreen() {
 
   //Get Groups
   const params = useParams();
-  const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   const navigate = useNavigate();
   async function getGroups() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/classgroup/group/${params.groupId}`
+        `${base_url}classgroup/group/${params.groupId}`
       );
       const getgroups = await response.json();
       setGroups(getgroups);
-      setLoading(true);
-      // console.log(getgroups);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -134,14 +125,15 @@ export default function ViewGroupProfileScreen() {
   useEffect(() => {
     getGroups();
   }, []);
+
   //Delete class
   const deleteGroup = async (id) => {
     try {
-      await fetch(`http://localhost:8000/system/classgroup/group/${id}`, {
-        method: 'DELETE',
+      await fetch(`${base_url}classgroup/group/${id}`, {
+        method: "DELETE",
       });
-      toast.success('group deleted successfully');
-      navigate('/groups');
+      toast.success("group deleted successfully");
+      navigate("/groups");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -149,59 +141,70 @@ export default function ViewGroupProfileScreen() {
 
   return (
     <div>
-      {' '}
+      {" "}
       <div>
         <Container sx={{ pt: 4 }}>
           <Helmet>
             <title>Class Profile</title>
           </Helmet>
-          <div>
-            <div
-              style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
+          {/* <div> */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid #42a5f5",
+            }}
+          >
+            {" "}
+            <Button variant="contained" size="medium" color="error">
               <Link to="/groups" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
-                  Go to Classes
-                </Button>
+                Go to Classes
               </Link>
-              <div>
-                <h1>Class Profile</h1>
-              </div>
+            </Button>
+            <div>
+              <h1>Class Profile</h1>
             </div>
-            <Divider sx={{ backgroundColor: 'blue' }} />
           </div>
-          <div style={{ display: 'flex', gap: '1rem', margin: '2rem' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              // flexDirection: 'column',
+              marginTop: "1rem",
+              gap: "1rem",
+            }}
+          >
             <div>
               <Card
                 sx={{
-                  p: 2,
-                  height: 350,
                   width: 250,
-                  borderTop: '4px solid #42a5f5',
+                  height: 420,
+                  borderTop: "4px solid #42a5f5",
                 }}
               >
-                <div>                  
+                <div>
                   <img
-                    src={'http://localhost:8000/' + groups.classPhoto}
+                    src={"http://localhost:8000/" + groups.classPhoto}
                     style={{
-                      width: '100%',borderRadius:'50%'
+                      width: "100%",
+                      height: "320px"
                     }}
+                    alt={profile}
                   />
-                  <div style={{ textAlign: 'center' }}>
+                  <Divider />
+                  <div
+                    style={{
+                      textAlign: "center",
+                      marginBottom: "0.5rem",
+                      marginTop: "1rem",
+                    }}
+                  >
                     <div>
                       <h3>
                         <b>{groups.abbr}</b>
                       </h3>
                     </div>
-                    {/* <div>
-                      <h3>{groups.numberOfStudents}<t/> Students</h3>
-                    </div> */}
                     <div>
                       <h4>{groups.academicYear}</h4>
                     </div>
@@ -212,11 +215,12 @@ export default function ViewGroupProfileScreen() {
                 <Button
                   variant="contained"
                   size="medium"
-                  sx={{ width: '100%', marginTop: '0.5rem' }}
+                  sx={{ width: "100%", marginTop: "0.5rem" }}
                 >
                   <Link
                     to={`/groups/${groups._id}/classedit`}
-                    style={{ textDecoration: 'none', color: 'white' }}
+                    
+                    className="link"
                   >
                     Update Class
                   </Link>
@@ -225,20 +229,20 @@ export default function ViewGroupProfileScreen() {
                   variant="contained"
                   color="error"
                   size="medium"
-                  sx={{ width: '100%', marginTop: '0.5rem' }}
+                  sx={{ width: "100%", marginTop: "0.5rem" }}
                   onClick={() => deleteGroup(groups._id)}
                   startIcon={<DeleteIcon />}
                 >
-                  Delete Class
+                  <Link className="link">Delete Class</Link>
                 </Button>
               </div>
             </div>
             <div>
-              <Box sx={{ width: '100%', textAlign: 'center' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Box sx={{ width: "100%", textAlign: "center" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs value={value} onChange={handleChange}>
                     <Tab label="Information" {...a11yProps(0)} />
-                    <Tab label="Unit Registration" {...a11yProps(1)} />
+                    <Tab label="Class Unit Registred" {...a11yProps(1)} />
                     <Tab label="Students" {...a11yProps(2)} />
                     <Tab label="Student Attendance" {...a11yProps(3)} />
                   </Tabs>
@@ -253,12 +257,22 @@ export default function ViewGroupProfileScreen() {
                   <ClassStudentsScreen />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                  <StudentAttendance/>
+                  <StudentAttendance />
                 </TabPanel>
               </Box>
             </div>
           </div>
-          <Copyright sx={{ pt: 2 }} />
+          <Container
+            maxWidth="md"
+            component="footer"
+            sx={{
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+              py: [1, 4],
+              mt: 2,
+            }}
+          >
+            <Copyright />
+          </Container>
         </Container>
       </div>
     </div>

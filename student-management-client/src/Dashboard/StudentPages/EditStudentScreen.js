@@ -1,54 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Container from '@mui/material/Container';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import { Helmet } from 'react-helmet-async';
-import { Card } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Grid, Paper } from '@mui/material';
-import Copyright from '../../Utils/Copyright';
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Container from "@mui/material/Container";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import { Helmet } from "react-helmet-async";
+import { Card, Divider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Grid, Paper } from "@mui/material";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function EditStudentScreen() {
   const navigate = useNavigate();
-  let user = JSON.parse(localStorage.getItem('Details'));
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [email, setEmail] = React.useState('');
-  const [gender, setGender] = useState('');
-  const [phone, setPhone] = useState('');
-  const [DOB, setDOB] = useState('');
-  const [presentAddress, setPresentAddress] = useState('');
-  const [studentPhoto, setStudentPhoto] = useState('');
+  let user = JSON.parse(localStorage.getItem("Details"));
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [gender, setGender] = useState("");
+  const [phone, setPhone] = useState("");
+  const [DOB, setDOB] = useState("");
+  const [presentAddress, setPresentAddress] = useState("");
+  const [studentPhoto, setStudentPhoto] = useState("");
 
   const editStudent = async (e) => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append('studentPhoto', studentPhoto);
-    formData.append('firstname', firstname);
-    formData.append('lastname', lastname);
-    formData.append('email', email);
-    formData.append('gender', gender);
-    formData.append('phone', phone);
-    formData.append('DOB', DOB);
-    formData.append('presentAddress', presentAddress);
+    formData.append("studentPhoto", studentPhoto);
+    formData.append("firstname", firstname);
+    formData.append("lastname", lastname);
+    formData.append("email", email);
+    formData.append("gender", gender);
+    formData.append("phone", phone);
+    formData.append("DOB", DOB);
+    formData.append("presentAddress", presentAddress);
     try {
       let result = await fetch(
-        `http://localhost:8000/system/student/myprofile/${user._id}/update`,
+        `${base_url}student/myprofile/${user._id}/update`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           body: formData,
           headers: {
             authorization: `Bearer ${user.token}`,
           },
         }
       );
-      sessionStorage.setItem('pic', result.studentPhoto);
-      toast.success('student editted successfully');
-      navigate('/profile');
+      sessionStorage.setItem("pic", result.studentPhoto);
+      toast.success("student editted successfully");
+      navigate("/profile");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -57,15 +57,12 @@ export default function EditStudentScreen() {
   const [student, setStudent] = useState([]);
   async function getAstudent() {
     try {
-      const response = await fetch(
-        `http://localhost:8000/system/student/student/${user._id}`,
-        {
-          method: 'GET',
-          headers: {
-            authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      const response = await fetch(`${base_url}student/student/${user._id}`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
       const astudent = await response.json();
       setStudent(astudent);
       setFirstname(astudent.firstname);
@@ -86,31 +83,31 @@ export default function EditStudentScreen() {
   }, []);
 
   return (
-    
     <div>
-      <div style={{ padding: '2rem' }}>
+      <div style={{ padding: "1rem" }}>
         <Container>
           <Helmet>
             <title>Edit Student Profile</title>
           </Helmet>
           <div
             style={{
-              display: 'flex',
-              gap: '5rem',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              display: "flex",
+              gap: "5rem",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {' '}
+            {" "}
             <div>
-              <Button variant="contained" size="medium" color="error">
-                <Link
-                  style={{ textDecoration: 'none', color: 'white' }}
-                  to="/profile"
-                >
+              <Link
+                className="link"
+                sx={{ textDecoration: "none", color: "white" }}
+                to="/profile"
+              >
+                <Button variant="contained" size="medium" color="error">
                   Back to Profile
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
             <div>
               <h1>Edit Student Profile</h1>
@@ -118,60 +115,48 @@ export default function EditStudentScreen() {
           </div>
 
           <div>
-            <div style={{ padding: '2rem' }}>
+            <div style={{ padding: "1rem" }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      borderTop: '4px solid #42a5f5',
+                      width: 250,
+                      height: 420,
+                      borderTop: "4px solid #42a5f5",
                     }}
                   >
                     <div>
-                      <div class="mb-2">
-                        <label for="photo">
-                          <img
-                            className="media"
-                            src={
-                              'http://localhost:8000/' + student.studentPhoto
-                            }
-                            style={{ borderRadius: '50%', width: '100%' }}
-                          />
-                        </label>
-                        <input
-                          type="file"
-                          class="form-control"
-                          id="photo"
-                          name="photo"
-                          accept="image/*"
-                          defaultValue={student.studentPhoto}
-                          onChange={(e) => setStudentPhoto(e.target.files[0])}
-                        />
-                      </div>
-
+                      <img
+                        className="media"
+                        alt="prof"
+                        src={"http://localhost:8000/" + student.studentPhoto}
+                        style={{ width: "100%", height: "320px" }}
+                      />
+                    </div>
+                    <Divider />
+                    <div style={{ textAlign: "center" }}>
                       <div>
                         <h5>
-                          <b> ADM: {user.admission} </b>
+                          <b>{user.admission} </b>
                         </h5>
-                        <h5>
-                          <b>CLASS: {user.group}</b>
-                        </h5>
+                        {/* <h5>
+                          <b>{user.group.abbr}</b>
+                        </h5> */}
                       </div>
-                      <div style={{ textAlign: 'center' }}></div>
                     </div>
                   </Card>
-                  <div style={{ marginTop: '1rem' }}>
+                  <div style={{ marginTop: "1rem" }}>
                     <Button
                       variant="contained"
                       size="medium"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                       type="submit"
                       value="send"
                       onClick={editStudent}
                     >
+                      {/* <Link className="link"> */}
                       Edit Profile
+                      {/* </Link>    */}
                     </Button>
                   </div>
                 </Grid>
@@ -180,9 +165,9 @@ export default function EditStudentScreen() {
                   <Paper
                     sx={{
                       p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      borderTop: '4px solid #42a5f5',
+                      display: "flex",
+                      flexDirection: "column",
+                      borderTop: "4px solid #42a5f5",
                     }}
                   >
                     <b>
@@ -190,14 +175,14 @@ export default function EditStudentScreen() {
                     </b>
                     <div
                       style={{
-                        display: 'flex',
-                        gap: '3rem',
-                        padding: '1rem',
+                        display: "flex",
+                        gap: "3rem",
+                        padding: "1rem",
                       }}
                     >
                       <div
                         style={{
-                          width: '22rem',
+                          width: "22rem",
                         }}
                       >
                         <div>
@@ -257,7 +242,7 @@ export default function EditStudentScreen() {
 
                       <div
                         style={{
-                          width: '22rem',
+                          width: "22rem",
                         }}
                       >
                         <div>
@@ -298,6 +283,25 @@ export default function EditStudentScreen() {
                               onChange={(e) => setPhone(e.target.value)}
                             />
                           </div>
+                          <div>
+                            <div class="mb-2">
+                              <label for="photo">
+                                <b>Student Profile Image </b>
+                              </label>
+
+                              <input
+                                type="file"
+                                class="form-control"
+                                id="photo"
+                                name="photo"
+                                accept="image/*"
+                                defaultValue={student.studentPhoto}
+                                onChange={(e) =>
+                                  setStudentPhoto(e.target.files[0])
+                                }
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -305,9 +309,9 @@ export default function EditStudentScreen() {
                   <Paper
                     sx={{
                       p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginTop: '2rem',
+                      display: "flex",
+                      flexDirection: "column",
+                      marginTop: "2rem",
                     }}
                   >
                     <b>

@@ -1,13 +1,13 @@
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import PageAnimation from './Utils/PageAnimation';
+import NavigationRoutes from './Utils/NavigationRoutes';
 function App() {
   return (
     <div>
       <ToastContainer position="top-right" limit={1} />
       <div>
-        <PageAnimation />
+        <NavigationRoutes />
       </div>
     </div>
   );

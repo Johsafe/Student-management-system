@@ -1,74 +1,78 @@
-import Card from '@mui/material/Card';
-import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
-import SideBarDetails from '../Layout/SideBarDetails';
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import Copyright from '../../Utils/Copyright';
+import Card from "@mui/material/Card";
+import React, { useState } from "react";
+import { Container } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import SideBarDetails from "../Layout/SideBarDetails";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import Copyright from "../../Utils/Copyright";
 
 export default function EditTimeTableScreen() {
-  const [title, setTitle] = useState('');
-  const [academicyear, setAcademicyear] = useState('');
-  const [month, setMonth] = useState('');
-  const [department, setDepartment] = useState('');
-  const [examdate, setExamdate] = useState('');
-  const [starttime, setStarttime] = useState('');
-  const [stoptime, setStoptime] = useState('');
-  const [group, setGroup] = useState('');
-  const [coursetitle, setCoursetitle] = useState('');
-  const [room, setRoom] = useState('');
-  const [noofexaminas, setNoofexaminas] = useState('');
-  const [invigilator, setInvigilator] = useState('');
+  const [title, setTitle] = useState("");
+  const [examStartdate, setExamStartdate] = useState("");
+  const [examStopdate, setExamStopdate] = useState("");
+  const [academicyear, setAcademicYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [department, setDepartment] = useState("");
+  const [examdate, setExamdate] = useState("");
+  const [group, setGroup] = useState("");
+  const [room, setRoom] = useState("");
+  const [noofexaminas, setNoofexaminas] = useState("");
+  const [invigilator, setInvigilator] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     console.log(
       title,
-      academicyear,
+      // academicYear,
       month,
-      department,
+      examStartdate,
+      examStopdate,
       examdate,
-      starttime,
-      stoptime,
-      room,
+      // timeOfday,
+      group,
+      // course,
+      // year,
+      // venue,
       noofexaminas,
-      invigilator,
-      group
+      invigilator
     );
   };
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <SideBarDetails />
         <Container>
           <Helmet>
-            <title>Edit TimeTable</title>
+            <title>Create TimeTable</title>
           </Helmet>
-          <div style={{ padding: '3rem' }}>
+          <div style={{ padding: "3rem" }}>
             <div
               style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                gap: "5rem",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Link to="/examination" className="link">
-                {' '}
+              
+                {" "}
                 <Button variant="contained" size="medium" color="error">
+                <Link to="/examination" className="link">
                   Go to Created Timetable
+                  </Link>
                 </Button>
-              </Link>
+              
               <div>
                 <h1>Edit TimeTable</h1>
               </div>
             </div>
 
-            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
-              <form style={{ padding: '2rem' }}>
-                <div style={{ display: 'flex', gap: '2rem' }}>
+            <Card sx={{ borderTop: "4px solid #42a5f5" }}>
+              <form style={{ padding: "2rem" }}>
+                {/* part A of examtible */}
+                <div style={{ display: "flex", gap: "2rem" }}>
                   <div>
                     <div class="mb-2">
                       <label for="timetabletitle" class="form-label">
@@ -87,15 +91,19 @@ export default function EditTimeTableScreen() {
                       <label for="department" class="form-label">
                         School Department
                       </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="department"
-                        value={department}
+                      <select
+                        class="form-select"
+                        aria-label=" select department"
+                        value={department.value}
                         onChange={(e) => setDepartment(e.target.value)}
-                      />
+                      >
+                        <option selected>--Select Department--</option>
+                        <option value="INFOCOMS">INFOCOMS</option>
+                        <option value="AGRIC">AGRIC</option>
+                        <option value="SSTE">SSTE</option>
+                      </select>
                     </div>
-                    <div style={{ display: 'flex', gap: '5rem' }}>
+                    <div style={{ display: "flex", gap: "5rem" }}>
                       <div class="mb-2">
                         <label for="academicyear" class="form-label">
                           Academic Year
@@ -105,7 +113,7 @@ export default function EditTimeTableScreen() {
                           class="form-control"
                           id="academicyear"
                           value={academicyear}
-                          onChange={(e) => setAcademicyear(e.target.value)}
+                          onChange={(e) => setAcademicYear(e.target.value)}
                         />
                       </div>
 
@@ -114,6 +122,7 @@ export default function EditTimeTableScreen() {
                           Month of the Exam
                         </label>
                         <input
+                          style={{ width: "200px" }}
                           type="month"
                           class="form-control"
                           id="month"
@@ -122,45 +131,70 @@ export default function EditTimeTableScreen() {
                         />
                       </div>
                     </div>
+                    <div style={{ display: "flex", gap: "5rem" }}>
+                      <div class="mb-2">
+                        <label for="startdate" class="form-label">
+                          Exam Start Date
+                        </label>
+                        <input
+                          style={{ width: "200px" }}
+                          type="date"
+                          class="form-control"
+                          id="examStartdate"
+                          value={examStartdate}
+                          onChange={(e) => setExamStartdate(e.target.value)}
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label for="stopdate" class="form-label">
+                          Exam Stop Date
+                        </label>
+                        <input
+                          style={{ width: "200px" }}
+                          type="date"
+                          class="form-control"
+                          id="examStopdate"
+                          value={examStopdate}
+                          onChange={(e) => setExamStopdate(e.target.value)}
+                        />
+                      </div>
+                    </div>
                   </div>
+                  {/* part B of examtimetable */}
                   <div>
-                    <div style={{ display: 'flex', gap: '2.1rem' }}>
+                    <div style={{ display: "flex", gap: "2.1rem" }}>
                       <div class="mb-2">
                         <label for="code" class="form-label">
                           Exam Date
                         </label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="examdate"
-                          value={examdate}
+                        <select
+                          class="form-select"
+                          aria-label=" select department"
+                          value={examdate.value}
                           onChange={(e) => setExamdate(e.target.value)}
-                        />
+                        >
+                          <option selected>--Select examdate--</option>
+                          <option value="1">week 1</option>
+                          <option value="2">Week 2</option>
+                          <option value="3">Week 3</option>
+                        </select>
                       </div>
 
                       <div class="mb-2">
                         <label for="time" class="form-label">
-                          Start Time
+                          Exam Period
                         </label>
-                        <input
-                          type="time"
-                          class="form-control"
-                          id="starttime"
-                          value={starttime}
-                          onChange={(e) => setStarttime(e.target.value)}
-                        />
-                      </div>
-                      <div class="mb-2">
-                        <label for="time" class="form-label">
-                          Stop Time
-                        </label>
-                        <input
-                          type="time"
-                          class="form-control"
-                          id="stoptime"
-                          value={stoptime}
-                          onChange={(e) => setStoptime(e.target.value)}
-                        />
+                        <select
+                          class="form-select"
+                          aria-label=" select department"
+                          // value={period.value}
+                          // onChange={(e) => setPeriod(e.target.value)}
+                        >
+                          <option selected>--Selectexam period--</option>
+                          <option value="1">Period 1</option>
+                          <option value="2">period 2</option>
+                          <option value="3">Period 3</option>
+                        </select>
                       </div>
                     </div>
                     <div lass="mb-2">
@@ -189,18 +223,22 @@ export default function EditTimeTableScreen() {
                         <option value="3">BOT 210</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', gap: '2rem' }}>
+                    <div style={{ display: "flex", gap: "2rem" }}>
                       <div class="mb-2">
                         <label for="room" class="form-label">
                           Room/Venue
                         </label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="room"
+                        <select
+                          class="form-select"
+                          aria-label=" select department"
                           value={room}
                           onChange={(e) => setRoom(e.target.value)}
-                        />
+                        >
+                          <option selected>--Select venue/Room--</option>
+                          <option value="1">E001</option>
+                          <option value="2">W010</option>
+                          <option value="3">W004</option>
+                        </select>
                       </div>
                       <div class="mb-2">
                         <label for="number" class="form-label">
@@ -214,6 +252,16 @@ export default function EditTimeTableScreen() {
                           onChange={(e) => setNoofexaminas(e.target.value)}
                         />
                       </div>
+                    </div>
+                    <div class="mb-2">
+                      <label for="timeOfDay" class="form-label">
+                        Time Of Day
+                      </label>
+                      <input
+                        type="string"
+                        class="form-control"
+                        id="timeOfday"
+                      />
                     </div>
                     <div class="mb-2">
                       <label for="year" class="form-label">
@@ -230,17 +278,17 @@ export default function EditTimeTableScreen() {
                     <Button
                       variant="contained"
                       size="medium"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                       onClick={handleSubmit}
                     >
-                      Submit
+                     <Link className="link">Edit ExamTimeTable</Link>
                     </Button>
                   </div>
                 </div>
               </form>
             </Card>
+            <Copyright sx={{ pt: 2 }} />
           </div>
-          <Copyright sx={{ pt: 4 }} />
         </Container>
       </div>
     </div>

@@ -1,92 +1,146 @@
-import Card from '@mui/material/Card';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import Button from '@mui/material/Button';
-import { Link, useNavigate } from 'react-router-dom';
-import SideBarDetails from '../Layout/SideBarDetails';
-import Container from '@mui/material/Container';
-import { getError } from '../../Utils/GetError';
-import { toast } from 'react-toastify';
-import Copyright from '../../Utils/Copyright';
+import Card from "@mui/material/Card";
+import React, {useState } from "react";
+import { Helmet } from "react-helmet-async";
+import Button from "@mui/material/Button";
+import { Link, useNavigate } from "react-router-dom";
+import SideBarDetails from "../Layout/SideBarDetails";
+import Container from "@mui/material/Container";
+import { getError } from "../../Utils/GetError";
+import { toast } from "react-toastify";
+import axios from "axios";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function ClassGroupScreen() {
   const navigate = useNavigate();
-  const [abbr, setAbbr] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [numberOfStudents, setNumberOfStudents] = useState('');
-  const [academicYear, setAcademicYear] = useState('');
-  const [classPhoto,setClassPhoto] =useState('')
+  const [abbr, setAbbr] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [numberOfStudents, setNumberOfStudents] = useState("");
+  const [academicYear, setAcademicYear] = useState("");
+  const [classPhoto, setClassPhoto] = useState([]);
 
   //create new group
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append('classPhoto', classPhoto);
-    formData.append('abbr', abbr);
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('numberOfStudents', numberOfStudents);
-    formData.append('academicYear', academicYear);
+    // formData.append('classPhoto', classPhoto);
+    // formData.append('abbr', abbr);
+    // formData.append('title', title);
+    // formData.append('description', description);
+    // formData.append('numberOfStudents', numberOfStudents);
+    // formData.append('academicYear', academicYear);
     try {
-      const result = await fetch(
-        'http://localhost:8000/system/classgroup/group',
-        {
-          method: 'POST', 
-          body: formData,
-          // headers: { 'Content-type': 'application/json' },
-        }
-      );
-      sessionStorage.setItem('pic', classPhoto);
-      toast.success('class added successfully');
-      navigate('/groups');
+      // const result = await fetch(
+      //   'http://localhost:8000/system/classgroup/group',
+      //   {
+      //     method: 'POST',
+      //     body: formData,
+      //     // headers: { 'Content-type': 'application/json' },
+      //   }
+      // );
+      const { data } = await axios.post(`${base_url}classgroup/group`, {
+        classPhoto,
+        abbr,
+        title,
+        description,
+        numberOfStudents,
+        academicYear,
+      });
+
+      if (data.success === true) {
+        setAbbr("");
+        setDescription("");
+        setTitle("");
+        setNumberOfStudents("");
+        setAcademicYear("");
+        setClassPhoto("");
+        toast.success("product created successfully");
+      }
+      console.log(data);
+      toast.success("class added successfully");
+      navigate("/groups");
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
+  //covert image to base 64
+  const handleProductImageUpload = (e) => {
+    const file = e.target.files[0];
+    TransformFileData(file);
+  };
+
+  const TransformFileData = (file) => {
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setClassPhoto(reader.result);
+      };
+    } else {
+      setClassPhoto("");
+    }
+  };
 
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <SideBarDetails />
         <Container component="main">
           <Helmet>
             <title>Class</title>
           </Helmet>
-          <div style={{ margin: '3rem' }}>
+          <div style={{ margin: "3rem" }}>
             <div
               style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                gap: "5rem",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Link to="/groups" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
+              {" "}
+              <Button variant="contained" size="medium" color="error">
+                <Link to="/groups" className="link">
                   Go to Classes
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <div>
                 <h1>Add Class Group</h1>
               </div>
             </div>
 
-            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
+            <Card sx={{ borderTop: "4px solid #42a5f5" }}>
               <div>
                 <form>
                   <div
                     style={{
-                      padding: '3rem',
-                      display: 'flex',
-                      gap: '2rem',
-                      height: '400px',
+                      padding: "1rem",
+                      display: "flex",
+                      gap: "1rem",
+                      height: "500px",
                     }}
                   >
-                    <div style={{ width: '50%' }}>
+                    <div style={{ width: "50%" }}>
+                      {classPhoto ? (
+                        <div>
+                          <img
+                            src={classPhoto}
+                            // sx={{
+                            //   width: "200px",
+                            //   height:'200px'
+                            //   borderRadius: "50%",
+                            //   border: " 1px solid #111",
+                            // }}
+                          />
+                        </div>
+                      ) : (
+                        <p>Product image upload preview will appear here!</p>
+                      )}
+
                       <div class="mb-2">
                         <label for="name" class="form-label">
                           Class Abbr.
@@ -112,6 +166,18 @@ export default function ClassGroupScreen() {
                         />
                       </div>
 
+                      {/* <div>
+                        <img
+                            className="media"
+                            src={
+                              
+                            }
+                            style={{ borderRadius: '50%', width: '100%' }}
+                          />
+                        </div> */}
+                    </div>
+                    {/* </div> */}
+                    <div style={{ width: "50%" }}>
                       <div class="mb-2">
                         <label for="numberOfStudents" class="form-label">
                           Class numberOfStudents
@@ -123,18 +189,7 @@ export default function ClassGroupScreen() {
                           value={numberOfStudents}
                           onChange={(e) => setNumberOfStudents(e.target.value)}
                         />
-                        {/* <div>
-                        <img
-                            className="media"
-                            src={
-                              
-                            }
-                            style={{ borderRadius: '50%', width: '100%' }}
-                          />
-                        </div> */}
                       </div>
-                    </div>
-                    <div style={{ width: '50%' }}>
                       <div class="mb-2">
                         <label for="academicyear" class="form-label">
                           Academic Year
@@ -168,18 +223,18 @@ export default function ClassGroupScreen() {
                           id="photo"
                           name="photo"
                           accept="image/*"
-                          onChange={(e)=>setClassPhoto(e.target.files[0])}
-
+                          // onChange={(e)=>setClassPhoto(e.target.files[0])}
+                          onChange={handleProductImageUpload}
                         />
                       </div>
 
                       <Button
                         variant="contained"
                         size="medium"
-                        sx={{ width: '100%' }}
+                        sx={{ width: "100%" }}
                         onClick={onSubmitForm}
                       >
-                        Submit
+                        <Link className="link">Add Class</Link>
                       </Button>
                     </div>
                   </div>

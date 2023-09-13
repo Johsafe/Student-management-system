@@ -13,61 +13,58 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getError } from "../../Utils/GetError";
 import { base_url } from "../../Utils/baseUrl";
-import EditRoomScreen from "./EditRoomScreen";
+import EditSessionScreen from "./EditSessionScreen";
 
-export default function RoomsScreen() {
-  //get Room
-  const [room, setRoom] = useState([]);
-
-  //register a room
-  const [capacity, setCapacity] = useState("");
-  const [title, setTitle] = useState("");
-  const [block, setBlock] = useState("");
-
+export default function SessionScreen() {
+  //register a period
+  const [session, setSession] = useState("");
+  const [starttime, setStarttime] = useState("");
+  const [stoptime, setStoptime] = useState("");
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
       const body = {
-        capacity,
-        title,
-        block,
+        session,
+        starttime,
+        stoptime,
       };
-      const result = await fetch(`${base_url}room/room`, {
+      const result = await fetch(`${base_url}period/period`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(body),
       });
       await result.json();
-      window.location = "/rooms";
-      toast.success("room Registered Successfully");
+      window.location = "/session";
+      toast.success("Session Registered Successfully");
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
-  //get rooms
-  async function getrooms() {
+  //get periods
+  const [period, setPeriod] = useState([]);
+  async function getperiod() {
     try {
-      const response = await fetch(`${base_url}room/rooms`);
-      const getroom = await response.json();
-      setRoom(getroom);
+      const response = await fetch(`${base_url}period/periods`);
+      const getperiods = await response.json();
+      setPeriod(getperiods);
     } catch (err) {
       toast.error(getError(err));
     }
   }
 
   useEffect(() => {
-    getrooms();
+    getperiod();
   }, []);
 
   //delete course
-  async function deleteRoom(id) {
+  async function deletePeriod(id) {
     try {
-      await fetch(`${base_url}room/${id}`, {
+      await fetch(`${base_url}period/${id}`, {
         method: "DELETE",
       });
-      setRoom(room.filter((room) => room._id !== id));
-      toast.success("room deleted successfully");
+      setPeriod(period.filter((period) => period._id !== id));
+      toast.success("Session deleted successfully");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -80,18 +77,20 @@ export default function RoomsScreen() {
       <Box
         component="main"
         sx={{
+          // backgroundColor: '#eceff1',
           flexGrow: 1,
           height: "100vh",
           overflow: "auto",
         }}
       >
         <Header />
-        <Container sx={{ mt: 0 }}>
+        <Container component="main">
           <Helmet>
-            <title>Rooms</title>
+            <title>Sessions</title>
           </Helmet>
           <div style={{ margin: "2rem" }}>
-            <h1>Rooms</h1>
+            <h1>Sessions</h1>
+
             <Card
               style={{
                 display: "flex",
@@ -103,40 +102,40 @@ export default function RoomsScreen() {
                 <form>
                   <div style={{ padding: "2rem" }}>
                     <div class="mb-2">
-                      <label for="title" class="form-label">
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                      />
-                    </div>
-                    <div class="mb-2">
-                      <label for="capacity" class="form-label">
-                        Capacity
+                      <label for="session" class="form-label">
+                        Session
                       </label>
                       <input
                         type="number"
                         class="form-control"
-                        id="capacity"
-                        value={capacity}
-                        onChange={(e) => setCapacity(e.target.value)}
+                        id="session"
+                        value={session}
+                        onChange={(e) => setSession(e.target.value)}
                       />
                     </div>
-
                     <div class="mb-2">
-                      <label for="block" class="form-label">
-                        Block
+                      <label for="starttime" class="form-label">
+                        Start-Time
                       </label>
                       <input
                         type="text"
                         class="form-control"
-                        id="block"
-                        value={block}
-                        onChange={(e) => setBlock(e.target.value)}
+                        id="starttime"
+                        value={starttime}
+                        onChange={(e) => setStarttime(e.target.value)}
+                      />
+                    </div>
+
+                    <div class="mb-2">
+                      <label for="stoptime" class="form-label">
+                        Stop-Time
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="stoptime"
+                        value={stoptime}
+                        onChange={(e) => setStoptime(e.target.value)}
                       />
                     </div>
 
@@ -146,7 +145,7 @@ export default function RoomsScreen() {
                       sx={{ width: "100%" }}
                       onClick={onSubmitForm}
                     >
-                      <Link className="link">Add Room</Link>
+                      <Link className="link">Add Session</Link>
                     </Button>
                   </div>
                 </form>
@@ -157,20 +156,20 @@ export default function RoomsScreen() {
                   <thead>
                     <tr>
                       <th scope="col">S/N</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Capacity</th>
-                      <th scope="col">Block</th>
+                      <th scope="col">Session</th>
+                      <th scope="col">Start-Time</th>
+                      <th scope="col">Stop-Time</th>
                       <th scope="col">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {room.length > 0 ? (
-                      room.map((room) => (
+                    {period.length > 0 ? (
+                      period.map((period) => (
                         <tr>
                           <th scope="row">{i++}</th>
-                          <td>{room.title}</td>
-                          <td>{room.capacity}</td>
-                          <td>{room.block}</td>
+                          <td>{period.session}</td>
+                          <td>{period.starttime}</td>
+                          <td>{period.stoptime}</td>
 
                           <td>
                             <div>
@@ -179,8 +178,10 @@ export default function RoomsScreen() {
                                 aria-label="text button group"
                                 style={{ display: "flex" }}
                               >
-                                <EditRoomScreen room={room} />
-                                <Button onClick={() => deleteRoom(room._id)}>
+                                <EditSessionScreen period={period} />
+                                <Button
+                                  onClick={() => deletePeriod(period._id)}
+                                >
                                   <DeleteIcon style={{ color: "red" }} />
                                 </Button>
                               </ButtonGroup>
@@ -190,7 +191,9 @@ export default function RoomsScreen() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={7}>No Rooms Found.Please Add New Rooms</td>
+                        <td colSpan={7}>
+                          No Sessions Found.Please Add New Sessions
+                        </td>
                       </tr>
                     )}
                   </tbody>

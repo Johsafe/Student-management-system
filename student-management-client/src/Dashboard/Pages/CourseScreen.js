@@ -11,6 +11,7 @@ import LoadingBox from '../../Utils/LoadingBox';
 import { toast } from 'react-toastify';
 import { getError } from '../../Utils/GetError';
 import Copyright from '../../Utils/Copyright';
+import { base_url } from '../../Utils/baseUrl';
 
 export default function CourseScreen() {
   //get Courses
@@ -19,7 +20,7 @@ export default function CourseScreen() {
   async function getCourses() {
     try {
       const response = await fetch(
-        'http://localhost:8000/system/course/courses'
+        `${base_url}course/courses`
       );
       const getcourses = await response.json();
       setCourses(getcourses);
@@ -37,7 +38,7 @@ export default function CourseScreen() {
   //delete course
   async function deleteCourse(id) {
     try {
-      await fetch(`http://localhost:8000/system/course/${id}`, {
+      await fetch(`${base_url}course/${id}`, {
         method: 'DELETE',
       });
       setCourses(courses.filter((courses) => courses._id !== id));
@@ -47,6 +48,7 @@ export default function CourseScreen() {
     }
   }
 
+  var i= 1;
   return (
     <div>
       <div style={{ display: 'flex' }}>
@@ -65,16 +67,18 @@ export default function CourseScreen() {
             >
               <h1>My Units</h1>
               <div>
-                <Link to="/add" className="link">
+                
                   {' '}
                   <Button
                     sx={{ width: '200px' }}
                     variant="contained"
                     size="medium"
                   >
-                    Add Unit
+                    <Link to="/add" className="link">
+                    Add Course
+                    </Link>
                   </Button>
-                </Link>
+
               </div>
             </div>
 
@@ -84,7 +88,7 @@ export default function CourseScreen() {
                   <table class="table table-hover">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Code</th>
                         <th scope="col">Title</th>
                         <th scope="col">Department</th>
@@ -96,10 +100,10 @@ export default function CourseScreen() {
                     <tbody>
                       {courses.map((course) => (
                         <tr key={course.id}>
-                          <th scope="row">#</th>
+                          <th scope="row">{i++}</th>
                           <td>{course.code}</td>
                           <td>{course.title}</td>
-                          <td>{course.group.abbr}</td>
+                          <td>{course.department.abbr}</td>
                           <td>{course.semister}</td>
                           <td>{course.year}</td>
                           <td>

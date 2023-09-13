@@ -1,99 +1,81 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import HeaderBar from '../Layout/HeaderBar';
-import { ArrowBack } from '@mui/icons-material';
-import Copyright from '../../Utils/Copyright';
-
-const theme = createTheme();
+import * as React from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Container from "@mui/material/Container";
+import HeaderBar from "../Layout/HeaderBar";
+import Copyright from "../../Utils/Copyright";
+import styles from "./styles.module.css";
+import { ButtonGroup } from "@mui/material";
+import { Helmet } from "react-helmet-async";
 
 export default function ForgetPassScreen() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
+      email: data.get("email"),
     });
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       <HeaderBar />
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Reset Password
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Reset Password
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link
-                  href="/"
-                  variant="body3"
-                  sx={{ textDecoration: 'none', display: 'flex' }}
+      <Helmet>
+        <title>Forget Password</title>
+      </Helmet>
+      <div className={styles.signup_container}>
+        <div className={styles.signup_form_container}>
+          <div className={styles.left}>
+            
+          </div>
+          <div className={styles.right}>
+            <form className={styles.form_container} onSubmit={handleSubmit}>
+              <h1>Forget Password</h1>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <ButtonGroup style={{ gap: "2rem" }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ width: "15rem" }}
                 >
-                  <ArrowBack />
-                  Back
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Container
-          maxWidth="md"
-          component="footer"
-          sx={{
-            borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-            mt: 3,
-            py: [2, 6],
-          }}
-        >
-          <Copyright />
-        </Container>
+                  <Link
+                    href="/"
+                    variant="body3"
+                    sx={{ textDecoration: "none", color: "white" }}
+                  >
+                    Cancel
+                  </Link>
+                </Button>
+                <Button type="submit" fullWidth variant="contained">
+                  Send Email
+                </Button>
+              </ButtonGroup>
+            </form>
+          </div>
+        </div>
+      </div>
+      <Container
+        maxWidth="md"
+        component="footer"
+        sx={{
+          borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+          mt: 2,
+          py: [1, 4],
+        }}
+      >
+        <Copyright />
       </Container>
-    </ThemeProvider>
+    </div>
   );
 }

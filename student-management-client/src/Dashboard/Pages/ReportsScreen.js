@@ -73,7 +73,7 @@ export default function ReportsScreen() {
               >
                 {reports.map((report) => (
                   <Grid item xs={2} sm={4} md={4} key={report}>
-                    <Item>{report}</Item>
+                    <Item><p>{report}</p></Item>
                   </Grid>
                 ))}
               </Grid>

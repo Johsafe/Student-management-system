@@ -1,37 +1,37 @@
-import Card from '@mui/material/Card';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link,useNavigate, useParams } from 'react-router-dom';
-import SideBarDetails from '../Layout/SideBarDetails';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import { getError } from '../../Utils/GetError';
-import { toast } from 'react-toastify';
-import Copyright from '../../Utils/Copyright';
-
+import Card from "@mui/material/Card";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import SideBarDetails from "../Layout/SideBarDetails";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import { getError } from "../../Utils/GetError";
+import { toast } from "react-toastify";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function EditCoursesScreen() {
   //get course Details
   const navigate = useNavigate();
   const [course, setCourse] = useState([]);
-  const [code, setCode] = useState('');
-  const [title, setTitle] = useState('');
+  const [code, setCode] = useState("");
+  const [title, setTitle] = useState("");
   const [group, setGroup] = useState('');
-  const [semister, setSemister] = useState('');
-  const [year, setYear] = useState('');
+  const [department, setDepartment] = useState('');
+  const [semister, setSemister] = useState("");
+  const [year, setYear] = useState("");
   const params = useParams();
 
   async function getACourse() {
     console.warn(params);
     try {
-      const response = await fetch(
-        `http://localhost:8000/system/course/${params.id}`
-      );
+      const response = await fetch(`${base_url}course/${params.id}`);
       const getacourse = await response.json();
       setCourse(getacourse);
       setCode(getacourse.code);
       setTitle(getacourse.title);
       setGroup(getacourse.group.abbr);
+      setDepartment(getacourse.department.abbr);
       setSemister(getacourse.semister);
       setYear(getacourse.year);
     } catch (err) {
@@ -47,57 +47,85 @@ export default function EditCoursesScreen() {
   const handleSubmitCourse = async (e) => {
     e.preventDefault();
     try {
-      let updatecourse = await fetch(
-        `http://localhost:8000/system/course/${params.id}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({ code,title,semister,year}),
-          headers: {
-            'Content-Type': 'Application/json',
-            // authorization: `Bearer ${Info.token}`,
-          },
-        }
-      );
+      let updatecourse = await fetch(`${base_url}course/${params.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ code, title, semister, year }),
+        headers: {
+          "Content-Type": "Application/json",
+          // authorization: `Bearer ${Info.token}`,
+        },
+      });
       const result = await updatecourse.json();
       // console.warn(result);
-      toast.success('course updated successfully');
-      navigate('/course');
+      toast.success("course updated successfully");
+      navigate("/course");
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
+  //get departments
+  const [departments, setDepartments] = useState([]);
+  async function getDepartment() {
+    try {
+      const response = await fetch(`${base_url}department/departments`);
+      const getdept = await response.json();
+      setDepartments(getdept);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+  useEffect(() => {
+    getDepartment();
+  }, []);
+
+  //get groups
+  const [groups, setGroups] = useState([]);
+  async function getGroups() {
+    try {
+      const response = await fetch(`${base_url}classgroup/group`);
+      const getgroups = await response.json();
+      setGroups(getgroups);
+    } catch (err) {
+      console.error(err.message);
+      toast.error(getError(err));
+    }
+  }
+  useEffect(() => {
+    getGroups();
+  }, []);
+
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <SideBarDetails />
         <Container>
           <Helmet>
             <title>Edit Course</title>
           </Helmet>
-          <div style={{ padding: '3rem' }}>
+          <div style={{ padding: "3rem" }}>
             <div
               style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                gap: "5rem",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Link to="/course" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
+              {" "}
+              <Button variant="contained" size="medium" color="error">
+                <Link to="/course" className="link">
                   Go to Course
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <div>
                 <h1>Edit New Course</h1>
               </div>
             </div>
 
-            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
+            <Card sx={{ borderTop: "4px solid #42a5f5" }}>
               <form>
-                <div style={{ padding: '2rem' }}>
+                <div style={{ padding: "2rem" }}>
                   <div>
                     <div class="mb-2">
                       <label for="code" class="form-label">
@@ -121,10 +149,33 @@ export default function EditCoursesScreen() {
                         id="title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+
                       />
                     </div>
 
-                    {/* <div class="mb-2">
+                    <div lass="mb-2">
+                      <label for="department" class="form-label">
+                        Department
+                      </label>
+                      <select
+                        class="form-select"
+                        aria-label="select example"
+                        onChange={(e) => setDepartment(e.target.value)}
+                        value={department._id}
+                        defaultValue={department}
+                      >
+                        <option>--Select Department--</option>
+                        {departments.map((department) => (
+                          <>
+                            {/* <option value={}>{department.abbr}</option> */}
+                            <option key={department._id} value={department._id}>
+                              {department.abbr}
+                            </option>
+                          </>
+                        ))}
+                      </select>
+                    </div>
+                    <div lass="mb-2">
                       <label for="group" class="form-label">
                         Class Group
                       </label>
@@ -132,12 +183,19 @@ export default function EditCoursesScreen() {
                         class="form-select"
                         aria-label="select example"
                         onChange={(e) => setGroup(e.target.value)}
-                        value={group}
+                        value={group._id}
                       >
-                        <option selected>group</option>
-                        
+                        <option selected>--Select class Group--</option>
+                        {groups.map((group) => (
+                          <>
+                            {/* <option value={}>{group.abbr}</option> */}
+                            <option key={group._id} value={group._id}>
+                              {group.abbr}
+                            </option>
+                          </>
+                        ))}
                       </select>
-                    </div> */}
+                    </div>
                     <div class="mb-2">
                       <label for="semister" class="form-label">
                         Semister
@@ -165,10 +223,10 @@ export default function EditCoursesScreen() {
                     <Button
                       variant="contained"
                       size="medium"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                       onClick={handleSubmitCourse}
                     >
-                      Submit
+                      <Link className="link">Edit Course</Link>
                     </Button>
                   </div>
                 </div>

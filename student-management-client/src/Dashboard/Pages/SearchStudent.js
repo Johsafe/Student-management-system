@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Copyright from '../../Utils/Copyright';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -14,6 +14,11 @@ import SideBarDetails from '../Layout/SideBarDetails';
 import bg2 from '../../Static/bg2.png';
 import MenuItem from '@mui/material/MenuItem';
 import Header from '../../Utils/Header';
+import { toast } from 'react-toastify';
+import { getError } from '../../Utils/GetError';
+import { Link, useParams } from 'react-router-dom';
+import { base_url } from '../../Utils/baseUrl';
+import axios from 'axios';
 
 const classgroup = [
   {
@@ -35,6 +40,47 @@ const classgroup = [
 ];
 
 export default function SearchStudent() {
+
+    //search from on submit
+  // const onSubmitForm = async (e) => {
+  //   e.preventDefault();
+  //   try {
+     
+  //   } catch (err) {
+  //     toast.error(getError(err));
+  //   }
+  // };
+
+//search
+    async function GetStudentSearched(){
+			try {
+				const url = `${base_url}student/search`;
+				const { data } = await axios.get(url);
+				console.log(data);
+			} catch (err) {
+				toast.error(getError(err));
+			}
+		};
+
+
+  //Get Groups
+  const [groups, setGroups] = useState([]);
+  async function getGroups() {
+    try {
+      const response = await fetch(
+        `${base_url}classgroup/group`
+      );
+      const getgroups = await response.json();
+      setGroups(getgroups);
+      // console.log(getgroups);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    getGroups();
+  }, []);
   return (
     <div style={{ display: 'flex' }}>
       <SideBarDetails />
@@ -89,13 +135,16 @@ export default function SearchStudent() {
                       // defaultValue="Info Science"
                       helperText="Please select student class"
                       variant="standard"
+                      // onChange={(e) => setGroup(e.target.value)}
+                      // value={group._id}
                     >
-                      {classgroup.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
+                      {groups.map((group) => (
+                        <MenuItem key={group._id} value={group._id}>
+                          {group.abbr}
                         </MenuItem>
                       ))}
                     </TextField>
+
                     <TextField
                       required
                       id="admission"
@@ -107,7 +156,7 @@ export default function SearchStudent() {
                       // value={admission}
                       // onChange={(e) => setAdmission(e.target.value)}
                     />
-                    <Button variant="contained">Search</Button>
+                    <Button variant="contained"  onClick={() => GetStudentSearched()}><Link className='link'>Search Student</Link></Button>
                   </Stack>
                 </form>
                 <Divider sx={{ m: 3 }} />

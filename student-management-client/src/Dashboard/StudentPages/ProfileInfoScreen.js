@@ -1,28 +1,30 @@
+
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import profile from "../../Static/profile.png";
+import Copyright from "../../Utils/Copyright";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import StudentUnitRegitration from "./StudentUnitRegitration ";
+import ChangePassword from "./ChangePassword";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
 import {
   Button,
   Card,
   Container,
+  Divider,
   Grid,
   Paper,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import profile from '../../Static/profile.png';
-import Copyright from '../../Utils/Copyright';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import StudentUnitRegitration from './StudentUnitRegitration ';
-import ChangePassword from './ChangePassword';
-import { School } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import { base_url } from "../../Utils/baseUrl";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,25 +55,25 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = ["Profile", "Account", "Logout"];
 export default function ProfileInfoScreen() {
-  let user = JSON.parse(localStorage.getItem('Details'));
+  let user = JSON.parse(localStorage.getItem("Details"));
   const [loading, setLoading] = useState(false);
 
   const signoutHandler = () => {
-    localStorage.removeItem('Details');
-    window.location.href = '/studentlogin';
+    localStorage.removeItem("Details");
+    window.location.href = "/studentlogin";
   };
   //get a student
   const [student, setStudent] = useState([]);
   async function getAstudent() {
     try {
       const response = await fetch(
-        `http://localhost:8000/system/student/student/${user._id}`
+        `${base_url}student/student/${user._id}`
       );
       const astudent = await response.json();
       setStudent(astudent);
@@ -105,11 +107,12 @@ export default function ProfileInfoScreen() {
     return (
       <div>
         <Grid item xs={12} md={8} lg={9}>
+
           <Paper
             sx={{
               p: 2,
-              display: 'flex',
-              flexDirection: 'column',
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <b>
@@ -117,9 +120,9 @@ export default function ProfileInfoScreen() {
             </b>
             <div
               style={{
-                display: 'flex',
-                gap: '3rem',
-                padding: '1rem',
+                display: "flex",
+                gap: "3rem",
+                padding: "1rem",
               }}
             >
               <div>
@@ -127,7 +130,7 @@ export default function ProfileInfoScreen() {
                 <b>Admission:</b>
                 <p>{student.admission}</p>
                 <b>Class:</b>
-                <p>{student.group}</p>
+                {/* <p>{student.group.title}</p> */}
                 <b>PresentAddress:</b>
                 <p>{student.presentAddress}</p>
                 <b>Gender:</b> <p>{student.gender}</p>
@@ -143,12 +146,22 @@ export default function ProfileInfoScreen() {
               </div>
             </div>
           </Paper>
+        </Grid>
+      </div>
+    );
+  }
+
+  //Other info
+  function OtherInfo() {
+    return (
+      <div>
+        <Grid item xs={12} md={8} lg={9}>
           <Paper
             sx={{
               p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              marginTop: '2rem',
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "2rem",
             }}
           >
             <b>
@@ -156,9 +169,9 @@ export default function ProfileInfoScreen() {
             </b>
             <div
               style={{
-                display: 'flex',
-                gap: '3rem',
-                padding: '1rem',
+                display: "flex",
+                gap: "3rem",
+                padding: "1rem",
               }}
             >
               <div>
@@ -180,7 +193,7 @@ export default function ProfileInfoScreen() {
 
   return (
     <div>
-      {' '}
+      {" "}
       <div>
         <div className="nav">
           <div>
@@ -191,17 +204,17 @@ export default function ProfileInfoScreen() {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: '45px' }}
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
@@ -221,41 +234,38 @@ export default function ProfileInfoScreen() {
           </Helmet>
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              marginTop: '1rem',
-              gap: '1rem',
+              display: "flex",
+              justifyContent: "space-around",
+              // flexDirection: 'column',
+              marginTop: "1rem",
+              gap: "1rem",
             }}
           >
             <div>
               <Card
                 sx={{
-                  p: 2,
-                  height: 350,
                   width: 250,
-                  borderTop: '4px solid #42a5f5',
+                  height: 420,
+                  borderTop: "4px solid #42a5f5",
                 }}
               >
                 <div>
                   <img
-                    src={'http://localhost:8000/' + student.studentPhoto}
+                    src={"http://localhost:8000/" + student.studentPhoto}
                     style={{
-                      width: '100%',borderRadius:'50%'
+                      width: "100%",
+                      height: "320px",
                     }}
+                    alt="prof"
                   />
-                  {/* <img
-                    src={profile}
-                    style={{
-                      width: '100%',
-                    }} */}
-                  <div style={{ textAlign: 'center' }}>
+                  <Divider />
+                  <div style={{ textAlign: "center" }}>
                     <h3>
                       <b>
-                        {student.firstname} {student.lastname}
-                        {/* Joseph Mwamuye */}
+                        {student.firstname}<t/> {student.lastname}
                       </b>
                     </h3>
-                    Student
+                   <p> Student</p>
                   </div>
                 </div>
               </Card>
@@ -263,76 +273,72 @@ export default function ProfileInfoScreen() {
                 <Button
                   variant="contained"
                   size="medium"
-                  sx={{ width: '100%', marginTop: '1rem' }}
+                  sx={{ width: "100%", marginTop: "1rem" }}
                 >
                   <Link
-                    style={{ textDecoration: 'none', color: 'white' }}
+                   className="link"
                     to="/myprofile/update"
                   >
                     Update Profile
                   </Link>
                 </Button>
 
-                <Button
-                  variant=""
-                  size="medium"
-                  sx={{ width: '100%', marginTop: '1rem' }}
-                >
-                  <Link to="#signout" onClick={signoutHandler}>
+                
+                  {" "}
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{ width: "100%", marginTop: "1rem" }}
+                    color="error"
+                  >
+                    <Link to="#signout" onClick={signoutHandler} className="link">
                     Log Out
-                  </Link>
-                </Button>
+                    </Link>
+                  </Button>
+                
               </div>
             </div>
             <div>
-              <Box sx={{ width: '900px', textAlign: 'center' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Box sx={{ width: "900px", textAlign: "center" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs value={value} onChange={handleChange}>
                     <Tab label="Information" {...a11yProps(0)} />
-                    <Tab label="Unit Registration" {...a11yProps(1)} />
-                    <Tab label="Change Password" {...a11yProps(2)} />
-                    <Tab label="Setting" {...a11yProps(3)} />
+                    <Tab label="Other Information" {...a11yProps(1)} />
+                    <Tab label="Unit Registration" {...a11yProps(2)} />
+                    <Tab label="Change Password" {...a11yProps(3)} />
+                    <Tab label="Setting" {...a11yProps(4)} />
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
                   <GeneralInfo />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
+                  <OtherInfo />
+                </TabPanel>
+
+                <TabPanel value={value} index={2}>
                   <StudentUnitRegitration />
                 </TabPanel>
-                <TabPanel value={value} index={2}>
+                <TabPanel value={value} index={3}>
                   <ChangePassword />
                 </TabPanel>
-                <TabPanel value={value} index={3}>
+                <TabPanel value={value} index={4}>
                   <div>Settings</div>
                 </TabPanel>
               </Box>
             </div>
-            {/* <div>
-              <Card
-                sx={{
-                  p: 2,
-                  height: 380,
-                  width: 250,
-                  borderTop: '4px solid #42a5f5',
-                }}
-              >
-                <div>
-                  <h3 style={{ textAlign: 'center' }}>
-                    <b>About {student.firstname}</b>
-                  </h3>
-                  <h4>
-                    <b>
-                      <School /> Education
-                    </b>
-                  </h4>
-                  <p>Course: {student.group}</p>
-                  <p>Roll : {student.admission}</p>
-                </div>
-              </Card>
-            </div> */}
           </div>
-          <Copyright sx={{ pb: 4 }} />
+          <Container
+            maxWidth="md"
+            component="footer"
+            sx={{
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+              mt: 2,
+              py: [1, 4],
+            }}
+          >
+            <Copyright />
+          </Container>
         </Container>
       </div>
     </div>

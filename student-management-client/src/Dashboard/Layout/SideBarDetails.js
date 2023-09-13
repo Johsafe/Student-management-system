@@ -40,7 +40,7 @@ export default function SideBarDetails() {
             <Link to={'/studentreg'} className="link">
               <li className="sidebarListItem">
                 <HowToRegIcon className="sidebarIcon" />
-                student Registration
+                Admissions
               </li>
             </Link>
             <Link to={'/course'} className="link">
@@ -52,7 +52,7 @@ export default function SideBarDetails() {
             <Link to={'/groups'} className="link">
               <li className="sidebarListItem">
                 <SchoolIcon className="sidebarIcon" />
-                Class/Course
+                Class
               </li>
             </Link>
             <Link to={'/examination'} className="link">
@@ -68,10 +68,10 @@ export default function SideBarDetails() {
                 Rooms
               </li>
             </Link>
-            <Link to={'/period'} className="link">
+            <Link to={'/session'} className="link">
               <li className="sidebarListItem">
                 <ScheduleIcon className="sidebarIcon" />
-                Periods
+                Sessions
               </li>
             </Link>
             <Link to={'/search'} className="link">

@@ -1,15 +1,11 @@
-import React, { useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Container from "@mui/material/Container";
-import HeaderBar from "../Layout/HeaderBar";
-import { toast } from "react-toastify";
-import { getError } from "../../Utils/GetError";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
-import Copyright from "../../Utils/Copyright";
-import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
+import { Button, Container, TextField } from "@mui/material";
+import Copyright from "../../Utils/Copyright";
+import HeaderBar from "../Layout/HeaderBar";
+import { Helmet } from "react-helmet-async";
 import {
   FormControl,
   IconButton,
@@ -19,30 +15,36 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { base_url } from "../../Utils/baseUrl";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
 
-export default function StudentLoginScreen() {
-  const [admission, setAdmission] = React.useState("");
-  const [password, setPassword] = React.useState("");
+export default function SigninScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(`${base_url}student/login`, {
-        admission,
+      const body = {
+        email,
         password,
-      });
-      localStorage.setItem("Details", JSON.stringify(data));
-      navigate("/profile");
-      toast.success("Student Logged Successfully");
-    } catch (err) {
-      toast.error(getError(err));
+      };
+      const url = `${base_url}authenicate/login`;
+      const { data } = await axios.post(url, body);
+      localStorage.setItem("token", JSON.stringify(data));
+      toast.success("Logged Successfully");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(getError(error));
     }
   };
 
   //show pass
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -51,7 +53,7 @@ export default function StudentLoginScreen() {
     <div>
       <HeaderBar />
       <Helmet>
-        <title>Student Page</title>
+        <title>Log In</title>
       </Helmet>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>
@@ -62,12 +64,12 @@ export default function StudentLoginScreen() {
                 margin="normal"
                 required
                 fullWidth
-                id="admission"
-                label="Admission"
+                id="email"
+                label="Email Address"
                 name="email"
                 autoFocus
-                value={admission}
-                onChange={(e) => setAdmission(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <FormControl sx={{ mt: 2 }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">
@@ -105,7 +107,7 @@ export default function StudentLoginScreen() {
                 Sign In
               </Button>
 
-              <h6>Auth [ pass : student@123]</h6>
+              <h6>Auth [ pass : passwd@123]</h6>
               <Link
                 style={{ textDecoration: "none", color: "blue" }}
                 to="/forget"
@@ -114,9 +116,13 @@ export default function StudentLoginScreen() {
               </Link>
             </form>
           </div>
-          <div className={styles.left2}>
-            <h1>Welcome Back</h1>
-            <h1> Sign In </h1>
+          <div className={styles.right1}>
+            <h1>New Here ?</h1>
+            <Link to="/signup">
+              <button type="button" className={styles.white_btn}>
+                Sign Up
+              </button>
+            </Link>
           </div>
         </div>
       </div>

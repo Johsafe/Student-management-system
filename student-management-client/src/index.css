@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; */
+    font-family: 'Shadows Into Light','Dancing Script' , cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: 'Handlee', cursive;
+}
+
+h1{
+  font-family: 'Water Brush', cursive;
+  /* font-family: 'Gloria Hallelujah', cursive; num */
+  /* font-family: 'Dancing Script', cursive; alpha */
+  /* font-family: 'Great Vibes', cursive;alpha
+  font-family: 'Shadows Into Light', cursive alpha;
+  font-family: 'Updock', cursive; alpha
+  font-family: 'Baskervville', serif; num
+  font-family: 'Water Brush', cursive; alpha */
+}
+h3{
+  font-family: 'Handlee', cursive;
+}
+b{
+  font-family: 'Handlee', cursive;
+}
+p{
+  font-family: 'Handlee', cursive;
+}
+th,td{
+  font-family: 'Handlee', cursive;
+}
+span{
+  font-family: 'Gloria Hallelujah', cursive;
+}
+
+/* th{
+  font-family: 'Shadows Into Light', cursive;
+  font-size: large;
+} */
+
+

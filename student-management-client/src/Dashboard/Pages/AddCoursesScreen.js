@@ -1,94 +1,104 @@
-import Card from '@mui/material/Card';
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
-import SideBarDetails from '../Layout/SideBarDetails';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import { getError } from '../../Utils/GetError';
-import { toast } from 'react-toastify';
-import { motion } from 'framer-motion';
-import Copyright from '../../Utils/Copyright';
+import Card from "@mui/material/Card";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
+import SideBarDetails from "../Layout/SideBarDetails";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import { getError } from "../../Utils/GetError";
+import { toast } from "react-toastify";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function AddCoursesScreen() {
   const navigate = useNavigate();
-  const [code, setCode] = useState('');
-  const [title, setTitle] = useState('');
-  const [group, setGroup] = useState('');
-  const [semister, setSemister] = useState('');
-  const [year, setYear] = useState('');
+  const [code, setCode] = useState("");
+  const [title, setTitle] = useState("");
+  const [group, setGroup] = useState("");
+  const [department, setDepartment] = useState("");
+  const [semister, setSemister] = useState("");
+  const [year, setYear] = useState("");
 
   //add course
   const handleSubmitCourse = async (e) => {
     e.preventDefault();
     try {
-      const body = { group, code, title, semister, year };
-      const result = await fetch('http://localhost:8000/system/course/create', {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
+      const body = { group, code, title, department, semister, year };
+      const result = await fetch(`${base_url}course/create`, {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify(body),
       });
-
-      const addcourse = await result.json();
-      // console.log(addcourse);
-
-      toast.success('course added successfully');
-      navigate('/course');
+      await result.json();
+      toast.success("course added successfully");
+      navigate("/course");
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
-  //Get Groups
+  //get departments
+  const [departments, setDepartments] = useState([]);
+  async function getDepartment() {
+    try {
+      const response = await fetch(`${base_url}department/departments`);
+      const getdept = await response.json();
+      setDepartments(getdept);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+  useEffect(() => {
+    getDepartment();
+  }, []);
+
+  //get groups
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
-      const response = await fetch(
-        'http://localhost:8000/system/classgroup/group'
-      );
+      const response = await fetch(`${base_url}classgroup/group`);
       const getgroups = await response.json();
       setGroups(getgroups);
-      // console.log(getgroups);
     } catch (err) {
       console.error(err.message);
+      toast.error(getError(err));
     }
   }
-
   useEffect(() => {
     getGroups();
   }, []);
 
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <SideBarDetails />
         <Container>
           <Helmet>
             <title>Add Course</title>
           </Helmet>
-          <div style={{ padding: '3rem' }}>
+          <div style={{ padding: "3rem" }}>
             <div
               style={{
-                display: 'flex',
-                gap: '5rem',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                gap: "5rem",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Link to="/course" className="link">
-                {' '}
-                <Button variant="contained" size="medium" color="error">
+              <Button variant="contained" size="medium" color="error">
+                <Link to="/course" className="link">
                   Go to Courses
-                </Button>
-              </Link>
+                </Link>
+              </Button>
+
               <div>
                 <h1>Add New Course</h1>
               </div>
             </div>
 
-            <Card sx={{ borderTop: '4px solid #42a5f5' }}>
+            <Card sx={{ borderTop: "4px solid #42a5f5" }}>
               <form>
-                <div style={{ padding: '2rem' }}>
+                <div style={{ padding: "2rem" }}>
                   <div>
                     <div class="mb-2">
                       <label for="code" class="form-label">
@@ -116,6 +126,26 @@ export default function AddCoursesScreen() {
                     </div>
 
                     <div lass="mb-2">
+                      <label for="department" class="form-label">
+                        Department
+                      </label>
+                      <select
+                        class="form-select"
+                        aria-label="select example"
+                        onChange={(e) => setDepartment(e.target.value)}
+                        value={department._id}
+                      >
+                        <option selected>--Select Department--</option>
+                        {departments.map((department) => (
+                          <>
+                            <option key={department._id} value={department._id}>
+                              {department.abbr}
+                            </option>
+                          </>
+                        ))}
+                      </select>
+                    </div>
+                    <div lass="mb-2">
                       <label for="group" class="form-label">
                         Class Group
                       </label>
@@ -128,7 +158,6 @@ export default function AddCoursesScreen() {
                         <option selected>--Select class Group--</option>
                         {groups.map((group) => (
                           <>
-                            {/* <option value={}>{group.abbr}</option> */}
                             <option key={group._id} value={group._id}>
                               {group.abbr}
                             </option>
@@ -163,10 +192,10 @@ export default function AddCoursesScreen() {
                     <Button
                       variant="contained"
                       size="medium"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                       onClick={handleSubmitCourse}
                     >
-                      Submit
+                      <Link className="link">Add Course</Link>
                     </Button>
                   </div>
                 </div>

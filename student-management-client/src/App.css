@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,15 +10,16 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */
 
 /* Course Screen */
 
 .link {
   text-decoration: none;
   color: inherit;
+  font-family: 'Updock', cursive;
+  color: white;
 }
-
 .box {
   display: flex;
   gap: 0.5rem;
@@ -70,31 +71,6 @@ code {
 }
 .ErrorTxt p {
   font-size: 1.5rem;
-}
-
-/* login */
-.password-eye {
-  display: grid;
-  grid-template-columns: 1fr 0.1fr;
-  align-items: center;
-  justify-content: center;
-}
-/* .password-eye input {
-  border: none;
-  border:2px solid red; 
- margin-right: 4px; 
-} */
-/* .password-eye input[type=text]{
-  font-size: 20px;
-  color:red;
-} */
-#eye {
-  margin: auto;
-  padding: 10px;
-  margin-top: 20px;
-  /* border: none; */
-  /* outline: none; */
-  cursor: pointer;
 }
 
 /* classprofile card */
@@ -193,4 +169,16 @@ a:focus {
   font-weight: 600;
   margin-bottom: 10px;
   color: var(--dark);
+}
+
+/* student profile screen */
+.studentdetail p{
+  width: 350px;
+  border: 1px solid blue;
+  border-radius: 5px;
+  font-size: 20px;
+
+}
+.studentdetail b{
+  align-items: flex-start;
 }
