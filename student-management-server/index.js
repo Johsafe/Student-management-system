@@ -20,6 +20,7 @@ const roomRouter = require('./Routes/RoomRoute.js');
 const dashboardRouter = require('./Routes/DashboardRoute.js');
 const departmentRouter = require('./Routes/DepartmentRoute.js');
 const authRouter = require('./Routes/AuthenticationRoute.js');
+const periodRouter = require('./Routes/PeriodRoute.js');
 
 //connecting routes
 const api = '/system';
@@ -31,13 +32,17 @@ app.use(`${api}/authenicate`,authRouter);
 app.use(`${api}/timetable`, examRouter);
 app.use(`${api}/student`, studentRouter);
 app.use(`${api}/room`, roomRouter);
-app.use(`${api}/examdate`, examdateRouter);
+app.use(`${api}/examdates`, examdateRouter);
 app.use(`${api}/dashboard`, dashboardRouter);
 app.use(`${api}/department`, departmentRouter);
+app.use(`${api}/period`, periodRouter);
 
 //connect to mongodb
+// mongodb://localhost:27017/SchoolSystem
+// process.env.MONGODB_URI
+
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect('mongodb://127.0.0.1:27017/SchoolSystem', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

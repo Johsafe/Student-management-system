@@ -3,7 +3,7 @@ const ExamDate = require('../Models/ExamDateSchema.js');
 const examdateRouter = express.Router();
 
 //create new examdate
-examdateRouter.post('/examdate', async (req, res) => {
+examdateRouter.post('/examdates', async (req, res) => {
   try {
     const { month, date, day } = req.body;
 
@@ -81,5 +81,27 @@ examdateRouter.put('/:examdateId', async (req, res) => {
     });
   }
 });
-
+//delete exam date
+examdateRouter.delete('/:examdateId', async (req, res) => {
+  try {
+    ExamDate.findByIdAndRemove(req.params.examdateId).then((examdate) => {
+      if (examdate) {
+        return res
+          .status(200)
+          .json({ success: true, message: 'examdate deleted', examdate });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: 'examdate not found' });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({
+        message: ' Error in deleting examdate.',
+        error: error.message,
+      });
+  }
+});
 module.exports = examdateRouter;

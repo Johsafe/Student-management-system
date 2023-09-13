@@ -18,7 +18,7 @@ module.exports.isAuth = (req, res, next) => {
 };
 
 module.exports.userMiddleware = (req, res, next) => {
-  if (req.user.role !== 'user') {
+  if (req.user.role !== 'student') {
     return res.status(400).json({
       message: 'user access denied',
     });

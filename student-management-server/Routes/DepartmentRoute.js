@@ -2,7 +2,7 @@ const express = require('express');
 const Department = require('../Models/DepartmentSchema');
 const departmentRouter = express.Router();
 
-//create new room
+//create new department
 departmentRouter.post('/department', async (req, res) => {
   try {
     const { title, abbr } = req.body;

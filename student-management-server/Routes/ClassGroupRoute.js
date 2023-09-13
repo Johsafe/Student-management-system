@@ -1,126 +1,140 @@
-const express = require('express');
-const Group = require('../Models/ClassGroupSchema.js');
-const Courses = require('../Models/CoursesSchema.js');
-const Student = require('../Models/StudentSchema.js');
-const multer = require('multer');
-const shortid = require('shortid');
+const express = require("express");
+const Group = require("../Models/ClassGroupSchema.js");
+const Courses = require("../Models/CoursesSchema.js");
+const Student = require("../Models/StudentSchema.js");
 const groupRouter = express.Router();
-const path = require('path');
+const upload = require("../utils/multer.js");
+const cloudinary = require("../Utils/cloudinary.js");
 
-
-//upload student photo
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(path.dirname(__dirname), './classprofile'));
-  },
-  filename: function (req, file, cb) {
-    cb(null, shortid.generate() + '-' + file.originalname);
-  },
-});
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5,
-  },
-});
-
-//create new classgroup
-groupRouter.post('/group',upload.single('classPhoto'), async (req, res) => {
+// *add a new group image with cloudinary*
+groupRouter.post("/group", upload.single("image"), async (req, res) => {
+  const {
+    abbr,
+    title,
+    description,
+    numberOfStudents,
+    classPhoto,
+    academicYear,
+  } = req.body;
   try {
-    const { abbr, title, description, numberOfStudents,academicYear } = req.body;
-     //capitalize abbr
-     let abbrev = req.body.abbr;
-     let abbrv = abbrev.toUpperCase();
-    //confirm Iif group exists in the system
-    const isgroup = await Group.findOne({ abbr });
-
-    if (isgroup) {
-      res.status(400);
-      throw new Error('group already exists');
-    }
+    // Upload image to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
     const classGroup = await Group.create({
-      abbr: abbrv,
-      title: title,
-      description: description,
-      numberOfStudents: numberOfStudents,
-      academicYear:academicYear,
-      classPhoto: req.file.filename,
+      abbr,
+      title,
+      description,
+      numberOfStudents,
+      academicYear,
+      classPhoto: result.secure_url,
+      cloudinary_id: result.public_id,
     });
     const newGroup = await classGroup.save();
-    res.status(201).send({ message: 'New Group Created', newGroup });
+    res.status(201).json({
+      success: true,
+      newGroup,
+    });
   } catch (error) {
     res.status(500).send({
-      message: ' Error in Creating ClassGroup.',
+      message: " Error in Creating ClassGroup.",
       error: error.message,
     });
   }
 });
 
 //get classGroup
-groupRouter.get('/group', async (req, res) => {
+groupRouter.get("/group", async (req, res) => {
   try {
     const group = await Group.find({});
     res.send(group);
   } catch (error) {
     res
       .status(500)
-      .send({ message: ' Error in getting ClassGroup.', error: error.message });
+      .send({ message: " Error in getting ClassGroup.", error: error.message });
   }
 });
 
 //get a classGroup
-groupRouter.get('/group/:groupId', async (req, res) => {
+groupRouter.get("/group/:groupId", async (req, res) => {
   try {
     const group = await Group.findById(req.params.groupId);
     if (group) {
       res.send(group);
     } else {
-      res.status(404).send({ message: 'classGroup not found' });
+      res.status(404).send({ message: "classGroup not found" });
     }
   } catch (error) {
     res
       .status(500)
-      .send({ message: ' Error in getting ClassGroup.', error: error.message });
+      .send({ message: " Error in getting ClassGroup.", error: error.message });
   }
 });
 
-//update student classGroup
-groupRouter.put('/group/:groupId', async (req, res) => {
+//update class + image
+groupRouter.put("/group/:groupId", upload.single("image"), async (req, res) => {
   try {
-    const group = await Group.findByIdAndUpdate(
-      req.params.groupId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
+    const groupexist = await Group.findById(req.params.groupId);
+    await cloudinary.uploader.destroy(groupexist.cloudinary_id);
+    // Upload new image to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const data = {
+      abbr: req.body.abbr || groupexist.abbr,
+      classPhoto: result.secure_url || groupexist.classPhoto,
+      cloudinary_id: result.public_id || groupexist.cloudinary_id,
+      title: req.body.title || groupexist.title,
+      description: req.body.description || groupexist.description,
+      numberOfStudents: req.body.numberOfStudents || groupexist.numberOfStudents,
+      academicYear: req.body.academicYear || groupexist.academicYear,
+    };
+    const group = await Group.findByIdAndUpdate(req.params.groupId, data, {
+      new: true,
+    });
     const newGroup = await group.save();
-    res.status(201).send({ success: true, message: 'Group updated', newGroup });
+    res.status(201).send({ success: true, message: "Group updated", newGroup });
   } catch (error) {
     res.status(500).send({
       success: false,
-      message: ' Error in Updating ClassGroup.',
+      message: " Error in Updating ClassGroup.",
+      error: error.message,
+    });
+  }
+});
+
+//delete class + profile image
+groupRouter.delete("/group/:groupId", async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.groupId);
+    // Delete image from cloudinary
+    await cloudinary.uploader.destroy(group.cloudinary_id);
+    // Delete class from db
+    await group.deleteOne();
+    // const rmGroup = await Group.findByIdAndDelete(req.params.groupId);
+    return res
+      .status(200)
+      .json({ success: true, message: "class deleted", group });
+  } catch (error) {
+    res.status(500).send({
+      message: " Error in deleting class.",
       error: error.message,
     });
   }
 });
 
 // delete classGroup with students
-groupRouter.delete('/group/:groupId', async (req, res) => {
-  try {
-    const deleteStudents = (group) => {
-      Student.deleteMany({ group: req.params.groupId })
-        .then(() => group)
-        .catch((error) => console.log(error));
-    };
-    await Group.findByIdAndDelete({ _id: req.params.groupId })
-      .then((group) => res.send(deleteStudents(group)))
-      .catch((error) => console.log(error));
-  } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
-  }
-});
+// groupRouter.delete("/group/:groupId", async (req, res) => {
+//   try {
+//     const deleteStudents = (group) => {
+//       Student.deleteMany({ group: req.params.groupId })
+//         .then(() => group)
+//         .catch((error) => console.log(error));
+//     };
+//     await Group.findByIdAndDelete({ _id: req.params.groupId })
+//       .then((group) => res.send(deleteStudents(group)))
+//       .catch((error) => console.log(error));
+//   } catch (error) {
+//     res.status(500).send({ success: false, error: error.message });
+//   }
+// });
 //delete classGroup with  courses
 
 // groupRouter.delete('/course/:groupId', async (req, res) => {
@@ -138,4 +152,13 @@ groupRouter.delete('/group/:groupId', async (req, res) => {
 //   }
 // });
 
+//get the number of all groups
+groupRouter.get("/groupcount", async (req, res) => {
+  const groupcount = await Group.countDocuments({});
+  if (groupcount) {
+    res.json(groupcount);
+  } else {
+    res.status(404).json({ message: "No Groups" });
+  }
+});
 module.exports = groupRouter;

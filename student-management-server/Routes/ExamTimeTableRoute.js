@@ -2,18 +2,40 @@ const express = require('express');
 const ExamTimetable = require('../Models/ExamTimeTableSchema');
 const examRouter = express.Router();
 
+// const {
+//   title,
+//   academicYear,
+//   month,
+//   examStartdate,
+//   examStopdate,
+//   examdate,
+//   timeOfday,
+// period
+//   group,
+//   course,
+//   year,
+//   venue,
+//   noofexaminas,
+//   invigilator
+// } = req.body;
+
 examRouter.post('/exam', async (req, res) => {
   try {
     const {
+      title,
+      academicYear,
+      month,
+      examStartdate,
+      examStopdate,
       examdate,
-      session,
-      starttime,
-      stoptime,
+      timeOfday,
+      period,
       group,
       course,
-      room,
+      year,
+      venue,
       noofexaminas,
-      invigilator,
+      invigilator
     } = req.body;
     const examTimetable = new ExamTimetable({
       examdate,

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const authenticationSchema = mongoose.Schema({
-  name: { type: String, required: true },
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
   email: {
     type: String,
     required: true,
@@ -21,17 +22,8 @@ const authenticationSchema = mongoose.Schema({
     enum: ['Pending', 'Active'],
     default: 'Pending',
   },
-  isEmailVerified: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+  verified: { type: Boolean, default: false },
 });
 
 const Authenticate = mongoose.model('Authenticate', authenticationSchema);
 module.exports = Authenticate;
-
-// confirmationCode: {
-//   type: String,
-//   unique: true,
-// },

@@ -1,27 +1,29 @@
 const mongoose = require('mongoose');
 
 const StudentAttendanceSchema = mongoose.Schema({
-  attendance_date: {
+  attendanceDate: {
     type: Date,
     default: Date.now(),
   },
   group:{
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group',
     required: true,
+    unique:true,
   },
   students: [
     {
       firstname: { type: String, required: true },
       lastname: { type: String, required: true },
       admission: { type: String, required: true, unique: true },
-      group: {
+      // group: {
+      //   type: String,
+      //   required: true,
+      // },
+      status: {
         type: String,
-        required: true,
-      },
-      present: {
-        type: Boolean,
-        default: false,
-        required: true,
+        enum: ['present', 'absent'],
+        default: 'absent',
       },
     },
     {

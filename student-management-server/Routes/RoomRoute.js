@@ -80,4 +80,35 @@ roomRouter.put('/:roomId', async (req, res) => {
   }
 });
 
+//delete room
+roomRouter.delete('/:roomId', async (req, res) => {
+  try {
+    Room.findByIdAndRemove(req.params.roomId).then((room) => {
+      if (room) {
+        return res
+          .status(200)
+          .json({ success: true, message: 'room deleted', room });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: 'room not found' });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: ' Error in getting Room.', error: error.message });
+  }
+});
+
+//get the number of all rooms
+roomRouter.get('/roomcount', async (req, res) => {
+  const roomCount = await Room.countDocuments({});
+  if (roomCount) {
+    res.json(roomCount);
+  } else {
+    res.status(404).json({ message: "No Rooms" });
+  }
+});
+
 module.exports = roomRouter;

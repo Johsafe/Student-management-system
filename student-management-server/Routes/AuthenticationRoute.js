@@ -1,186 +1,211 @@
-const express = require('express');
-const Authenticate = require('../Models/AuthenticationSchema');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const isAuth = require('../Middleware/Auth');
+const express = require("express");
+const Authenticate = require("../Models/AuthenticationSchema");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const isAuth = require("../Middleware/Auth");
 const authRouter = express.Router();
-const sendConfirmationEmail = require('../Utils/sendEmail');
-const { generateToken } = require('../Utils/GenerateToken');
-// const { signupValidation } = require('../Middleware/validator');
+const sendEmail = require("../Utils/sendEmail");
+const { generateToken } = require("../Utils/GenerateToken");
+const tokenSchema = require("../Models/tokenSchema");
+const crypto = require("crypto");
 
 //Create new User
 
-authRouter.post('/create', async (req, res) => {
+authRouter.post("/create", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstname, lastname, email, password } = req.body;
 
     //confirm is user exists in the system
     const userExists = await Authenticate.findOne({ email });
+    if (userExists)
+      return res
+        .status(409)
+        .send({ message: "User with given email already Exist!" });
 
-    if (userExists) {
-      res.status(400);
-      throw new Error('User already exists');
-    }
     // create new user
     const user = await Authenticate.create({
-      name,
+      firstname,
+      lastname,
       email,
       password: bcrypt.hashSync(password, 10),
     });
 
     const newuser = await user.save();
-    // res.status(201).json(newuser);
-    if (newuser) {
-      // Send varification email
-      // const link = `${process.env.BASE_URL}/verify?id=${user_id}`;
-      // const link = `${process.env.BASE_URL}/verify?id=joseph`;
-      // await sendConfirmationEmail(name, email, link, newuser._id);
-      // res.json({
-      //   message: 'User Registration success, PLEASE VERIFY YOUR EMAIL',
-      // });
-      res.status(201).json(newuser);
-    } else {
-      res.json({ message: 'User Registration failure' });
-    }
+    const token = await new tokenSchema({
+      userId: newuser._id,
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+    const url = `${process.env.BASE_URL}authenicate/${newuser.id}/verify/${token.token}`;
+    await sendEmail(newuser.email, "Verify Email", url);
+    res
+      .status(201)
+      .send({
+        newuser,
+        message: "An Email sent to your account please verify",
+      });
+    res.status(201).json(newuser);
   } catch (error) {
     res.status(500).send({
-      message: 'User registration failure',
+      message: "User registration failure",
       error: error.message,
     });
   }
 });
 
 //verify mail
-authRouter.get('/verify/:id', async (req, res, next) => {
+authRouter.get(':/userId/verify/:token', async (req, res) => {
   try {
-    // User.findOne({
-    //   confirmationCode: req.params.confirmationCode,
-    // }).then((user) => {
-    //   if (!user) {
-    //     return res.status(404).send({ message: 'User Not found.' });
-    //   }
-    //   user.status = 'Active';
-    //   user.save((err) => {
-    //     if (err) {
-    //       res.status(500).send({ message: err });
-    //       return;
-    //     }
-    //   });
-    // });
-    // /verify/:confirmCode
-    // const {confirmCode}=req.params
-    // const user =await User.findOne({confirmCode:confirmCode})
-    // if(user){
-    //   //mark email as verified
-    //   user.isValid = true
-    //   await user.save()
-    //   //redirect to homepage or anywhere
-    //   res.redirect("/")
-    // }
+    const user = await Authenticate.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).send({ message: "Invalid link" });
+
+    const token = await tokenSchema.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token) return res.status(400).send({ message: "Invalid link" });
+
+    await Authenticate.updateOne({ _id: user._id, verified: true });
+    await token.remove();
+
+    res.status(200).send({ message: "Email verified successfully" });
+
   } catch (error) {
     res.status(500).send({
-      message: 'Email Verification Failure',
+      message: "Email Verification Failure",
       error: error.message,
     });
   }
 });
 
 //login
-authRouter.post('/login', async (req, res) => {
+//check if email is verified (login) if not resend email
+authRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
       res.status(400);
-      throw new Error('Please add all fields');
+      throw new Error("Please add all fields");
     }
 
     const user = await Authenticate.findOne({ email });
-    const secret = process.env.JWT_SECRET;
-    if (user && (await bcrypt.compare(password, user.password))) {
-      res.send({
-        message: 'Success user authorized',
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token: generateToken(user._id),
-      });
-      return;
-    }
-    res.status(401).send({ message: 'Not authorized' });
+    if (!user)
+			return res.status(401).send({ message: "Invalid Email or Password" });
+    const validPassword = await bcrypt.compare(
+			password,
+			user.password
+		);
+		if (!validPassword)
+			return res.status(401).send({ message: "Invalid Email or Password" });
+    
+      
+		if (!user.verified) {
+			let token = await tokenSchema.findOne({ userId: user._id });
+			if (!token) {
+				token = await new tokenSchema({
+					userId: user._id,
+					token: crypto.randomBytes(32).toString("hex"),
+				}).save();
+				const url = `${process.env.BASE_URL}authenicate/${user.id}/verify/${token.token}`;
+				await sendEmail(user.email, "Verify Email", url);
+			}
+			return res
+				.status(400)
+				.send({ message: "An Email sent to your account please verify" });
+		}
+
+		const token = generateToken(user._id);
+		res.status(200).send({ data: token, message: "logged in successfully" });
   } catch (error) {
     res.status(500).send({
-      message: 'Encountered An Error',
+      message: "Encountered An Error",
       error: error.message,
     });
   }
 });
 
-//update user
-// authRouter.put(
-//   '/profile',async (req, res) => {
-//     const user = await Authenticate.findById(req.user._id);
-//     if (user) {
-//       user.name = req.body.name || user.name;
-//       user.email = req.body.email || user.email;
-//       if (req.body.password) {
-//         user.password = bcrypt.hashSync(req.body.password, 8);
-//       }
-
-//       const updatedUser = await user.save();
-//       res.send({
-//         message: 'Success user updated',
-//         email:  updatedUser.email,
-//         isAdmin:  updatedUser.isAdmin,
-//         token: token,
-//       });
-//     } else {
-//       res.status(404).send({ message: 'User not found' });
-//     }
-//   });
-
 //get users
-authRouter.get('/users', async (req, res) => {
+authRouter.get("/users", async (req, res) => {
   try {
-    const userList = await Authenticate.find().select('-password');
+    const userList = await Authenticate.find().select("-password");
     res.send(userList);
   } catch (error) {
     res
       .status(500)
-      .send({ message: ' Error in getting userList.', error: error.message });
+      .send({ message: " Error in getting userList.", error: error.message });
   }
 });
 
 //User Details Update
-authRouter.put('/profile', async (req, res) => {
+authRouter.put("/profile", async (req, res) => {
   try {
   } catch (error) {
     res.status(500).send({
-      message: 'Encountered An Error',
+      message: "Encountered An Error",
       error: error.message,
     });
   }
 });
 
 //User Delete Details
-authRouter.delete('/:userId', async (req, res) => {
+authRouter.delete("/:userId", async (req, res) => {
   try {
     Authenticate.findByIdAndRemove(req.params.userId).then((user) => {
       if (user) {
         return res
           .status(200)
-          .json({ success: true, message: 'user deleted', user });
+          .json({ success: true, message: "user deleted", user });
       } else {
         return res
           .status(404)
-          .json({ success: false, message: 'user not found' });
+          .json({ success: false, message: "user not found" });
       }
     });
   } catch (error) {
     res.status(500).send({
-      message: 'Cannot Delete User',
+      message: "Cannot Delete User",
       error: error.message,
     });
   }
 });
 
+//forgot-password
+
+authRouter.post('/forgot-password',async (req, res) => {
+  const {email} = req.body;
+  const user = await Authenticate.findOne({ email });
+    if (!user)
+			return res.status(401).send({ message: "Invalid Email" });
+
+      const token = user.generateToken();
+      const url = `${process.env.BASE_URL}authenicate/reset_password/${user.id}/${token.token}`;
+    await sendEmail(user.email, "Reset Password", url);
+    res
+      .status(201)
+      .send({
+        user,
+        message: "An Email sent to your account",
+      });
+})
+
+
+//reset password
+authRouter.post('/reset-password/:userId/:token', (req, res) => {
+  const {userId, token} = req.params
+  const {password} = req.body
+
+  jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+      if(err) {
+          return res.json({Status: "Error with token"})
+      } else {
+          bcrypt.hash(password, 10)
+          .then(hash => {
+              UserModel.findByIdAndUpdate({_id:userId}, {password: hash})
+              .then(u => res.send({Status: "Success"}))
+              .catch(err => res.send({Status: err}))
+          })
+          .catch(err => res.send({Status: err}))
+      }
+  })
+})
 module.exports = authRouter;
