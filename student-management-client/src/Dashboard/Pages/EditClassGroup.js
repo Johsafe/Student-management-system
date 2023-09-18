@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 import { base_url } from "../../Utils/baseUrl";
-import profile from "../../Static/profile.png";
+// import profile from "../../Static/profile.png";
 
 export default function EditClassGroupScreen() {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ export default function EditClassGroupScreen() {
   const [description, setDescription] = useState("");
   const [numberOfStudents, setNumberOfStudents] = useState("");
   const [academicYear, setAcademicYear] = useState("");
+  const [image ,setImage] = ([]);
   const params = useParams();
 
   // get a classgroup
@@ -30,6 +31,7 @@ export default function EditClassGroupScreen() {
       setDescription(getaclass.description);
       setNumberOfStudents(getaclass.numberOfStudents);
       setAcademicYear(getaclass.academicYear);
+      setImage(getaclass.classPhoto);
     } catch (err) {
       console.error(err.message);
     }
@@ -52,6 +54,7 @@ export default function EditClassGroupScreen() {
             description,
             academicYear,
             numberOfStudents,
+            image
           }),
           headers: {
             "Content-Type": "Application/json",
@@ -105,8 +108,8 @@ export default function EditClassGroupScreen() {
                     <div>
                       <img
                         className="media"
-                        alt="profile"
-                        src={profile}
+                        alt={abbr}
+                        src={image}
                         style={{
                           width: "100%",                          
                           height: "320px"
@@ -164,7 +167,7 @@ export default function EditClassGroupScreen() {
                         padding: "1rem",
                         display: "flex",
                         gap: "3rem",
-                        height: "250px",
+                        height: "340px",
                       }}
                     >
                       <div style={{ width: "50%" }}>
@@ -244,8 +247,8 @@ export default function EditClassGroupScreen() {
                             id="photo"
                             name="photo"
                             accept="image/*"
-                            // defaultValue={student.studentPhoto}
-                            // onChange={(e) => setStudentPhoto(e.target.files[0])}
+                            defaultValue={image}
+                            onChange={(e) => setImage(e.target.files[0])}
                           />
                         </div>
                       </div>

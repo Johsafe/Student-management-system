@@ -6,7 +6,6 @@ import SideBarDetails from "../Layout/SideBarDetails";
 import Container from "@mui/material/Container";
 import { Box, Card } from "@mui/material";
 import Copyright from "../../Utils/Copyright";
-import bg2 from "../../Static/bg2.png";
 import { toast } from "react-toastify";
 import { getError } from "../../Utils/GetError";
 import { Grid } from "@mui/material";
@@ -80,8 +79,7 @@ export default function StudentsGroupScreen() {
                   <Grid container spacing={1} sx={{ flexWrap: "wrap" }}>
                     {groups.map((group) => (
                       <div className="profile-card-2">
-                        {/* <img src={'http://localhost:8000/' + group.classPhoto} alt={bg2} className="img img-responsive" /> */}
-                        <img src={bg2} className="img img-responsive" />
+                        <img src={group.classPhoto} className="img img-responsive" alt={group.abbr} />
                         <Link to={`/groups/${group._id}/viewclass`}>
                           <div class="profile-name">{group.title}</div>
                           <div class="profile-username">

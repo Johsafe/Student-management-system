@@ -9,7 +9,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import profile from "../../Static/profile.png";
 import Copyright from "../../Utils/Copyright";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
@@ -74,6 +73,7 @@ export default function ViewGroupProfileScreen() {
             flexDirection: "column",
             width: "800px",
             textAlign: "start",
+            height:"350px"
           }}
         >
           <b>
@@ -172,7 +172,7 @@ export default function ViewGroupProfileScreen() {
               justifyContent: "space-between",
               // flexDirection: 'column',
               marginTop: "1rem",
-              gap: "1rem",
+              // gap: "1rem",
             }}
           >
             <div>
@@ -185,12 +185,12 @@ export default function ViewGroupProfileScreen() {
               >
                 <div>
                   <img
-                    src={"http://localhost:8000/" + groups.classPhoto}
+                    src={groups.classPhoto}
                     style={{
                       width: "100%",
                       height: "320px"
                     }}
-                    alt={profile}
+                    alt={groups.abbr}
                   />
                   <Divider />
                   <div

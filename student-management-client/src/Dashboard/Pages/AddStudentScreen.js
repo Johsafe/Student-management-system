@@ -10,6 +10,7 @@ import Copyright from "../../Utils/Copyright";
 import { Card } from "@mui/material";
 import { base_url } from "../../Utils/baseUrl";
 import SideBarDetails from "../Layout/SideBarDetails";
+import axios from "axios";
 
 export default function AddStudentScreen() {
   const navigate = useNavigate();
@@ -19,24 +20,40 @@ export default function AddStudentScreen() {
   const [group, setGroup] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
+  const [image, setImage] = useState(null);
 
   const registerStudent = async (e) => {
     e.preventDefault();
-    try {
-      const body = {
-        firstname,
-        lastname,
-        admission,
-        group,
-        gender,
-        password,
-      };
-      const result = await fetch(`${base_url}student/student`, {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      await result.json();
+      const data = new FormData();
+
+      data.append("file", image);
+      data.append("firstname", firstname);
+      data.append("lastname", lastname);
+      data.append("admission", admission);
+      data.append("group", group);
+      data.append("gender", gender);
+      data.append("password", password);
+      try {
+        // const result = await fetch(`${base_url}classgroup/group`, {
+          const result = await axios.post(`${base_url}student/student`, {
+          data,
+          // headers: { 'Content-type': 'application/json' },
+        });
+      // const body = {
+      //   firstname,
+      //   lastname,
+      //   admission,
+      //   group,
+      //   gender,
+      //   password,
+      // };
+      // const result = await fetch(`${base_url}student/student`, {
+      //   method: "POST",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify(body),
+      // });
+      const pet = await result.json();
+      console.log(pet)
       navigate("/studentreg");
       toast.success("Student Registered Successfully");
     } catch (err) {
@@ -169,7 +186,7 @@ export default function AddStudentScreen() {
                     </div>
                     <div class="mb-2">
                       <label for="year" class="form-label">
-                        Student Pasword
+                        Student Password
                       </label>
                       <input
                         type="text"
@@ -179,6 +196,20 @@ export default function AddStudentScreen() {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
+
+                    <div class="mb-2">
+                        <label for="photo">Student Profile Image</label>
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="photo"
+                          name="photo"
+                          accept="image/*"
+                          onChange={(e)=>setImage(e.target.files[0])}
+                          // onChange={handleProductImageUpload}
+                        />
+                      </div>
+
 
                     <div>
                       {numberOfStudents < length ? (

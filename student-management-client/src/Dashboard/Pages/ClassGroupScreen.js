@@ -1,5 +1,5 @@
 import Card from "@mui/material/Card";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,42 +23,39 @@ export default function ClassGroupScreen() {
   //create new group
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    // const formData = new FormData();
+    const data = new FormData();
 
-    // formData.append('classPhoto', classPhoto);
-    // formData.append('abbr', abbr);
-    // formData.append('title', title);
-    // formData.append('description', description);
-    // formData.append('numberOfStudents', numberOfStudents);
-    // formData.append('academicYear', academicYear);
+    data.append("classPhoto", classPhoto);
+    data.append("abbr", abbr);
+    data.append("title", title);
+    data.append("description", description);
+    data.append("numberOfStudents", numberOfStudents);
+    data.append("academicYear", academicYear);
     try {
-      // const result = await fetch(
-      //   'http://localhost:8000/system/classgroup/group',
-      //   {
-      //     method: 'POST',
-      //     body: formData,
-      //     // headers: { 'Content-type': 'application/json' },
-      //   }
-      // );
-      const { data } = await axios.post(`${base_url}classgroup/group`, {
-        classPhoto,
-        abbr,
-        title,
-        description,
-        numberOfStudents,
-        academicYear,
+        const result = await axios.post(`${base_url}classgroup/group`, {
+        data,
+        // headers: { 'Content-type': 'application/json' },
       });
+          // const { data } = await axios.post(`${base_url}classgroup/group`, {
+          //   classPhoto,
+          //   abbr,
+          //   title,
+          //   description,
+          //   numberOfStudents,
+          //   academicYear,
+          // });
 
-      if (data.success === true) {
-        setAbbr("");
-        setDescription("");
-        setTitle("");
-        setNumberOfStudents("");
-        setAcademicYear("");
-        setClassPhoto("");
-        toast.success("product created successfully");
-      }
-      console.log(data);
+          // if (data.success === true) {
+          //   setAbbr("");
+          //   setDescription("");
+          //   setTitle("");
+          //   setNumberOfStudents("");
+          //   setAcademicYear("");
+          //   setClassPhoto("");
+          //   toast.success("class created successfully");
+          // }
+          // console.log(data);
+      console.log(result);
       toast.success("class added successfully");
       navigate("/groups");
     } catch (err) {
@@ -66,24 +63,40 @@ export default function ClassGroupScreen() {
     }
   };
 
-  //covert image to base 64
-  const handleProductImageUpload = (e) => {
-    const file = e.target.files[0];
-    TransformFileData(file);
-  };
 
-  const TransformFileData = (file) => {
-    const reader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setClassPhoto(reader.result);
-      };
-    } else {
-      setClassPhoto("");
+  //handle and convert it in base 64
+    const handleProductImageUpload = (e) =>{
+        const file = e.target.files[0];
+        setFileToBase(file);
+        console.log(file);
     }
-  };
+
+    const setFileToBase = (file) =>{
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () =>{
+            setClassPhoto(reader.result);
+        }
+
+    }
+  //covert image to base 64
+  // const handleProductImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   TransformFileData(file);
+  // };
+
+  // const TransformFileData = (file) => {
+  //   const reader = new FileReader();
+
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //     reader.onloadend = () => {
+  //       setImage(reader.result);
+  //     };
+  //   } else {
+  //     setImage("");
+  //   }
+  // };
 
   return (
     <div>
@@ -129,12 +142,14 @@ export default function ClassGroupScreen() {
                         <div>
                           <img
                             src={classPhoto}
-                            // sx={{
-                            //   width: "200px",
-                            //   height:'200px'
-                            //   borderRadius: "50%",
-                            //   border: " 1px solid #111",
-                            // }}
+                            alt="image"
+                            sx={{
+                              width: "100px",
+                              height:'100px',
+                              borderRadius: "50%",
+                              border: " 1px solid #111",
+                            }}
+                            
                           />
                         </div>
                       ) : (
@@ -165,18 +180,7 @@ export default function ClassGroupScreen() {
                           onChange={(e) => setTitle(e.target.value)}
                         />
                       </div>
-
-                      {/* <div>
-                        <img
-                            className="media"
-                            src={
-                              
-                            }
-                            style={{ borderRadius: '50%', width: '100%' }}
-                          />
-                        </div> */}
                     </div>
-                    {/* </div> */}
                     <div style={{ width: "50%" }}>
                       <div class="mb-2">
                         <label for="numberOfStudents" class="form-label">
@@ -223,8 +227,8 @@ export default function ClassGroupScreen() {
                           id="photo"
                           name="photo"
                           accept="image/*"
-                          // onChange={(e)=>setClassPhoto(e.target.files[0])}
-                          onChange={handleProductImageUpload}
+                          onChange={(e)=>setClassPhoto(e.target.files[0])}
+                          // onChange={handleProductImageUpload}
                         />
                       </div>
 

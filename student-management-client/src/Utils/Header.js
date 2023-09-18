@@ -8,8 +8,14 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
+import { Navigate } from 'react-router-dom';
 
 const settings = ['Profile', 'Account', 'Logout'];
+// let admin = JSON.parse(localStorage.getItem('Info'));
+// function logOut() {
+//   localStorage.clear();
+//   Navigate('');
+// }
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -84,7 +90,7 @@ export default function Header() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" >{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

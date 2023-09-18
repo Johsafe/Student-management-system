@@ -21,6 +21,7 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 import { base_url } from "../../Utils/baseUrl";
 import DeleteIcon from "@mui/icons-material/Delete";
+import MessageBox from "../../Utils/MessageBox";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -95,7 +96,20 @@ export default function ViewStudentScreen() {
       await fetch(`${base_url}student/suspend/${id}`, {
         method: "PUT",
       });
+      window.location = `/${id}/viewstudent`;
       toast.success("student is suspended");
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+  //unsuspend student
+  async function unsuspendStudent(id) {
+    try {
+      await fetch(`${base_url}student/unsuspend/${id}`, {
+        method: "PUT",
+      });
+      window.location = `/${id}/viewstudent`;
+      toast.success("student is unsuspended");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -236,36 +250,37 @@ export default function ViewStudentScreen() {
               <Card
                 sx={{
                   width: 250,
-                      height: 420,
-                      borderTop: "4px solid #42a5f5",
+                  height: 420,
+                  borderTop: "4px solid #42a5f5",
                 }}
               >
                 <div>
                   <img
-                    src={"http://localhost:8000/" + student.studentPhoto}
+                    src={student.studentPhoto}
                     style={{
-                      width: "100%", height: "320px" 
+                      width: "100%",
+                      height: "320px",
                     }}
                     alt={profile}
                   />
-                <Divider />
-                <div
-                  style={{
-                    textAlign: "center",
-                    marginBottom: "0.5rem",
-                    marginTop: "1rem",
-                  }}
-                >
-                  <h4>
-                    <b>
-                      {student.firstname}
-                      <t /> {student.lastname}
-                    </b>
-                  </h4>
-                  <h4>
-                    <b>{student.admission}</b>
-                  </h4>
-                </div>
+                  <Divider />
+                  <div
+                    style={{
+                      textAlign: "center",
+                      marginBottom: "0.5rem",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <h4>
+                      <b>
+                        {student.firstname}
+                        <t /> {student.lastname}
+                      </b>
+                    </h4>
+                    <h4>
+                      <b>{student.admission}</b>
+                    </h4>
+                  </div>
                 </div>
               </Card>
               <div>
@@ -289,18 +304,45 @@ export default function ViewStudentScreen() {
                 >
                   <Link className="link">Delete Student</Link>
                 </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="medium"
-                  sx={{ width: "100%", marginTop: "0.5rem" }}
-                  onClick={() => suspendStudent(student._id)}
-                >
-                  <Link className="link">Suspend Student</Link>
-                </Button>
+                {student.isBlocked ? (
+                  <div>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="medium"
+                      sx={{ width: "100%", marginTop: "0.5rem" }}
+                      onClick={() => unsuspendStudent(student._id)}
+                    >
+                      <Link className="link"> UnSuspend Student</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="medium"
+                      sx={{ width: "100%", marginTop: "0.5rem" }}
+                      onClick={() => suspendStudent(student._id)}
+                    >
+                      <Link className="link">Suspend Student</Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
             <div>
+              <div>
+                {student.isBlocked ? (
+                  <MessageBox variant="danger">
+                    Student Suspended .Student Account Not Active
+                  </MessageBox>
+                ) : (
+                  <MessageBox variant="success">
+                    Student Account Active
+                  </MessageBox>
+                )}
+              </div>
               <Box sx={{ width: "100%", textAlign: "center" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs value={value} onChange={handleChange}>
