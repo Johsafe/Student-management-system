@@ -17,10 +17,11 @@ const examRouter = require('./Routes/ExamTimeTableRoute.js');
 const studentRouter = require('./Routes/StudentRoute.js');
 const examdateRouter = require('./Routes/ExamDateRoute.js');
 const roomRouter = require('./Routes/RoomRoute.js');
-const dashboardRouter = require('./Routes/DashboardRoute.js');
 const departmentRouter = require('./Routes/DepartmentRoute.js');
 const authRouter = require('./Routes/AuthenticationRoute.js');
 const periodRouter = require('./Routes/PeriodRoute.js');
+const attendanceRouter = require('./Routes/studentAttendanceRoute.js');
+const unitRegRouter = require('./Routes/UnitRegistrationRoute.js');
 
 //connecting routes
 const api = '/system';
@@ -33,9 +34,11 @@ app.use(`${api}/timetable`, examRouter);
 app.use(`${api}/student`, studentRouter);
 app.use(`${api}/room`, roomRouter);
 app.use(`${api}/examdates`, examdateRouter);
-app.use(`${api}/dashboard`, dashboardRouter);
 app.use(`${api}/department`, departmentRouter);
 app.use(`${api}/period`, periodRouter);
+app.use(`${api}/attendance`, attendanceRouter);
+app.use(`${api}/unitreg`, unitRegRouter);
+
 
 //connect to mongodb
 // mongodb://localhost:27017/SchoolSystem

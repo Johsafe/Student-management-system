@@ -15,6 +15,7 @@ const CoursesSchema = mongoose.Schema({
   },
   semister: { type: Number, required: true },
   year: { type: Number, required: true },
+  students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   createdOn: {
     type: Date,
     default: Date.now,

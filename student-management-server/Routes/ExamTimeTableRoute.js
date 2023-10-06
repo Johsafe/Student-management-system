@@ -1,32 +1,91 @@
-const express = require('express');
-const ExamTimetable = require('../Models/ExamTimeTableSchema');
+const express = require("express");
+const ExamTimetable = require("../Models/ExamTimeTableSchema");
+const ExamTitle = require("../Models/ExamTitleSchema");
 const examRouter = express.Router();
 
-// const {
-//   title,
-//   academicYear,
-//   month,
-//   examStartdate,
-//   examStopdate,
-//   examdate,
-//   timeOfday,
-// period
-//   group,
-//   course,
-//   year,
-//   venue,
-//   noofexaminas,
-//   invigilator
-// } = req.body;
-
-examRouter.post('/exam', async (req, res) => {
+//EXAM TITLE ROUTES
+//create
+examRouter.post("/examtitle", async (req, res) => {
   try {
     const {
       title,
+      department,
       academicYear,
       month,
       examStartdate,
       examStopdate,
+    } = req.body;
+
+    const examTitle = new ExamTitle({
+      title,
+      department,
+      academicYear,
+      month,
+      examStartdate,
+      examStopdate,
+    });
+    const examtitle = await examTitle.save();
+    res.status(201).send({ message: "New ExamTitle Created", examtitle });
+  } catch (error) {
+    res.status(500).send({
+      message: " Error in Creating ExamTitle.",
+      error: error.message,
+    });
+  }
+});
+
+//get examtitle
+examRouter.get("/examtitles", async (req, res) => {
+  try {
+    const examtitle = await ExamTitle.find({}).populate("department");
+    res.send(examtitle);
+  } catch (error) {
+    res.status(500).send({
+      message: " Error in getting examtitle.",
+      error: error.message,
+    });
+  }
+});
+
+//get a examtitle by id
+examRouter.get("/:examtitleId", async (req, res) => {
+  try {
+    const examtitle = await ExamTitle.findById(req.params.examtitleId);
+    res.send(examtitle);
+  } catch (error) {
+    res.status(500).send({
+      message: " Error in getting examtitle.",
+      error: error.message,
+    });
+  }
+});
+
+// delete examtible
+examRouter.delete("/:examtitleId", async (req, res) => {
+  try {
+    ExamTitle.findByIdAndRemove(req.params.examtitleId).then((examtitle) => {
+      if (examtitle) {
+        return res
+          .status(200)
+          .json({ success: true, message: "examtitle deleted", examtitle });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "examtitle not found" });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: " Error in getting examtitle.", error: error.message });
+  }
+});
+
+//EXAM TITLETABLE ROUTES
+examRouter.post("/create", async (req, res) => {
+  try {
+    const {
+      name,
       examdate,
       timeOfday,
       period,
@@ -35,80 +94,81 @@ examRouter.post('/exam', async (req, res) => {
       year,
       venue,
       noofexaminas,
-      invigilator
+      invigilator,
     } = req.body;
     const examTimetable = new ExamTimetable({
+      name,
       examdate,
-      session,
-      starttime,
-      stoptime,
+      timeOfday,
+      period,
       group,
       course,
-      room,
+      year,
+      venue,
       noofexaminas,
       invigilator,
     });
     const examtimetable = await examTimetable.save();
     res
       .status(201)
-      .send({ message: 'New Examtimetable Created', examtimetable });
+      .send({ message: "New Examtimetable Created", examtimetable });
   } catch (error) {
     res.status(500).send({
-      message: ' Error in Creating Examtimetable.',
+      message: " Error in Creating Examtimetable.",
       error: error.message,
     });
   }
 });
 
 //get examtimetables
-examRouter.get('/examtimetables', async (req, res) => {
+examRouter.get("/examtimetables", async (req, res) => {
   try {
     const examtimetables = await ExamTimetable.find({}).populate(
-      'group course'
+      "name examdate period group course venue"
     );
     res.send(examtimetables);
   } catch (error) {
     res.status(500).send({
-      message: ' Error in getting examtimetables.',
+      message: " Error in getting examtimetables.",
       error: error.message,
     });
   }
 });
 
 //get a examtimetable by id
-examRouter.get('/:timetableId', async (req, res) => {
+examRouter.get("/:timetableId", async (req, res) => {
   try {
     const examtimetable = await ExamTimetable.findById(req.params.id).populate(
-      'group course'
+      "group course"
     );
     res.send(examtimetable);
   } catch (error) {
     res.status(500).send({
-      message: ' Error in getting examtimetable.',
+      message: " Error in getting examtimetable.",
       error: error.message,
     });
   }
 });
 
-examRouter.put('/:timetableId', async (req, res) => {
+examRouter.put("/:timetableId", async (req, res) => {
   try {
   } catch (error) {}
 });
 //delete a examtimetable
-examRouter.delete('/:timetableId', async (req, res) => {
+examRouter.delete("/:timetableId", async (req, res) => {
   try {
     ExamTimetable.findByIdAndRemove(req.params.timetableId).then(
       (examtimetable) => {
         if (examtimetable) {
           return res.status(200).json({
             success: true,
-            message: 'examtimetable deleted',
+            message: "examtimetable deleted",
             examtimetable,
           });
         } else {
           return res
             .status(404)
-            .json({ success: false, message: 'examtimetable not found' });
+            .json({ success: false, message: "examtimetable not found" });
         }
       }
     );

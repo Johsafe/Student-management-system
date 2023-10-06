@@ -5,7 +5,7 @@ const examdateRouter = express.Router();
 //create new examdate
 examdateRouter.post('/examdates', async (req, res) => {
   try {
-    const { month, date, day } = req.body;
+    const { month, date, day ,week } = req.body;
 
     //confirm if date exists in the system
     const isexamdate = await ExamDate.findOne({ date });
@@ -19,6 +19,7 @@ examdateRouter.post('/examdates', async (req, res) => {
       month,
       date,
       day,
+      week
     });
     const examdates = await examdate.save();
     res.status(201).send({ message: 'New examdate Created', examdates });
@@ -36,7 +37,7 @@ examdateRouter.get('/examdates', async (req, res) => {
     const examdates = await ExamDate.find({});
     res.send(examdates);
   } catch (error) {
-    res
+    res 
       .status(500)
       .send({ message: ' Error in getting examdates.', error: error.message });
   }

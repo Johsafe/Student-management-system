@@ -2,6 +2,7 @@ const express = require("express");
 const { default: mongoose } = require("mongoose");
 const Group = require("../Models/ClassGroupSchema.js");
 const Courses = require("../Models/CoursesSchema.js");
+const Student = require("../Models/StudentSchema.js");
 const courseRouter = express.Router();
 
 //create a course
@@ -28,7 +29,6 @@ courseRouter.post("/create", async (req, res) => {
 });
 
 //update a course
-
 courseRouter.put("/:id", async (req, res) => {
   try {
     //Validate course id
@@ -61,7 +61,9 @@ courseRouter.put("/:id", async (req, res) => {
 //get courses
 courseRouter.get("/courses", async (req, res) => {
   try {
-    const courses = await Courses.find({}).populate("department group");
+    const courses = await Courses.find({}).populate(
+      "department group students"
+    );
     res.send(courses);
   } catch (error) {
     res
@@ -70,10 +72,56 @@ courseRouter.get("/courses", async (req, res) => {
   }
 });
 
+//get paginated courses
+courseRouter.get("/pagination", async (req, res) => {
+  //GET http://localhost:8000/system/course/pagination?page=1&limit=2
+  try {
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const startIndex = (page - 1) * limit;
+    const lastIndex = page * limit;
+
+    const result = {};
+    const totalCourse = await Courses.countDocuments().exec();
+    result.totalCourse = totalCourse;
+
+    if (lastIndex < (await Courses.countDocuments().exec())) {
+      result.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+    if (startIndex > 0) {
+      result.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    result.data = await Courses.find()
+      .populate("department group students")
+      .sort("-_id")
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    result.rowsPerPage = limit;
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({
+      message: "Error in getting paginated courses",
+      error: error.message,
+    });
+  }
+});
+
 //get specific details about a course eg title ,group
 courseRouter.get("/courses", async (req, res) => {
   try {
-    const courses = await Courses.find().select("title group -_id").populate("department group");;
+    const courses = await Courses.find()
+      .select("title group -_id")
+      .populate("department group students");
     res.send(courses);
   } catch (error) {
     res
@@ -83,9 +131,11 @@ courseRouter.get("/courses", async (req, res) => {
 });
 
 //get a course  by id
-courseRouter.get("/:id", async (req, res) => {
+courseRouter.get("/:courseId", async (req, res) => {
   try {
-    const course = await Courses.findById(req.params.id).populate("department group"); 
+    const course = await Courses.findById(req.params.courseId).populate(
+      "department group students"
+    );
     res.send(course);
   } catch (error) {
     res
@@ -134,9 +184,26 @@ courseRouter.get("/group/:groupId/course", async (req, res) => {
   }
 });
 
+//search for course
+courseRouter.get("/search/:key", async (req, res) => {
+  try {
+    let course = await Courses.find({
+      $or: [
+        { title: { $regex: req.params.key } },
+        { code: { $regex: req.params.key } },
+      ],
+    });
+    res.send(course);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while searching for the course." });
+  }
+});
+
 //get the number of all courses
-courseRouter.get('/coursecount', async (req, res) => {
-  const courseCount = await Courses.countDocuments({});
+courseRouter.get("/coursecount", async (req, res) => {
+  const courseCount = await Courses.countDocuments();
   if (courseCount) {
     res.json(courseCount);
   } else {

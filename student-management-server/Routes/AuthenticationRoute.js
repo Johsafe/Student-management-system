@@ -53,7 +53,7 @@ authRouter.post("/create", async (req, res) => {
 });
 
 //verify mail
-authRouter.get(':/userId/verify/:token', async (req, res) => {
+authRouter.get("/:id/verify/:token", async (req, res) => {
   try {
     const user = await Authenticate.findOne({ _id: req.params.id });
     if (!user) return res.status(400).send({ message: "Invalid link" });
@@ -65,7 +65,7 @@ authRouter.get(':/userId/verify/:token', async (req, res) => {
     if (!token) return res.status(400).send({ message: "Invalid link" });
 
     await Authenticate.updateOne({ _id: user._id, verified: true });
-    await token.remove();
+    await token.deleteOne();
 
     res.status(200).send({ message: "Email verified successfully" });
 

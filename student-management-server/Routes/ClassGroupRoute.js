@@ -5,9 +5,10 @@ const Student = require("../Models/StudentSchema.js");
 const groupRouter = express.Router();
 const upload = require("../utils/multer.js");
 const cloudinary = require("../Utils/cloudinary.js");
+const path = require("path");
 
 // *add a new group image with cloudinary*
-groupRouter.post("/group", upload.single("image"), async (req, res) => {
+groupRouter.post("/group", upload.single("classPhoto"), async (req, res) => {
   const {
     abbr,
     title,
@@ -19,7 +20,6 @@ groupRouter.post("/group", upload.single("image"), async (req, res) => {
   try {
     // Upload image to cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
-
     const classGroup = await Group.create({
       abbr,
       title,
@@ -45,7 +45,7 @@ groupRouter.post("/group", upload.single("image"), async (req, res) => {
 //get classGroup
 groupRouter.get("/group", async (req, res) => {
   try {
-    const group = await Group.find({});
+    const group = await Group.find();
     res.send(group);
   } catch (error) {
     res
@@ -71,16 +71,20 @@ groupRouter.get("/group/:groupId", async (req, res) => {
 });
 
 //update class + image
-groupRouter.put("/group/:groupId", upload.single("image"), async (req, res) => {
+groupRouter.put("/group/:groupId", upload.single("classPhoto"), async (req, res) => {
   try {
     const groupexist = await Group.findById(req.params.groupId);
     await cloudinary.uploader.destroy(groupexist.cloudinary_id);
     // Upload new image to cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
+    let result;
+    if(req.file){
+      result = await cloudinary.uploader.upload(req.file.path);
+    }
+    // const result = await cloudinary.uploader.upload(req.file.path);
     const data = {
       abbr: req.body.abbr || groupexist.abbr,
-      classPhoto: result.secure_url || groupexist.classPhoto,
-      cloudinary_id: result.public_id || groupexist.cloudinary_id,
+      classPhoto: result?.secure_url || groupexist.classPhoto,
+      cloudinary_id: result?.public_id || groupexist.cloudinary_id,
       title: req.body.title || groupexist.title,
       description: req.body.description || groupexist.description,
       numberOfStudents: req.body.numberOfStudents || groupexist.numberOfStudents,

@@ -3,9 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Student = require("../Models/StudentSchema");
 studentRouter = express.Router();
-const multer = require("multer");
-const shortid = require("shortid");
-const Dashboard = require("../Models/DashboardSchema");
 const path = require("path");
 const { isAuth } = require("../Middleware/Auth");
 const { generateToken } = require("../Utils/GenerateToken");
@@ -15,55 +12,58 @@ const cloudinary = require("../Utils/cloudinary");
 const upload = require("../utils/multer.js");
 
 //register a new Student into a class
-studentRouter.post("/student", upload.single("image"), async (req, res) => {
-  try {
-    const { firstname, lastname, gender, password } = req.body;
-    //capitalize admission
-    let admission = req.body.admission;
-    let adm = admission.toUpperCase();
+studentRouter.post(
+  "/student",
+  upload.single("studentPhoto"),
+  async (req, res) => {
+    try {
+      const { firstname, lastname, gender, password } = req.body;
+      //capitalize admission
+      let admission = req.body.admission;
+      let adm = admission.toUpperCase();
+      //confirm is user exists in the system
+      const isStudent = await Student.findOne({ admission });
 
-    //confirm is user exists in the system
-    const isStudent = await Student.findOne({ admission });
-
-    if (isStudent) {
-      res.status(400);
-      throw new Error("Student already exists");
-    }
-    //create new student
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const student = await Student.create({
-      firstname,
-      lastname,
-      admission: adm,
-      group: req.body.group,
-      gender,
-      password: bcrypt.hashSync(password, 10),
-      studentPhoto: result.secure_url,
-      cloudinary_id: result.public_id,
-    });
-    const newStudent = await student.save();
-    if (newStudent) {
-      res.status(201).send({
-        message: "Student registered successfully",
-        // newStudent,
-        _id: newStudent.id,
-        admission: newStudent.admission,
-        group: newStudent.group,
-        token: generateToken(newStudent._id),
+      if (isStudent) {
+        res.status(400);
+        throw new Error("Student already exists");
+      }
+      //create new student
+      const result = await cloudinary.uploader.upload(req.file.path);
+      const student = await Student.create({
+        firstname,
+        lastname,
+        admission,
+        group: req.body.group,
+        gender,
+        password: bcrypt.hashSync(password, 10),
+        studentPhoto: result.secure_url,
+        cloudinary_id: result.public_id,
       });
-    } else {
+      const newStudent = await student.save();
+      if (newStudent) {
+        res.status(201).send({
+          message: "Student registered successfully",
+          // newStudent,
+          _id: newStudent.id,
+          admission: newStudent.admission,
+          group: newStudent.group,
+          token: generateToken(newStudent._id),
+        });
+      } else {
+        res.status(500).send({
+          message: "Unable to register student",
+          error: error.message,
+        });
+      }
+    } catch (error) {
       res.status(500).send({
         message: "Unable to register student",
         error: error.message,
       });
     }
-  } catch (error) {
-    res.status(500).send({
-      message: "Unable to register student",
-      error: error.message,
-    });
   }
-});
+);
 
 //get all students
 studentRouter.get("/students", async (req, res) => {
@@ -264,40 +264,21 @@ studentRouter.get(`/studentcount`, async (req, res) => {
   }
 });
 
-// :classgroup
-///:admission
-//get student by searching the students with the given name ,class and admission
-// studentRouter.get('/search/:name', async (req, res) => {
-//   // console.log(req.params.name, req.params.classgroup, req.params.admission)
-//   const student = await Student.findOne({
-//     lastname: req.params.name,
-//     // group: req.params.classgroup,
-//     // admission: req.params.admission,
-//   });
-//   // res.send(student);
-//   res.status(201).send({ message: 'student found', student });
-
-//   if (student) {
-//     res.json(student);
-//   } else {
-//     res.status(404);
-//     res.json({ message: 'No student found with the given information.' });
-//   }
-// });
-
 // // using query params search
 studentRouter.get("/search", async (req, res) => {
-  const { name, classgroup, admission } = req.query;
+  const { lastname, firstname, classgroup, admission } = req.query;
 
   try {
     const student = await Student.findOne({
-      lastname: name,
+      lastname: lastname,
       // group: classgroup,
+      firstname: firstname,
       admission: admission,
     });
 
     if (student) {
       res.status(200).json({ message: "Student found", student });
+      // res.send(student)
     } else {
       res
         .status(404)
@@ -337,7 +318,7 @@ studentRouter.put("/student/:studentId", async (req, res) => {
 //update student profile info
 studentRouter.put(
   "/myprofile/:studentId/update",
-  upload.single("image"),
+  upload.single("studentPhoto"),
   async (req, res) => {
     try {
       //add phone nummber +254 format
@@ -357,21 +338,12 @@ studentRouter.put(
       const phoneNumber = `${phone}`;
       const formattedPhoneNumber = formatKenyanPhoneNumber(phoneNumber);
 
-      // if (formattedPhoneNumber) {
-      //   res.status(201).send({
-      //     success: true,
-      //     message: "Student PHone Number Updated",
-      //   });
-      // } else {
-      //   return res.status(404).json({
-      //     success: false,
-      //     message: `Invalid phone number: ${phoneNumber}`,
-      //   });
-      // }
-
       const studentexist = await Student.findById(req.params.studentId);
       await cloudinary.uploader.destroy(studentexist.cloudinary_id);
-      const result = await cloudinary.uploader.upload(req.file.path);
+      let result;
+      if (req.file) {
+        result = await cloudinary.uploader.upload(req.file.path);
+      }
       //update a student
 
       const data = {
@@ -408,23 +380,12 @@ studentRouter.put(
 );
 
 //update student password
-studentRouter.put("/:studentId/pass", async (req, res) => {
-  // console.log('change pass');
-
-  // try {
-  //   const {studentId} =req.params;
-  //   const salt = await bcrypt.genSalt(10);
-  //   const password = await bcrypt.hash(req.body.password, salt);
-  //   const userpass = await Student.findByIdAndUpdate({_id:studentId},{password:password},{new:true});
-  //   return res.status(200).json({status:true,data:userpass})
-  // } catch (error) {
-
-  // }
+studentRouter.patch("/:studentId/pass", async (req, res) => {
   try {
     const student = await Student.findById(req.params.studentId).select(
       "+password"
     );
-    const isPasswordMatched = await student.compareSync(
+    const isPasswordMatched = await student.compare(
       req.body.oldPassword,
       student.password
     );
@@ -434,10 +395,12 @@ studentRouter.put("/:studentId/pass", async (req, res) => {
     if (req.body.newPassword !== req.body.confirmPassword) {
       return res.status(400).send("Password not matched with each other");
     }
-    student.password = req.body.newPassword;
 
+    student.password = req.body.newPassword;
     const newpass = await student.save();
-    res.send(newpass);
+    return res
+      .status(200)
+      .json({ success: true, message: "Password change successful", newpass });
   } catch (error) {
     res.status(500).send({
       message: "failed to update your password!!!",
@@ -504,57 +467,46 @@ studentRouter.delete("/student/:studentId", async (req, res) => {
   }
 });
 
-//Attendance routes
-//the following route is for marking attendance
-studentRouter.post("/mark", async (req, res) => {
+//get paginated students
+studentRouter.get("/pagination", async (req, res) => {
   try {
-    const { group, students } = req.body;
-    const attendance = new StudentAttendance({
-      group,
-      students,
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const startIndex = (page - 1) * limit;
+    const lastIndex = page * limit;
+
+    const result = {};
+    const totalstudents = await Student.countDocuments().exec();
+    result.totalstudents = totalstudents;
+
+    if (lastIndex < (await Student.countDocuments().exec())) {
+      result.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+    if (startIndex > 0) {
+      result.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    result.data = await Student.find()
+      .populate("group")
+      .sort("-_id")
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    result.rowsPerPage = limit;
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({
+      message: "Error in getting paginated students",
+      error: error.message,
     });
-    const attend = await attendance.save();
-    res.status(201).json({ message: "Attendance marked successfully." });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while marking student attendance." });
-  }
-});
-
-// the following route is for loading attendance and students info.
-studentRouter.get("/class/:groupId/attendance", async (req, res) => {
-  // if (!mongoose.isValidObjectId(req.params.groupId)) {
-  //   return res.status(400).send('Invalid group Id');
-  // }
-  const students = await StudentAttendance.findOne({
-    attendanceDate: new Date(),
-    // new Date()
-    group: req.params.groupId,
-  });
-  // console.log("students",students.length())
-
-  // if (students.length === 0) {
-  //   return res.status(404).json({ message: 'No attendance records found for the group.' });
-  // }
-
-  // res.json(students);
-  if (students) {
-    console.log(students);
-
-    res.json(students);
-  } else {
-    res.status(404).json({ message: "No students found." });
-  }
-});
-
-//the following route is for getting all attendance marked
-studentRouter.get("/attendance", async (req, res) => {
-  try {
-    const attendance = await StudentAttendance.find({});
-    res.send(attendance);
-  } catch (error) {
-    res.status(500).json({ message: "no attendance found" });
   }
 });
 

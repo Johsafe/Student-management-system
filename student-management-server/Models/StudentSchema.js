@@ -10,7 +10,7 @@ const studentSchema = mongoose.Schema({
   email: {
     type: String,
     lowerCase: true,
-    unique: true,
+    // unique: true,
     validate: {
       validator: function (emailUsed) {
         return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(emailUsed);
@@ -46,6 +46,13 @@ const studentSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  attendance: {
+    type: String,
+    enum: ["present", "absent", "excused"],
+    default: "absent",
+  },
+},{
+  timestamps: true,
 });
 
 const Student = mongoose.model("Student", studentSchema);
