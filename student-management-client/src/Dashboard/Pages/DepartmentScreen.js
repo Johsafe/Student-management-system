@@ -9,8 +9,7 @@ import Container from "@mui/material/Container";
 import Copyright from "../../Utils/Copyright";
 import { toast } from "react-toastify";
 import { getError } from "../../Utils/GetError";
-import { Link, useNavigate } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
+import { Link } from "react-router-dom";
 import { Box } from "@mui/material";
 import Header from "../../Utils/Header";
 import { base_url } from "../../Utils/baseUrl";
@@ -24,7 +23,6 @@ export default function DepartmentScreen() {
   //register a department
   const [abbr, setAbbr] = useState("");
   const [title, setTitle] = useState("");
-  const navigate = useNavigate();
 
   const onSubmitForm = async (e) => {
     e.preventDefault();

@@ -9,6 +9,8 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import SchoolIcon from '@mui/icons-material/School';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 export default function SideBarDetails() {
   return (
     <div>
@@ -74,13 +76,27 @@ export default function SideBarDetails() {
                 Sessions
               </li>
             </Link>
+            <h3 className="sidebarTitle">Sub-Menu</h3>
             <Link to={'/search'} className="link">
               <li className="sidebarListItem">
                 <SearchIcon className="sidebarIcon" />
                 Search
               </li>
             </Link>
+            <Link to={'/attendance'} className="link">
+              <li className="sidebarListItem">
+                <EventAvailableIcon className="sidebarIcon" />
+                Mark Attendance
+              </li>
+            </Link>
+            <Link to={'/prevattendance'} className="link">
+              <li className="sidebarListItem">
+                <EventNoteIcon className="sidebarIcon" />
+                Previous Attendance
+              </li>
+            </Link>
           </ul>
+
         </div>
       </div>
     </div>

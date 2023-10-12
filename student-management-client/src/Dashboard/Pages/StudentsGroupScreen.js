@@ -18,13 +18,10 @@ export default function StudentsGroupScreen() {
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
-      const response = await fetch(
-        `${base_url}classgroup/group`
-      );
+      const response = await fetch(`${base_url}classgroup/group`);
       const getgroups = await response.json();
       setGroups(getgroups);
       setLoading(true);
-      // console.log(getgroups);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -79,9 +76,13 @@ export default function StudentsGroupScreen() {
                   <Grid container spacing={1} sx={{ flexWrap: "wrap" }}>
                     {groups.map((group) => (
                       <div className="profile-card-2">
-                        <img src={group.classPhoto} className="img img-responsive" alt={group.abbr} />
+                        <img
+                          src={group.classPhoto}
+                          className="img img-responsive"
+                          alt={group.abbr}
+                        />
                         <Link to={`/groups/${group._id}/viewclass`}>
-                          <div class="profile-name">{group.title}</div>
+                          <div class="profile-name">{group.abbr}</div>
                           <div class="profile-username">
                             {group.academicYear}
                           </div>

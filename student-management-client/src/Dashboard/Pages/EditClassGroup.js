@@ -7,7 +7,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 import { base_url } from "../../Utils/baseUrl";
-// import profile from "../../Static/profile.png";
 
 export default function EditClassGroupScreen() {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ export default function EditClassGroupScreen() {
   const [description, setDescription] = useState("");
   const [numberOfStudents, setNumberOfStudents] = useState("");
   const [academicYear, setAcademicYear] = useState("");
-  const [image ,setImage] = ([]);
+  const [classPhoto, setClassPhoto] = useState([]);
   const params = useParams();
 
   // get a classgroup
@@ -31,9 +30,9 @@ export default function EditClassGroupScreen() {
       setDescription(getaclass.description);
       setNumberOfStudents(getaclass.numberOfStudents);
       setAcademicYear(getaclass.academicYear);
-      setImage(getaclass.classPhoto);
+      setClassPhoto(getaclass.classPhoto);
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
 
@@ -43,22 +42,20 @@ export default function EditClassGroupScreen() {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    const data = new FormData();
+
+    data.append("classPhoto", classPhoto);
+    data.append("abbr", abbr);
+    data.append("title", title);
+    data.append("description", description);
+    data.append("numberOfStudents", numberOfStudents);
+    data.append("academicYear", academicYear);
     try {
       let updateclass = await fetch(
         `${base_url}classgroup/group/${params.groupId}`,
         {
           method: "PUT",
-          body: JSON.stringify({
-            abbr,
-            title,
-            description,
-            academicYear,
-            numberOfStudents,
-            image
-          }),
-          headers: {
-            "Content-Type": "Application/json",
-          },
+          body: data,
         }
       );
       await updateclass.json();
@@ -109,7 +106,7 @@ export default function EditClassGroupScreen() {
                       <img
                         className="media"
                         alt={abbr}
-                        src={image}
+                        src={classPhoto}
                         style={{
                           width: "100%",                          
                           height: "320px"
@@ -247,8 +244,8 @@ export default function EditClassGroupScreen() {
                             id="photo"
                             name="photo"
                             accept="image/*"
-                            defaultValue={image}
-                            onChange={(e) => setImage(e.target.files[0])}
+                            defaultValue={classPhoto}
+                            onChange={(e) => setClassPhoto(e.target.files[0])}
                           />
                         </div>
                       </div>

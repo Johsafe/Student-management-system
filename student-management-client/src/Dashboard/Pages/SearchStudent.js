@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Copyright from '../../Utils/Copyright';
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect, useState } from "react";
+import Copyright from "../../Utils/Copyright";
+import { Helmet } from "react-helmet-async";
 import {
   Box,
   Button,
@@ -9,67 +9,41 @@ import {
   Divider,
   Stack,
   TextField,
-} from '@mui/material';
-import SideBarDetails from '../Layout/SideBarDetails';
-import bg2 from '../../Static/bg2.png';
-import MenuItem from '@mui/material/MenuItem';
-import Header from '../../Utils/Header';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import { Link, useParams } from 'react-router-dom';
-import { base_url } from '../../Utils/baseUrl';
-import axios from 'axios';
-
-const classgroup = [
-  {
-    value: 'Bachelor of Graphics',
-    label: 'GRP',
-  },
-  {
-    value: 'Bachelor of Computer Science',
-    label: 'COMP',
-  },
-  {
-    value: 'Bachelor of Statistics',
-    label: 'STATS',
-  },
-  {
-    value: 'Info Science',
-    label: 'Info Science',
-  },
-];
+} from "@mui/material";
+import SideBarDetails from "../Layout/SideBarDetails";
+// import bg2 from "../../Static/bg2.png";
+// import MenuItem from "@mui/material/MenuItem";
+import Header from "../../Utils/Header";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import { Link } from "react-router-dom";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function SearchStudent() {
+  const [student, setStudent] = useState([]);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [admission, setAdmission] = useState("");
 
-    //search from on submit
-  // const onSubmitForm = async (e) => {
-  //   e.preventDefault();
-  //   try {
-     
-  //   } catch (err) {
-  //     toast.error(getError(err));
-  //   }
-  // };
-
-//search
-    async function GetStudentSearched(){
-			try {
-				const url = `${base_url}student/search`;
-				const { data } = await axios.get(url);
-				console.log(data);
-			} catch (err) {
-				toast.error(getError(err));
-			}
-		};
-
+  //search
+  async function GetStudentSearched() {
+    try {
+      const url = `${base_url}student/search?lastname=${lastname}&firstname=${firstname}&admission=${admission}`;
+      // const { getdata } = await axios.get(url);
+      const response = await fetch(url);
+      const getdata = await response.json();
+      setStudent(getdata.student);
+      console.log(getdata);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
 
   //Get Groups
   const [groups, setGroups] = useState([]);
   async function getGroups() {
     try {
-      const response = await fetch(
-        `${base_url}classgroup/group`
-      );
+      const response = await fetch(`${base_url}classgroup/group`);
       const getgroups = await response.json();
       setGroups(getgroups);
       // console.log(getgroups);
@@ -82,15 +56,15 @@ export default function SearchStudent() {
     getGroups();
   }, []);
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <SideBarDetails />
       <Box
         component="main"
         sx={{
           // backgroundColor: '#eceff1',
           flexGrow: 1,
-          height: '100vh',
-          overflow: 'auto',
+          height: "100vh",
+          overflow: "auto",
         }}
       >
         <Header />
@@ -98,12 +72,12 @@ export default function SearchStudent() {
           <Helmet>
             <title>Search</title>
           </Helmet>
-          <div style={{ margin: '2rem' }}>
+          <div style={{ margin: "2rem" }}>
             <h1>Search For A Student</h1>
             <Card
               style={{
-                padding: '2rem',
-                borderTop: '4px solid #42a5f5',
+                padding: "2rem",
+                borderTop: "4px solid #42a5f5",
               }}
             >
               <div>
@@ -118,17 +92,29 @@ export default function SearchStudent() {
                   >
                     <TextField
                       required
-                      id="studentname"
-                      label="Name"
-                      name="studentname"
+                      id="lastname"
+                      label="Lastname"
+                      name="lastname"
                       autoFocus
                       variant="standard"
-                      helperText="Please input student name"
-                      // value={name}
-                      // onChange={(e) => setName(e.target.value)}
+                      helperText="Please input student lastname"
+                      value={lastname}
+                      onChange={(e) => setLastname(e.target.value)}
                     />
 
                     <TextField
+                      required
+                      id="firstname"
+                      label="Firstname"
+                      name="firstname"
+                      autoFocus
+                      variant="standard"
+                      helperText="Please input student firstname"
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
+                    />
+
+                    {/* <TextField
                       id="select-class"
                       select
                       label="Select Class"
@@ -143,7 +129,7 @@ export default function SearchStudent() {
                           {group.abbr}
                         </MenuItem>
                       ))}
-                    </TextField>
+                    </TextField> */}
 
                     <TextField
                       required
@@ -153,39 +139,38 @@ export default function SearchStudent() {
                       autoFocus
                       variant="standard"
                       helperText="Please input student admission"
-                      // value={admission}
-                      // onChange={(e) => setAdmission(e.target.value)}
+                      value={admission}
+                      onChange={(e) => setAdmission(e.target.value)}
                     />
-                    <Button variant="contained"  onClick={() => GetStudentSearched()}><Link className='link'>Search Student</Link></Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => GetStudentSearched()}
+                    >
+                      <Link className="link">Search Student</Link>
+                    </Button>
                   </Stack>
                 </form>
                 <Divider sx={{ m: 3 }} />
               </div>
 
-              <div style={{ display: 'flex' }}>
+              <div>
+                {/* {student.length > 0 ? ( */}
                 <div className="profile-card-2">
-                  <img src={bg2} className="img img-responsive" />
-                  <div class="profile-name">JOHN DOE PETERSON</div>
-                  <div class="profile-username">@johndoesurname</div>
+                  <img
+                    src={student.studentPhoto}
+                    className="img img-responsive"
+                    alt={student.firstname}
+                  />
+                  <Link to={`/${student._id}/viewstudent`}>
+                    <div class="profile-name">
+                      {student.firstname} <t /> {student.lastname}
+                    </div>
+                    <div class="profile-username">@{student.email}</div>
+                  </Link>
                 </div>
-
-                <div className="profile-card-2">
-                  <img src={bg2} className="img img-responsive" />
-                  <div class="profile-name">JOHN DOE PETERSON</div>
-                  <div class="profile-username">@johndoesurname</div>
-                </div>
-
-                <div className="profile-card-2">
-                  <img src={bg2} className="img img-responsive" />
-                  <div class="profile-name">JOHN DOE PETERSON</div>
-                  <div class="profile-username">@johndoesurname</div>
-                </div>
-
-                <div className="profile-card-2">
-                  <img src={bg2} className="img img-responsive" />
-                  <div class="profile-name">JOHN DOE PETERSON</div>
-                  <div class="profile-username">@johndoesurname</div>
-                </div>
+                {/* // ) : (
+                //   <MessageBox variant="success">Please Select Filters</MessageBox>
+                // )} */}
               </div>
             </Card>
           </div>

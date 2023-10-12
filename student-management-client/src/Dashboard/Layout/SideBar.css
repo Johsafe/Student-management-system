@@ -12,9 +12,9 @@
   scrollbar-width: none;
 }
 .sidebarTitle {
-  font-style: 13px;
+  font-size: 18px;
   color: #42a5f5;
-  padding-top: 20px;
+  padding-top: 2px;
 }
 .sidebarListItem {
   cursor: pointer;

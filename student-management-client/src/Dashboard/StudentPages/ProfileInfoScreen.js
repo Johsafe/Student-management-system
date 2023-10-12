@@ -251,7 +251,7 @@ export default function ProfileInfoScreen() {
               >
                 <div>
                   <img
-                    src={"http://localhost:8000/" + student.studentPhoto}
+                    src={student.studentPhoto}
                     style={{
                       width: "100%",
                       height: "320px",
@@ -317,7 +317,7 @@ export default function ProfileInfoScreen() {
                 </TabPanel>
 
                 <TabPanel value={value} index={2}>
-                  <StudentUnitRegitration />
+                  <StudentUnitRegitration group={student.group} studentId={student._id} student={student}/>
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                   <ChangePassword />

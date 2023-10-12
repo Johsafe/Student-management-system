@@ -55,8 +55,7 @@ export default function EditCoursesScreen() {
           // authorization: `Bearer ${Info.token}`,
         },
       });
-      const result = await updatecourse.json();
-      // console.warn(result);
+      await updatecourse.json();
       toast.success("course updated successfully");
       navigate("/course");
     } catch (err) {

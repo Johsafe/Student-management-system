@@ -10,7 +10,6 @@ import Copyright from "../../Utils/Copyright";
 import { Card } from "@mui/material";
 import { base_url } from "../../Utils/baseUrl";
 import SideBarDetails from "../Layout/SideBarDetails";
-import axios from "axios";
 
 export default function AddStudentScreen() {
   const navigate = useNavigate();
@@ -20,13 +19,13 @@ export default function AddStudentScreen() {
   const [group, setGroup] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
 
   const registerStudent = async (e) => {
     e.preventDefault();
       const data = new FormData();
 
-      data.append("file", image);
+      data.append("studentPhoto", image);
       data.append("firstname", firstname);
       data.append("lastname", lastname);
       data.append("admission", admission);
@@ -34,26 +33,11 @@ export default function AddStudentScreen() {
       data.append("gender", gender);
       data.append("password", password);
       try {
-        // const result = await fetch(`${base_url}classgroup/group`, {
-          const result = await axios.post(`${base_url}student/student`, {
-          data,
-          // headers: { 'Content-type': 'application/json' },
-        });
-      // const body = {
-      //   firstname,
-      //   lastname,
-      //   admission,
-      //   group,
-      //   gender,
-      //   password,
-      // };
-      // const result = await fetch(`${base_url}student/student`, {
-      //   method: "POST",
-      //   headers: { "Content-type": "application/json" },
-      //   body: JSON.stringify(body),
-      // });
-      const pet = await result.json();
-      console.log(pet)
+       const res = await fetch(`${base_url}student/student`, {
+        method: "POST",
+        body: data,
+      });
+      // console.log(res)
       navigate("/studentreg");
       toast.success("Student Registered Successfully");
     } catch (err) {

@@ -21,7 +21,7 @@ export default function EditStudentScreen() {
   const [phone, setPhone] = useState("");
   const [DOB, setDOB] = useState("");
   const [presentAddress, setPresentAddress] = useState("");
-  const [studentPhoto, setStudentPhoto] = useState("");
+  const [studentPhoto, setStudentPhoto] = useState([]);
 
   const editStudent = async (e) => {
     e.preventDefault();
@@ -39,22 +39,20 @@ export default function EditStudentScreen() {
       let result = await fetch(
         `${base_url}student/myprofile/${user._id}/update`,
         {
-          method: "PATCH",
+          method: "PUT",
           body: formData,
           headers: {
             authorization: `Bearer ${user.token}`,
           },
         }
       );
-      sessionStorage.setItem("pic", result.studentPhoto);
       toast.success("student editted successfully");
       navigate("/profile");
     } catch (err) {
       toast.error(getError(err));
     }
   };
-
-  const [student, setStudent] = useState([]);
+  //get student details
   async function getAstudent() {
     try {
       const response = await fetch(`${base_url}student/student/${user._id}`, {
@@ -64,7 +62,6 @@ export default function EditStudentScreen() {
         },
       });
       const astudent = await response.json();
-      setStudent(astudent);
       setFirstname(astudent.firstname);
       setLastname(astudent.lastname);
       setEmail(astudent.email);
@@ -74,7 +71,7 @@ export default function EditStudentScreen() {
       setPresentAddress(astudent.presentAddress);
       setStudentPhoto(astudent.studentPhoto);
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
 
@@ -125,12 +122,15 @@ export default function EditStudentScreen() {
                       borderTop: "4px solid #42a5f5",
                     }}
                   >
-                    <div>
+                     <div>
                       <img
                         className="media"
-                        alt="prof"
-                        src={"http://localhost:8000/" + student.studentPhoto}
-                        style={{ width: "100%", height: "320px" }}
+                        alt={firstname}
+                        src={studentPhoto}
+                        style={{
+                          width: "100%",                          
+                          height: "320px"
+                        }}
                       />
                     </div>
                     <Divider />
@@ -295,7 +295,7 @@ export default function EditStudentScreen() {
                                 id="photo"
                                 name="photo"
                                 accept="image/*"
-                                defaultValue={student.studentPhoto}
+                                defaultValue={studentPhoto}
                                 onChange={(e) =>
                                   setStudentPhoto(e.target.files[0])
                                 }

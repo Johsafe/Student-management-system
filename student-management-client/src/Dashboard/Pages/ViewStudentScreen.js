@@ -16,12 +16,12 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import StudentUnitRegitration from "../StudentPages/StudentUnitRegitration ";
 import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 import { base_url } from "../../Utils/baseUrl";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MessageBox from "../../Utils/MessageBox";
+import StudentUnitAdminReg from "./StudentUnitAdminReg";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -358,7 +358,7 @@ export default function ViewStudentScreen() {
                   <OtherInfo />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                  <StudentUnitRegitration />
+                  <StudentUnitAdminReg studentId={student._id} />
                 </TabPanel>
               </Box>
             </div>

@@ -28,7 +28,7 @@ function Copyright(props) {
 }
 
 const mainFeaturedPost = {
-  title: 'Online Room Booking For Schools Examination Hall',
+  title: 'School Management System',
   description:
     'Designed to let the administration to manage and have an easy time to set exams timetable and classes',
   image: 'https://source.unsplash.com/random',
@@ -38,9 +38,9 @@ const mainFeaturedPost = {
 
 const featuredPosts = [
   {
-    title: 'Booking',
+    title: 'Admissions',
     description:
-      'Lectures can book rooms where there students would take exams from.',
+      'Register Students.',
     image: 'https://source.unsplash.com/random',
     imageLabel: 'Image Text',
   },

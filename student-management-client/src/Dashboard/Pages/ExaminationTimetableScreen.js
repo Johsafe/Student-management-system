@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import SideBarDetails from '../Layout/SideBarDetails';
-import Container from '@mui/material/Container';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import LoadingBox from '../../Utils/LoadingBox';
-import Copyright from '../../Utils/Copyright';
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import SideBarDetails from "../Layout/SideBarDetails";
+import Container from "@mui/material/Container";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import LoadingBox from "../../Utils/LoadingBox";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import moment from "moment";
 
 export default function ExaminationTimetableScreen() {
   const [loading, setLoading] = useState(false);
@@ -17,43 +21,62 @@ export default function ExaminationTimetableScreen() {
   useEffect(() => {
     setLoading(true);
   }, []);
+  const [examtitles, setExamtitles] = useState([]);
+
+  //get examdatess
+  async function getexamtitle() {
+    try {
+      const response = await fetch(`${base_url}timetable/examtitles`);
+      const gettitle = await response.json();
+      setExamtitles(gettitle);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+
+  useEffect(() => {
+    getexamtitle();
+  }, []);
+
+  //delete course
+  async function delExamtitle(id) {
+    try {
+      await fetch(`${base_url}timetable/${id}`, {
+        method: "DELETE",
+      });
+      setExamtitles(examtitles.filter((examtitles) => examtitles._id !== id));
+      toast.success("examtitle deleted successfully");
+      console.log(id);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+
+  var i = 1;
   return (
     <div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <SideBarDetails />
         <Container>
           <Helmet>
             <title>EXAMINATION TIMETABLE</title>
           </Helmet>
-          <div style={{ margin: '3rem' }}>
+          <div style={{ margin: "3rem" }}>
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                borderBottom: '4px solid #42a5f5',
+                display: "flex",
+                justifyContent: "space-between",
+                borderBottom: "4px solid #42a5f5",
               }}
             >
-              <h1>EXAMINATION TIMETABLE</h1>
-              
+              <h1>EXAM TIMETABLE</h1>
               <div>
-                
-                  {' '}
-                  <Button variant="contained" size="medium">
-                    <Link to="/examdates" className="link">
-                    Create Examdates
-                    </Link>
-                  </Button>
-                
-              </div>
-              <div>
-                
-                  {' '}
-                  <Button variant="contained" size="medium">
+                {" "}
+                <Button variant="contained" size="medium">
                   <Link to="/create" className="link">
                     Create New Timetable
-                    </Link>
-                  </Button>
-                
+                  </Link>
+                </Button>
               </div>
             </div>
 
@@ -72,36 +95,40 @@ export default function ExaminationTimetableScreen() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>#</td>
-                        <td>END OF SEMISTER </td>
-                        <td>2022/2023</td>
-                        <td>APRIL 2023</td>
-                        <td>SSAES</td>
-                        <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: 'flex' }}
-                            >
-                              <Button>
-                                <Link to="/examination/edit">
-                                  <EditIcon />
-                                </Link>
-                              </Button>
-                              <Button>
-                                <DeleteIcon style={{ color: 'red' }} />
-                              </Button>
-                              <Button>
-                                <Link to="/examination/view">
-                                  <VisibilityIcon />
-                                </Link>
-                              </Button>
-                            </ButtonGroup>
-                          </div>
-                        </td>
-                      </tr>
+                      {examtitles.map((examtitle) => (
+                        <tr>
+                          <td>{i++}</td>
+                          <td>{examtitle.title} </td>
+                          <td>{examtitle.academicYear}</td>
+                          <td>{moment(examtitle.month).format("MMMM-YYYY")}</td>
+                          <td>{examtitle.department.abbr}</td>
+                          <td>
+                            <div>
+                              <ButtonGroup
+                                variant="text"
+                                aria-label="text button group"
+                                style={{ display: "flex" }}
+                              >
+                                <Button>
+                                  <Link to="/examination/edit">
+                                    <EditIcon />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  onClick={() => delExamtitle(examtitle._id)}
+                                >
+                                  <DeleteIcon style={{ color: "red" }} />
+                                </Button>
+                                <Button>
+                                  <Link to="/examination/view">
+                                    <VisibilityIcon />
+                                  </Link>
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

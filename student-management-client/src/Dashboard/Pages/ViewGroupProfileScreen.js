@@ -19,8 +19,9 @@ import ClassStudentsScreen from "./ClassStudentsScreen";
 import { toast } from "react-toastify";
 import { getError } from "../../Utils/GetError";
 import StudentAttendance from "./StudentAttendance";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { base_url } from "../../Utils/baseUrl";
+import DeleteClassModalScreen from "./DeleteClassModalScreen";
+import MessageBox from "../../Utils/MessageBox";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,14 +74,14 @@ export default function ViewGroupProfileScreen() {
             flexDirection: "column",
             width: "800px",
             textAlign: "start",
-            height:"350px"
+            height: "350px",
           }}
         >
           <b>
             <h3>General Information</h3>
           </b>
 
-          <div style={{ fontSize: "17px"}}>
+          <div style={{ fontSize: "17px" }}>
             <p>
               {/* Class Title: <t /> */}
               {groups.title}
@@ -117,6 +118,7 @@ export default function ViewGroupProfileScreen() {
       );
       const getgroups = await response.json();
       setGroups(getgroups);
+      console.log(getgroups);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -125,19 +127,6 @@ export default function ViewGroupProfileScreen() {
   useEffect(() => {
     getGroups();
   }, []);
-
-  //Delete class
-  const deleteGroup = async (id) => {
-    try {
-      await fetch(`${base_url}classgroup/group/${id}`, {
-        method: "DELETE",
-      });
-      toast.success("group deleted successfully");
-      navigate("/groups");
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
 
   return (
     <div>
@@ -188,7 +177,7 @@ export default function ViewGroupProfileScreen() {
                     src={groups.classPhoto}
                     style={{
                       width: "100%",
-                      height: "320px"
+                      height: "320px",
                     }}
                     alt={groups.abbr}
                   />
@@ -217,24 +206,11 @@ export default function ViewGroupProfileScreen() {
                   size="medium"
                   sx={{ width: "100%", marginTop: "0.5rem" }}
                 >
-                  <Link
-                    to={`/groups/${groups._id}/classedit`}
-                    
-                    className="link"
-                  >
+                  <Link to={`/groups/${groups._id}/classedit`} className="link">
                     Update Class
                   </Link>
                 </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="medium"
-                  sx={{ width: "100%", marginTop: "0.5rem" }}
-                  onClick={() => deleteGroup(groups._id)}
-                  startIcon={<DeleteIcon />}
-                >
-                  <Link className="link">Delete Class</Link>
-                </Button>
+                <DeleteClassModalScreen group={groups} />
               </div>
             </div>
             <div>
@@ -251,13 +227,14 @@ export default function ViewGroupProfileScreen() {
                   <GeneralInfo />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                  <AdminUnitRegitration />
+                  <AdminUnitRegitration group={groups} />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                   <ClassStudentsScreen />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                  <StudentAttendance />
+                  {/* <StudentAttendance /> */}
+                  <MessageBox>Development In Progress</MessageBox>
                 </TabPanel>
               </Box>
             </div>

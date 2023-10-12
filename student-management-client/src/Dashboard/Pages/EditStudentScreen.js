@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Container from '@mui/material/Container';
-import { toast } from 'react-toastify';
-import { getError } from '../../Utils/GetError';
-import { Helmet } from 'react-helmet-async';
-import { Card, Divider } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Grid, Paper } from '@mui/material';
-import Copyright from '../../Utils/Copyright';
-import { base_url } from '../../Utils/baseUrl';
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Container from "@mui/material/Container";
+import { toast } from "react-toastify";
+import { getError } from "../../Utils/GetError";
+import { Helmet } from "react-helmet-async";
+import { Card, Divider } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { Grid, Paper } from "@mui/material";
+import Copyright from "../../Utils/Copyright";
+import { base_url } from "../../Utils/baseUrl";
 
 export default function AdminEditStudentScreen() {
   const navigate = useNavigate();
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [email, setEmail] = React.useState('');
-  const [gender, setGender] = useState('');
-  const [phone, setPhone] = useState('');
-  const [DOB, setDOB] = useState('');
-  const [presentAddress, setPresentAddress] = useState('');
-  const [admission, setAdmission] = useState('');
-  const [group, setGroup] = useState('');
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [gender, setGender] = useState("");
+  const [phone, setPhone] = useState("");
+  const [DOB, setDOB] = useState("");
+  const [presentAddress, setPresentAddress] = useState("");
+  const [admission, setAdmission] = useState("");
+  const [group, setGroup] = useState("");
+  const [studentPhoto, setStudentPhoto] = useState([]);
   const params = useParams();
 
   //edit student
@@ -31,7 +32,7 @@ export default function AdminEditStudentScreen() {
       let updateastudent = await fetch(
         `${base_url}student/student/${params.studentId}`,
         {
-          method: 'PUT',
+          method: "PUT",
           body: JSON.stringify({
             firstname,
             lastname,
@@ -40,30 +41,25 @@ export default function AdminEditStudentScreen() {
             group,
           }),
           headers: {
-            'Content-Type': 'Application/json',
+            "Content-Type": "Application/json",
           },
         }
       );
-      await updateastudent.json();
-      toast.success('student editted successfully');
+      const upd = await updateastudent.json();
+      console.log(upd)
+      toast.success("student editted successfully");
       navigate(`/${params.studentId}/viewstudent`);
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
-  //
-  const [student, setStudent] = useState([]);
   async function getAstudent() {
     try {
       const response = await fetch(
-        `${base_url}student/student/${params.studentId}`,
-        {
-          method: 'GET',
-        }
+        `${base_url}student/student/${params.studentId}`
       );
       const astudent = await response.json();
-      setStudent(astudent);
       setFirstname(astudent.firstname);
       setLastname(astudent.lastname);
       setEmail(astudent.email);
@@ -73,8 +69,9 @@ export default function AdminEditStudentScreen() {
       setPresentAddress(astudent.presentAddress);
       setAdmission(astudent.admission);
       setGroup(astudent.group.abbr);
+      setStudentPhoto(astudent.studentPhoto);
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
 
@@ -84,24 +81,24 @@ export default function AdminEditStudentScreen() {
 
   return (
     <div>
-      <div style={{ padding: '1rem' }}>
+      <div style={{ padding: "1rem" }}>
         <Container>
           <Helmet>
             <title>Edit Student Profile</title>
           </Helmet>
           <div
             style={{
-              display: 'flex',
-              gap: '5rem',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              display: "flex",
+              gap: "5rem",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {' '}
+            {" "}
             <div>
               <Link
                 to={`/${params.studentId}/viewstudent`}
-                style={{ textDecoration: 'none', color: 'white' }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <Button variant="contained" size="medium" color="error">
                   Back to Profile
@@ -114,41 +111,44 @@ export default function AdminEditStudentScreen() {
           </div>
 
           <div>
-            <div style={{ padding: '1rem' }}>
+            <div style={{ padding: "1rem" }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{
-                      borderTop: '4px solid #42a5f5',
+                      borderTop: "4px solid #42a5f5",
                       width: 250,
                       height: 420,
                     }}
                   >
                     <div>
-                      <div class="mb-2">
+                      <div>
                         <img
                           className="media"
-                          alt='profile'
-                          src={'http://localhost:8000/' + student.studentPhoto}
-                          style={{width: '100%' ,height: "320px" }}
+                          alt={firstname}
+                          src={studentPhoto}
+                          style={{
+                            width: "100%",
+                            height: "320px",
+                          }}
                         />
                       </div>
-                      <Divider/>
-                      <div style={{ textAlign: 'center',marginTop: '0.5rem' }}>
+                      <Divider />
+                      <div style={{ textAlign: "center", marginTop: "0.5rem" }}>
                         <h5>
                           <b>{admission} </b>
                         </h5>
                         <h5>
-                          <b>  {group}</b>
+                          <b> {group}</b>
                         </h5>
                       </div>
                     </div>
                   </Card>
-                  <div style={{ marginTop: '0.5rem' }}>
+                  <div style={{ marginTop: "0.5rem" }}>
                     <Button
                       variant="contained"
                       size="medium"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                       type="submit"
                       value="send"
                       onClick={editStudent}
@@ -162,9 +162,9 @@ export default function AdminEditStudentScreen() {
                   <Paper
                     sx={{
                       p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      borderTop: '4px solid #42a5f5',
+                      display: "flex",
+                      flexDirection: "column",
+                      borderTop: "4px solid #42a5f5",
                     }}
                   >
                     <b>
@@ -172,14 +172,14 @@ export default function AdminEditStudentScreen() {
                     </b>
                     <div
                       style={{
-                        display: 'flex',
-                        gap: '3rem',
-                        padding: '1rem',
+                        display: "flex",
+                        gap: "3rem",
+                        padding: "1rem",
                       }}
                     >
                       <div
                         style={{
-                          width: '22rem',
+                          width: "22rem",
                         }}
                       >
                         <div>
@@ -253,7 +253,7 @@ export default function AdminEditStudentScreen() {
 
                       <div
                         style={{
-                          width: '22rem',
+                          width: "22rem",
                         }}
                       >
                         <div>
@@ -316,9 +316,9 @@ export default function AdminEditStudentScreen() {
                   <Paper
                     sx={{
                       p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginTop: '2rem',
+                      display: "flex",
+                      flexDirection: "column",
+                      marginTop: "2rem",
                     }}
                   >
                     <b>

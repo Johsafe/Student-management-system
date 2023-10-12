@@ -20,7 +20,7 @@ import AllStudentsScreen from "../Dashboard/Pages/StudentsScreen";
 import ReportScreen from "../Dashboard/Pages/ReportsScreen";
 import RoomsScreen from "../Dashboard/Pages/RoomsScreen";
 import SessionScreen from "../Dashboard/Pages/SessionScreen";
-import DashboardContent from "../Dashboard/Layout/OverviewScreen";
+import DashboardContent from "../Dashboard/Layout/OverviewDashboardScreen";
 import ProfileInfoScreen from "../Dashboard/StudentPages/ProfileInfoScreen";
 import EditStudentScreen from "../Dashboard/StudentPages/EditStudentScreen";
 // others
@@ -39,6 +39,10 @@ import SignupScreen from "../Components/Pages/SignupScreen";
 import SigninScreen from "../Components/Pages/SignInScreen";
 import EmailVerify from "../Components/Pages/EmailVerifyScreen";
 import BasicModalDialog from "../Dashboard/Pages/test";
+import StudentAttendance from "../Dashboard/Pages/StudentAttendance";
+import Profile from "../Dashboard/Profile/profile";
+import ViewCourseScreen from "../Dashboard/Pages/ViewCoursesScreen";
+import GetStudentAttendance from "../Dashboard/Pages/GetStudentAttendance";
 
 export default function NavigationRoutes() {
   return (
@@ -49,7 +53,10 @@ export default function NavigationRoutes() {
         <Route path="/login" element={<SigninScreen />} />
         <Route path="/signup" element={<SignupScreen />} />
         <Route path="/forget" element={<ForgetPassScreen />} />
-        <Route path="/authenicate/:id/verify/:token" element={<EmailVerify />} />
+        <Route
+          path="/authenicate/:id/verify/:token"
+          element={<EmailVerify />}
+        />
         <Route exact path="/dashboard" element={<DashboardContent />} />
         <Route path="/reports" element={<ReportScreen />} />
         <Route path="/course" element={<CourseScreen />} />
@@ -75,7 +82,9 @@ export default function NavigationRoutes() {
         <Route path="/search" element={<SearchStudent />} />
         <Route path="/department" element={<DepartmentScreen />} />
         <Route path="/studentreg" element={<AllStudentsScreen />} />
+
         <Route path="/:studentId/viewstudent" element={<ViewStudentScreen />} />
+        <Route path="/:courseId/viewcourse" element={<ViewCourseScreen />} />
         <Route
           path="/:studentId/editstudent"
           element={<AdminEditStudentScreen />}
@@ -89,8 +98,11 @@ export default function NavigationRoutes() {
           element={<ViewGroupProfileScreen />}
         />
         <Route path="/test" element={<BasicModalDialog />} />
+        <Route path="/test2" element={<Profile />} />
 
         <Route path="/examdates" element={<ExamDatesScreen />} />
+        <Route path="/attendance" element={<StudentAttendance />} />
+        <Route path="/prevattendance" element={<GetStudentAttendance />} />
 
         <Route path="*" element={<PageError />} />
       </Routes>

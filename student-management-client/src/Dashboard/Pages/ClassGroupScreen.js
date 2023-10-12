@@ -7,7 +7,6 @@ import SideBarDetails from "../Layout/SideBarDetails";
 import Container from "@mui/material/Container";
 import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
-import axios from "axios";
 import Copyright from "../../Utils/Copyright";
 import { base_url } from "../../Utils/baseUrl";
 
@@ -32,30 +31,11 @@ export default function ClassGroupScreen() {
     data.append("numberOfStudents", numberOfStudents);
     data.append("academicYear", academicYear);
     try {
-        const result = await axios.post(`${base_url}classgroup/group`, {
-        data,
-        // headers: { 'Content-type': 'application/json' },
+      const res = await fetch(`${base_url}classgroup/group`, {
+        method: "POST",
+        body: data,
       });
-          // const { data } = await axios.post(`${base_url}classgroup/group`, {
-          //   classPhoto,
-          //   abbr,
-          //   title,
-          //   description,
-          //   numberOfStudents,
-          //   academicYear,
-          // });
-
-          // if (data.success === true) {
-          //   setAbbr("");
-          //   setDescription("");
-          //   setTitle("");
-          //   setNumberOfStudents("");
-          //   setAcademicYear("");
-          //   setClassPhoto("");
-          //   toast.success("class created successfully");
-          // }
-          // console.log(data);
-      console.log(result);
+      console.log(res)
       toast.success("class added successfully");
       navigate("/groups");
     } catch (err) {
@@ -138,11 +118,11 @@ export default function ClassGroupScreen() {
                     }}
                   >
                     <div style={{ width: "50%" }}>
-                      {classPhoto ? (
+                      {/* {classPhoto ? (
                         <div>
                           <img
                             src={classPhoto}
-                            alt="image"
+                            alt='image'
                             sx={{
                               width: "100px",
                               height:'100px',
@@ -154,7 +134,7 @@ export default function ClassGroupScreen() {
                         </div>
                       ) : (
                         <p>Product image upload preview will appear here!</p>
-                      )}
+                      )} */}
 
                       <div class="mb-2">
                         <label for="name" class="form-label">
