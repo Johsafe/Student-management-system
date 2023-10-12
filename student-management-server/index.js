@@ -20,7 +20,7 @@ const roomRouter = require('./Routes/RoomRoute.js');
 const departmentRouter = require('./Routes/DepartmentRoute.js');
 const authRouter = require('./Routes/AuthenticationRoute.js');
 const periodRouter = require('./Routes/PeriodRoute.js');
-const attendanceRouter = require('./Routes/studentAttendanceRoute.js');
+const attendanceRouter = require('./Routes/StudentAttendanceRoute.js');
 const unitRegRouter = require('./Routes/UnitRegistrationRoute.js');
 
 //connecting routes

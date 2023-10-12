@@ -26,6 +26,15 @@ module.exports.userMiddleware = (req, res, next) => {
   next();
 };
 
+module.exports.admin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized as an admin");
+  }
+};
+
 module.exports.adminMiddleware = (req, res, next) => {
   if (req.user.role !== 'admin') {
     return res.status(400).json({
