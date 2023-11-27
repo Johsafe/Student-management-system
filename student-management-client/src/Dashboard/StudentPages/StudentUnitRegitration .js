@@ -6,16 +6,19 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 import MessageBox from "../../Utils/MessageBox";
 
-export default function StudentUnitRegitration({group , student ,studentId}) {
-   //get students class unit registerd
+export default function StudentUnitRegitration({ group, student, studentId }) {
+  //get students class unit registerd
   const [classcourse, setClasscourse] = React.useState([]);
+  let User = JSON.parse(localStorage.getItem("Details"));
 
   async function getcourses() {
     try {
-      const response = await fetch(`${base_url}course/group/${group._id}/course`);
+      const response = await fetch(
+        `${base_url}course/group/${group._id}/course`
+      );
       const getclasscourses = await response.json();
       setClasscourse(getclasscourses);
-      console.warn(getclasscourses)
+      console.warn(getclasscourses);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -24,9 +27,9 @@ export default function StudentUnitRegitration({group , student ,studentId}) {
   React.useEffect(() => {
     getcourses();
   }, []);
- 
-  // 
-//student unit registration
+
+  //
+  //student unit registration
   // async (isbn, userId) => {
   //   const res = await fetch("/v1/user/borrow", {
   //     method: "POST",
@@ -37,19 +40,22 @@ export default function StudentUnitRegitration({group , student ,studentId}) {
   // },
   async function regUnit(id) {
     try {
-     const res = await fetch(`${base_url}unitreg/unitreg`, {
+      const res = await fetch(`${base_url}unitreg/unitreg`, {
         method: "POST",
-        body:JSON.stringify({ studentId,id }),
-        headers: { "Content-Type": "application/json" },
-      })
+        body: JSON.stringify({ studentId, id }),
+        headers: {
+         "Content-Type": "application/json" ,
+          authorization: `Bearer ${User.token}`,
+        },
+      });
       const reg = await res.json();
-      console.warn(reg)
+      console.warn(reg);
       toast.success("Unit added");
     } catch (err) {
       toast.error(getError(err));
     }
   }
-   var i= 1;
+  var i = 1;
   return (
     <div>
       <div
@@ -65,39 +71,38 @@ export default function StudentUnitRegitration({group , student ,studentId}) {
 
       <div>
         <div>
-          
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">S/N</th>
-                    <th scope="col">Unit Code</th>
-                    <th scope="col">Unit Name</th>
-                    <th scope="col">Semeter</th>
-                    <th scope="col">Year</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {
-            classcourse.map((unit) => (
-                  <tr key={unit._id}>
-                    <th scope="row">{i++}</th>
-                    <td>{unit.code} </td>
-                    <td>{unit.title}</td>
-                    <td>{unit.semister}</td>
-                    <td>{unit.year}</td>
-                    <td>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">S/N</th>
+                <th scope="col">Unit Code</th>
+                <th scope="col">Unit Name</th>
+                <th scope="col">Semeter</th>
+                <th scope="col">Year</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {classcourse.map((unit) => (
+                <tr key={unit._id}>
+                  <th scope="row">{i++}</th>
+                  <td>{unit.code} </td>
+                  <td>{unit.title}</td>
+                  <td>{unit.semister}</td>
+                  <td>{unit.year}</td>
+                  <td>
                     <Button
-                    onClick={() => regUnit(unit._id)}
-                    //  disabled={unit && student  && unit.borrowedBy.includes(studentId)}
-                     >Confirm</Button>
-                    </td>
-                  </tr>
-                   ))}
-                </tbody>
-              </table>
-           
+                      onClick={() => regUnit(unit._id)}
 
+                      //  disabled={unit && student  && unit.borrowedBy.includes(studentId)}
+                    >
+                      Enroll
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

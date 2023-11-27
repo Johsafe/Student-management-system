@@ -76,6 +76,18 @@ export default function SideBarDetails() {
                 Sessions
               </li>
             </Link>
+             <Link to={'/session'} className="link">
+              <li className="sidebarListItem">
+                <ScheduleIcon className="sidebarIcon" />
+                Lecturers
+              </li>
+            </Link>
+            <Link to={'/session'} className="link">
+              <li className="sidebarListItem">
+                <ScheduleIcon className="sidebarIcon" />
+                Users
+              </li>
+            </Link>
             <h3 className="sidebarTitle">Sub-Menu</h3>
             <Link to={'/search'} className="link">
               <li className="sidebarListItem">

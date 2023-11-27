@@ -11,6 +11,7 @@ import Copyright from "../../Utils/Copyright";
 import { base_url } from "../../Utils/baseUrl";
 
 export default function ClassGroupScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [abbr, setAbbr] = useState("");
   const [title, setTitle] = useState("");
@@ -33,9 +34,11 @@ export default function ClassGroupScreen() {
     try {
       const res = await fetch(`${base_url}classgroup/group`, {
         method: "POST",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
         body: data,
       });
-      console.log(res)
       toast.success("class added successfully");
       navigate("/groups");
     } catch (err) {
@@ -59,25 +62,6 @@ export default function ClassGroupScreen() {
         }
 
     }
-  //covert image to base 64
-  // const handleProductImageUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   TransformFileData(file);
-  // };
-
-  // const TransformFileData = (file) => {
-  //   const reader = new FileReader();
-
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //     reader.onloadend = () => {
-  //       setImage(reader.result);
-  //     };
-  //   } else {
-  //     setImage("");
-  //   }
-  // };
-
   return (
     <div>
       <div style={{ display: "flex" }}>

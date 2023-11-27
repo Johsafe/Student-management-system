@@ -12,6 +12,7 @@ import { base_url } from "../../Utils/baseUrl";
 import SideBarDetails from "../Layout/SideBarDetails";
 
 export default function AddStudentScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -35,6 +36,9 @@ export default function AddStudentScreen() {
       try {
        const res = await fetch(`${base_url}student/student`, {
         method: "POST",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
         body: data,
       });
       // console.log(res)

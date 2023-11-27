@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Card,
-  Checkbox,
   Container,
   Divider,
   Stack,
@@ -83,7 +82,7 @@ export default function StudentAttendance() {
     }
   }
   console.log(studentList);
-  console.warn(courseDetails)
+  console.warn(courseDetails);
 
   //mark attendance list
   const [attendanceData, setAttendanceData] = useState({});
@@ -94,7 +93,7 @@ export default function StudentAttendance() {
     }));
   };
 
-  var i =1 ;
+  var i = 1;
   return (
     <div style={{ display: "flex" }}>
       <SideBarDetails />
@@ -192,6 +191,7 @@ export default function StudentAttendance() {
                     display: "flex",
                     alignItems: "center",
                     gap: "8rem",
+                    // flexDirection: "column",
                   }}
                 >
                   <div>
@@ -246,57 +246,55 @@ export default function StudentAttendance() {
                     </thead>
                     <tbody>
                       {studentList.map((student) => (
-                          <tr key={student._id}>
-                            <th scope="row">{i++}</th>
-                            <td>{student.admission} </td>
-                            <td>{student.lastname}</td>
-                            <td>{student.firstname} </td>
-                            <td>{student.email} </td>
-                            <td>
-                              <FormControl>
-                                <RadioGroup
-                                  row
-                                  aria-labelledby="demo-row-radio-buttons-group-label"
-                                  name="row-radio-buttons-group"
-                                >
-                                  <FormControlLabel
-                                    value="present"
-                                    control={<Radio />}
-                                    color="success"
-                                    size="small"
-                                    label="Present"
-                                    // checked={attendanceData[student._id] === 'absent'}
-                                    // onChange={() =>
-                                    //   handleAttendanceChange(student._id, 'present')
-                                    // }
-                                  />
-                                  <FormControlLabel
-                                    value="absent"
-                                    control={<Radio size="small" />}
-                                    color="danger"
-                                    label="Absent"
-                                    // checked={attendanceData[student._id] === 'absent'}
-                                    // onChange={() =>
-                                    //   handleAttendanceChange(student._id, 'absent')
-                                    // }
-                                  />
-                                  <FormControlLabel
-                                    value="excused"
-                                    control={
-                                      <Radio sx={{ fontSize: "20px" }} />
-                                    }
-                                    color="secondary"
-                                    label="Excused"
-                                    // checked={attendanceData[student._id] === 'excused'}
-                                    //           onChange={() =>
-                                    //   handleAttendanceChange(student._id, 'excused')
-                                    // }
-                                  />
-                                </RadioGroup>
-                              </FormControl>
-                            </td>
-                          </tr>
-                        ))}
+                        <tr key={student._id}>
+                          <th scope="row">{i++}</th>
+                          <td>{student.admission} </td>
+                          <td>{student.lastname}</td>
+                          <td>{student.firstname} </td>
+                          <td>{student.email} </td>
+                          <td>
+                            <FormControl>
+                              <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                              >
+                                <FormControlLabel
+                                  value="present"
+                                  control={<Radio />}
+                                  color="success"
+                                  size="small"
+                                  label="Present"
+                                  // checked={attendanceData[student._id] === 'absent'}
+                                  // onChange={() =>
+                                  //   handleAttendanceChange(student._id, 'present')
+                                  // }
+                                />
+                                <FormControlLabel
+                                  value="absent"
+                                  control={<Radio size="small" />}
+                                  color="danger"
+                                  label="Absent"
+                                  // checked={attendanceData[student._id] === 'absent'}
+                                  // onChange={() =>
+                                  //   handleAttendanceChange(student._id, 'absent')
+                                  // }
+                                />
+                                <FormControlLabel
+                                  value="excused"
+                                  control={<Radio sx={{ fontSize: "20px" }} />}
+                                  color="secondary"
+                                  label="Excused"
+                                  // checked={attendanceData[student._id] === 'excused'}
+                                  //           onChange={() =>
+                                  //   handleAttendanceChange(student._id, 'excused')
+                                  // }
+                                />
+                              </RadioGroup>
+                            </FormControl>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

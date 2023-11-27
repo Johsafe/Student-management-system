@@ -56,7 +56,7 @@ const CoursesCard = () => {
   const [courseCount, setCourseCount] = React.useState([]);
   async function countCourses() {
     try {
-      const response = await fetch(`${base_url}course/coursecount`);
+      const response = await fetch(`${base_url}course`);
       const getcount = await response.json();
       setCourseCount(getcount);
       console.log(getcount);
@@ -67,10 +67,11 @@ const CoursesCard = () => {
   React.useEffect(() => {
     countCourses();
   }, []);
+  
   return (
     <>
       <CardWrapper border={false} content={false}>
-        <Box sx={{ p: 2.25 }}>
+        <Box sx={{ p: 1.4 }}>
           <Grid container direction="column">
             <Grid item>
               <Grid container justifyContent="space-between">
@@ -112,7 +113,7 @@ const CoursesCard = () => {
                       mt: 1,
                     }}
                   >
-                    {/* {courseCount} */}
+                    {courseCount}
                   </Typography>
                 </Grid>
               </Grid>

@@ -33,7 +33,7 @@ export default function SigninScreen() {
       const url = `${base_url}authenicate/login`;
       const { data } = await axios.post(url, body);
       localStorage.setItem("token", JSON.stringify(data));
-      toast.success("Logged Successfully");
+      toast.success("Admin Logged Successfully");
       navigate("/dashboard");
     } catch (error) {
       toast.error(getError(error));
@@ -42,9 +42,7 @@ export default function SigninScreen() {
 
   //show pass
   const [showPassword, setShowPassword] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };

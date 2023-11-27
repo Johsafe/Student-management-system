@@ -11,6 +11,7 @@ import Copyright from "../../Utils/Copyright";
 import { base_url } from "../../Utils/baseUrl";
 
 export default function AddCoursesScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("");
@@ -24,12 +25,15 @@ export default function AddCoursesScreen() {
     e.preventDefault();
     try {
       const body = { group, code, title, department, semister, year };
-      const result = await fetch(`${base_url}course/create`, {
+      const courseadd = await fetch(`${base_url}course/create`, {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
         body: JSON.stringify(body),
       });
-      await result.json();
+      await courseadd.json();
       toast.success("course added successfully");
       navigate("/course");
     } catch (err) {
@@ -170,7 +174,7 @@ export default function AddCoursesScreen() {
                         Semister
                       </label>
                       <input
-                        type="number"
+                        type="text"
                         class="form-control"
                         id="semister"
                         value={semister}

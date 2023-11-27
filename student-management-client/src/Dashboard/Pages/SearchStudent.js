@@ -40,21 +40,21 @@ export default function SearchStudent() {
   }
 
   //Get Groups
-  const [groups, setGroups] = useState([]);
-  async function getGroups() {
-    try {
-      const response = await fetch(`${base_url}classgroup/group`);
-      const getgroups = await response.json();
-      setGroups(getgroups);
-      // console.log(getgroups);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+  // const [groups, setGroups] = useState([]);
+  // async function getGroups() {
+  //   try {
+  // const response = await fetch(`${base_url}classgroup/group`);
+  // const getgroups = await response.json();
+  // setGroups(getgroups);
+  // console.log(getgroups);
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // }
 
-  useEffect(() => {
-    getGroups();
-  }, []);
+  // useEffect(() => {
+  //   getGroups();
+  // }, []);
   return (
     <div style={{ display: "flex" }}>
       <SideBarDetails />

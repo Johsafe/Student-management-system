@@ -36,7 +36,6 @@ export default function AllStudentsScreen() {
 
   //paginate
   function handlePageClick(e) {
-    // console.log(e);
     currentPage.current = e.selected + 1;
     paginatedStudents();
   }
@@ -86,10 +85,13 @@ export default function AllStudentsScreen() {
       let result = await fetch(`${base_url}student/search/${key}`);
       result = await result.json();
       if (result) {
-        setStudents(result);
+        // setStudents(result);
+        setData(result)
+        
       }
     } else {
-      getStudents();
+      // getStudents();
+      paginatedStudents()
     }
   }
 

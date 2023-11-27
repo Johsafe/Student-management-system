@@ -57,6 +57,7 @@ function a11yProps(index) {
 }
 
 export default function ViewStudentScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const params = useParams();
   const navigate = useNavigate();
   const [student, setStudent] = useState([]);
@@ -83,6 +84,9 @@ export default function ViewStudentScreen() {
     try {
       await fetch(`${base_url}student/group/${params.id}/students/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       toast.success("student deleted successfully");
       navigate("/studentreg");
@@ -95,7 +99,11 @@ export default function ViewStudentScreen() {
     try {
       await fetch(`${base_url}student/suspend/${id}`, {
         method: "PUT",
+         headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
+
       window.location = `/${id}/viewstudent`;
       toast.success("student is suspended");
     } catch (err) {
@@ -107,6 +115,9 @@ export default function ViewStudentScreen() {
     try {
       await fetch(`${base_url}student/unsuspend/${id}`, {
         method: "PUT",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       window.location = `/${id}/viewstudent`;
       toast.success("student is unsuspended");

@@ -17,6 +17,7 @@ import EditDepartmentScreen from "./EditDepartmentScreen";
 
 export default function DepartmentScreen() {
   //get department
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [loading, setLoading] = useState(false);
   const [department, setDepartment] = useState([]);
 
@@ -33,7 +34,10 @@ export default function DepartmentScreen() {
       };
       const result = await fetch(`${base_url}department/department`, {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
         body: JSON.stringify(body),
       });
       await result.json();
@@ -60,11 +64,14 @@ export default function DepartmentScreen() {
     getDepartment();
   }, []);
 
-  //delete course
+  //delete deparments
   async function deleteDepts(id) {
     try {
       await fetch(`${base_url}department/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       setDepartment(department.filter((department) => department._id !== id));
       toast.success("department deleted successfully");

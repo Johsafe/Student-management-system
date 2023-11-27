@@ -14,6 +14,7 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 
 export default function EditRoomScreen({ room }) {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [edit, setEdit] = React.useState({
     //taking known values
     capacity: room.capacity,
@@ -34,7 +35,10 @@ export default function EditRoomScreen({ room }) {
 
       const updateroom = await fetch(`${base_url}room/${room._id}`, {
         method: "PUT",
-        headers: { "Content-Type": " application/json" },
+        headers: {
+          "Content-Type": " application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
         body: JSON.stringify(body),
       });
       const updatedroom = await updateroom.json();

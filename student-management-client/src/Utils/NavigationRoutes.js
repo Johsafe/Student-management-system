@@ -20,7 +20,7 @@ import AllStudentsScreen from "../Dashboard/Pages/StudentsScreen";
 import ReportScreen from "../Dashboard/Pages/ReportsScreen";
 import RoomsScreen from "../Dashboard/Pages/RoomsScreen";
 import SessionScreen from "../Dashboard/Pages/SessionScreen";
-import DashboardContent from "../Dashboard/Layout/OverviewDashboardScreen";
+// import OverviewScreen from "../Dashboard/Layout/OverviewDashboardScreen";
 import ProfileInfoScreen from "../Dashboard/StudentPages/ProfileInfoScreen";
 import EditStudentScreen from "../Dashboard/StudentPages/EditStudentScreen";
 // others
@@ -43,6 +43,7 @@ import StudentAttendance from "../Dashboard/Pages/StudentAttendance";
 import Profile from "../Dashboard/Profile/profile";
 import ViewCourseScreen from "../Dashboard/Pages/ViewCoursesScreen";
 import GetStudentAttendance from "../Dashboard/Pages/GetStudentAttendance";
+import OverviewScreen from "../Dashboard/Layout/OverviewDashboardScreen";
 
 export default function NavigationRoutes() {
   return (
@@ -57,7 +58,10 @@ export default function NavigationRoutes() {
           path="/authenicate/:id/verify/:token"
           element={<EmailVerify />}
         />
-        <Route exact path="/dashboard" element={<DashboardContent />} />
+        <PrivateRoute>
+          <Route exact path="/dashboard" element={<OverviewScreen />} />
+        </PrivateRoute>
+
         <Route path="/reports" element={<ReportScreen />} />
         <Route path="/course" element={<CourseScreen />} />
         <Route path="/add" element={<AddCoursesScreen />} />

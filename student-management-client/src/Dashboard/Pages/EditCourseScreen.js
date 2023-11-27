@@ -11,13 +11,13 @@ import Copyright from "../../Utils/Copyright";
 import { base_url } from "../../Utils/baseUrl";
 
 export default function EditCoursesScreen() {
-  //get course Details
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [course, setCourse] = useState([]);
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("");
-  const [group, setGroup] = useState('');
-  const [department, setDepartment] = useState('');
+  const [group, setGroup] = useState("");
+  const [department, setDepartment] = useState("");
   const [semister, setSemister] = useState("");
   const [year, setYear] = useState("");
   const params = useParams();
@@ -52,7 +52,7 @@ export default function EditCoursesScreen() {
         body: JSON.stringify({ code, title, semister, year }),
         headers: {
           "Content-Type": "Application/json",
-          // authorization: `Bearer ${Info.token}`,
+          authorization: `Bearer ${Token.token}`,
         },
       });
       await updatecourse.json();
@@ -148,7 +148,6 @@ export default function EditCoursesScreen() {
                         id="title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-
                       />
                     </div>
 

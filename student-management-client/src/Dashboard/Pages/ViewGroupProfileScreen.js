@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Copyright from "../../Utils/Copyright";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
@@ -110,7 +110,6 @@ export default function ViewGroupProfileScreen() {
   //Get Groups
   const params = useParams();
   const [groups, setGroups] = useState([]);
-  const navigate = useNavigate();
   async function getGroups() {
     try {
       const response = await fetch(
@@ -118,7 +117,6 @@ export default function ViewGroupProfileScreen() {
       );
       const getgroups = await response.json();
       setGroups(getgroups);
-      console.log(getgroups);
     } catch (err) {
       toast.error(getError(err));
     }

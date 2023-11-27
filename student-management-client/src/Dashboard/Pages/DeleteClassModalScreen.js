@@ -13,14 +13,17 @@ import { Link } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function DeleteClassModalScreen({ group }) {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [open, setOpen] = React.useState(false);
   //delete group
   async function deletegroup(id) {
     try {
       await fetch(`${base_url}classgroup/group/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
-
       window.location = "/groups";
       toast.success("class deleted successfully");
     } catch (err) {
@@ -63,7 +66,7 @@ export default function DeleteClassModalScreen({ group }) {
             Are you sure you want to Permanantly Delete
             {""}
             <br />
-            {group.abbr}
+            {group.title}
           </Typography>
           <Box
             sx={{ display: "flex", gap: 1, justifyContent: "flex-end", pt: 2 }}

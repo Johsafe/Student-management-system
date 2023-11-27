@@ -16,6 +16,7 @@ import { base_url } from "../../Utils/baseUrl";
 import EditRoomScreen from "./EditRoomScreen";
 
 export default function RoomsScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   //get Room
   const [room, setRoom] = useState([]);
 
@@ -34,7 +35,10 @@ export default function RoomsScreen() {
       };
       const result = await fetch(`${base_url}room/room`, {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
         body: JSON.stringify(body),
       });
       await result.json();
@@ -65,6 +69,10 @@ export default function RoomsScreen() {
     try {
       await fetch(`${base_url}room/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       setRoom(room.filter((room) => room._id !== id));
       toast.success("room deleted successfully");

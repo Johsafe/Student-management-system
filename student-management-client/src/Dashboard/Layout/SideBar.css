@@ -24,17 +24,17 @@
   border-radius: 48px 0 0 48px;
   background: transparent;
   /* margin-left: 6px; */
-  border-radius: 48px 0 0 48px;
-  padding: 4px;
+  padding: 3px;
   overflow-x: hidden;
   width: 100%;
+  /* font-size: 15px; */
 }
 
 .sidebarListItem:hover {
-  background-color: rgb(228, 228, 228);
+  background-color: rgb(233, 228, 228);
   position: relative;
   align-items: center;
-  padding: 4px;
+  padding: 3px;
   width: 100%;
   margin: 0;
 }

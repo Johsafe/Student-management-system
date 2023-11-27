@@ -14,6 +14,7 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 
 export default function EditDepartmentScreen({ department }) {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [edit, setEdit] = React.useState({
     //taking known values
     abbr: department.abbr,
@@ -33,7 +34,10 @@ export default function EditDepartmentScreen({ department }) {
         `${base_url}department/${department._id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": " application/json" },
+          headers: {
+            "Content-type": "application/json",
+            authorization: `Bearer ${Token.token}`,
+          },
           body: JSON.stringify(body),
         }
       );

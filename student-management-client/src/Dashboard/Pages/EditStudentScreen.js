@@ -12,6 +12,7 @@ import Copyright from "../../Utils/Copyright";
 import { base_url } from "../../Utils/baseUrl";
 
 export default function AdminEditStudentScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -38,15 +39,15 @@ export default function AdminEditStudentScreen() {
             lastname,
             gender,
             admission,
-            group,
+            // group,
           }),
           headers: {
             "Content-Type": "Application/json",
+            authorization: `Bearer ${Token.token}`,
           },
         }
       );
-      const upd = await updateastudent.json();
-      console.log(upd)
+      await updateastudent.json();
       toast.success("student editted successfully");
       navigate(`/${params.studentId}/viewstudent`);
     } catch (err) {

@@ -12,14 +12,17 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 
 export default function DeleteStudentModalScreen({ student }) {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [open, setOpen] = React.useState(false);
   //delete student
   async function deleteStudent(id) {
     try {
       await fetch(`${base_url}student/student/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
-
       window.location = "/studentreg";
       toast.success("students deleted successfully");
     } catch (err) {
@@ -53,11 +56,8 @@ export default function DeleteStudentModalScreen({ student }) {
             textColor="text.tertiary"
           >
             Are you sure you want to Permanantly Delete 
-            {''}
-            <br/>
-              {student.firstname} 
-            {''}
-            <br/>{student.admission}?
+            {''}-            
+            {student.admission}          
           </Typography>
           <Box
             sx={{ display: "flex", gap: 1, justifyContent: "flex-end", pt: 2 }}

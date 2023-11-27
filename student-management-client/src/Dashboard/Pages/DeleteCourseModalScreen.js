@@ -12,12 +12,16 @@ import { getError } from "../../Utils/GetError";
 import { toast } from "react-toastify";
 
 export default function DeleteCourseModalScreen({ course }) {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const [open, setOpen] = React.useState(false);
   //delete course
   async function deleteCourse(id) {
     try {
       await fetch(`${base_url}course/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       window.location = "/course";
       toast.success("course deleted successfully");

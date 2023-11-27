@@ -14,6 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import courseprof from "../../Static/courseprof.png";
 
 export default function ViewCourseScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const params = useParams();
   const [courses, setCourses] = useState([]);
   async function getCourses() {
@@ -21,6 +22,7 @@ export default function ViewCourseScreen() {
       const response = await fetch(`${base_url}course/${params.courseId}`);
       const getcourses = await response.json();
       setCourses(getcourses);
+      console.log(getcourses);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -34,6 +36,10 @@ export default function ViewCourseScreen() {
     try {
       await fetch(`${base_url}course/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          authorization: `Bearer ${Token.token}`,
+        },
       });
       setCourses(courses.filter((courses) => courses._id !== id));
       toast.success("course deleted successfully");
@@ -109,7 +115,7 @@ export default function ViewCourseScreen() {
                         <h4>
                           <b>
                             Semister
-                            <t/>
+                            <t />
                             {courses.semister}
                           </b>
                         </h4>
@@ -138,16 +144,14 @@ export default function ViewCourseScreen() {
                       flexDirection: "column",
                       borderTop: "4px solid #42a5f5",
                       color: "#fff",
-                      mb: 3,
+                      mb: 2,
                       backgroundColor: "grey.400",
-                      
-                      overflow:'hidden'
+                      overflow: "hidden",
                     }}
                   >
                     <div
                       style={{
-                        width: "30rem", 
-                        
+                        width: "30rem",
                       }}
                     >
                       <h1>{courses.title}</h1>
@@ -156,9 +160,24 @@ export default function ViewCourseScreen() {
                   <Paper
                     sx={{
                       p: 2,
-                      display: "flex",
                       flexDirection: "column",
-                      marginTop: "1rem",
+                      mb: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "30rem",
+                      }}
+                    >
+                      <h3>Course Outline</h3>
+                    </div>
+                  </Paper>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      overflow: "hidden",
+                      flexDirection: "column",
                     }}
                   >
                     <b>
@@ -178,7 +197,7 @@ export default function ViewCourseScreen() {
                           </tr>
                         </thead>
                         <tbody>
-                          {courses.students &&
+                          {/* {courses.students &&
                             courses.students.map((student) => (
                               <tr key={student._id}>
                                 <th scope="row">{i++}</th>
@@ -189,7 +208,7 @@ export default function ViewCourseScreen() {
                                 <td> {student.gender} </td>
                                 <td> {student.phone} </td>
                               </tr>
-                            ))}
+                            ))} */}
                         </tbody>
                       </table>
                     </div>

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { base_url } from "../../Utils/baseUrl";
 
 export default function EditClassGroupScreen() {
+  const Token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
   const [abbr, setAbbr] = useState("");
   const [title, setTitle] = useState("");
@@ -55,6 +56,9 @@ export default function EditClassGroupScreen() {
         `${base_url}classgroup/group/${params.groupId}`,
         {
           method: "PUT",
+          headers: {
+            authorization: `Bearer ${Token.token}`,
+          },
           body: data,
         }
       );

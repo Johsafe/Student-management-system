@@ -25,6 +25,7 @@ import ReactPaginate from "react-paginate";
 export default function CourseScreen() {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(5);
+  const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const currentPage = useRef();
 
@@ -59,25 +60,26 @@ export default function CourseScreen() {
         setPageCount(data.rowsPerPage);
         setData(data.data);
       });
+    setLoading(true);
   }
 
   //get Courses
-  const [loading, setLoading] = useState(false);
-  const [courses, setCourses] = useState([]);
-  async function getCourses() {
-    try {
-      const response = await fetch(`${base_url}course/courses`);
-      const getcourses = await response.json();
-      setCourses(getcourses);
-      setLoading(true);
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  }
 
-  useEffect(() => {
-    getCourses();
-  }, []);
+  // const [courses, setCourses] = useState([]);
+  // async function getCourses() {
+  //   try {
+  //     const response = await fetch(`${base_url}course/courses`);
+  //     const getcourses = await response.json();
+  //     setCourses(getcourses);
+  //     setLoading(true);
+  //   } catch (err) {
+  //     toast.error(getError(err));
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getCourses();
+  // }, []);
 
   //search student
   async function searchHandler(event) {
@@ -86,10 +88,10 @@ export default function CourseScreen() {
       let result = await fetch(`${base_url}course/search/${key}`);
       result = await result.json();
       if (result) {
-        setCourses(result);
+        setData(result);
       }
     } else {
-      getCourses();
+      getPaginatedCourses();
     }
   }
 
@@ -187,41 +189,42 @@ export default function CourseScreen() {
                               </tr>
                             </thead>
                             <tbody>
-                              {data.map((course) => (
-                                <tr key={course.id}>
-                                  <th scope="row">{i++}</th>
-                                  <td>{course.code}</td>
-                                  <td>{course.title}</td>
-                                  <td>{course.department.abbr}</td>
-                                  <td>{course.semister}</td>
-                                  <td>{course.year}</td>
-                                  <td>
-                                    <div>
-                                      <ButtonGroup
-                                        variant="text"
-                                        aria-label="text button group"
-                                        style={{ display: "flex" }}
-                                      >
-                                        <Button>
-                                          <Link to={`/${course._id}/edit`}>
-                                            <EditIcon />
-                                          </Link>
-                                        </Button>
-                                        <Button>
-                                          <Link
-                                            to={`/${course._id}/viewcourse`}
-                                          >
-                                            <VisibilityIcon />
-                                          </Link>
-                                        </Button>
-                                        <DeleteCourseModalScreen
-                                          course={course}
-                                        />
-                                      </ButtonGroup>
-                                    </div>
-                                  </td>
-                                </tr>
-                              ))}
+                              {data &&
+                                data.map((course) => (
+                                  <tr key={course.id}>
+                                    <th scope="row">{i++}</th>
+                                    <td>{course.code}</td>
+                                    <td>{course.title}</td>
+                                    <td>{course.department.abbr}</td>
+                                    <td>{course.semister}</td>
+                                    <td>{course.year}</td>
+                                    <td>
+                                      <div>
+                                        <ButtonGroup
+                                          variant="text"
+                                          aria-label="text button group"
+                                          style={{ display: "flex" }}
+                                        >
+                                          <Button>
+                                            <Link to={`/${course._id}/edit`}>
+                                              <EditIcon />
+                                            </Link>
+                                          </Button>
+                                          <Button>
+                                            <Link
+                                              to={`/${course._id}/viewcourse`}
+                                            >
+                                              <VisibilityIcon />
+                                            </Link>
+                                          </Button>
+                                          <DeleteCourseModalScreen
+                                            course={course}
+                                          />
+                                        </ButtonGroup>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
                             </tbody>
                           </table>
                         </div>

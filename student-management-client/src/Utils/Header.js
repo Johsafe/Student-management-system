@@ -36,6 +36,14 @@ const settings = ["Profile", "Account", "Logout"];
 //   Navigate('');
 // }
 
+// const signoutHandler = () => {
+//     localStorage.removeItem("Details");
+//     window.location.href = "/studentlogin";
+//   };
+//   <Link to="#signout" onClick={signoutHandler} className="link">
+//   Log Out
+//   </Link>
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     backgroundColor: "#44b700",

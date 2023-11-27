@@ -49,10 +49,10 @@ const RoomCard = () => {
     const [roomCount, setRoomCount] = React.useState([]);
     async function countrooms() {
       try {
-        const response = await fetch(`${base_url}room/roomcount`);
+        const response = await fetch(`${base_url}room`);
         const getcount = await response.json();
         setRoomCount(getcount);
-        console.log(getcount);
+        // console.log(getcount);
       } catch (err) {
         toast.error(getError(err));
       }
@@ -76,13 +76,17 @@ const RoomCard = () => {
                       }} />
               <ListItemText
                 sx={{
-                  py: 0,
-                  // mt: 0.45,
-                  // mb: 0.45,
-                  marginLeft:'8rem'
+                  marginLeft: "5rem",
+                  display:'flex',
+                  // justifyContent:'space-around',
+                  alignItems:'center',
+                  gap:'1rem'
                 }}
-                primary={<Typography variant="h4">
-                  {/* {roomCount} */}
+                primary={<Typography   sx={{
+                  fontSize: "2.5rem",
+                  fontWeight: "bolder",
+                }}>
+                  {roomCount}
                   </Typography>}
                 secondary={
                   <Typography
