@@ -1,9 +1,10 @@
 const express = require('express');
 const ExamDate = require('../Models/ExamDateSchema.js');
+const { isAuth } = require("../Middleware/Auth.js");
 const examdateRouter = express.Router();
 
 //create new examdate
-examdateRouter.post('/examdates', async (req, res) => {
+examdateRouter.post('/examdates',isAuth, async (req, res) => {
   try {
     const { month, date, day ,week } = req.body;
 
@@ -60,7 +61,7 @@ examdateRouter.get('/:examdateId', async (req, res) => {
 });
 
 //update examdate
-examdateRouter.put('/:examdateId', async (req, res) => {
+examdateRouter.put('/:examdateId',isAuth, async (req, res) => {
   try {
     const examdate = await ExamDate.findByIdAndUpdate(
       req.params.examdateId,
@@ -83,7 +84,7 @@ examdateRouter.put('/:examdateId', async (req, res) => {
   }
 });
 //delete exam date
-examdateRouter.delete('/:examdateId', async (req, res) => {
+examdateRouter.delete('/:examdateId',isAuth, async (req, res) => {
   try {
     ExamDate.findByIdAndRemove(req.params.examdateId).then((examdate) => {
       if (examdate) {

@@ -37,12 +37,10 @@ authRouter.post("/create", async (req, res) => {
     }).save();
     const url = `${process.env.BASE_URL}authenicate/${newuser.id}/verify/${token.token}`;
     await sendEmail(newuser.email, "Verify Email", url);
-    res
-      .status(201)
-      .send({
-        newuser,
-        message: "An Email sent to your account please verify",
-      });
+    res.status(201).send({
+      newuser,
+      message: "An Email sent to your account please verify",
+    });
     res.status(201).json(newuser);
   } catch (error) {
     res.status(500).send({
@@ -68,7 +66,6 @@ authRouter.get("/:id/verify/:token", async (req, res) => {
     await token.deleteOne();
 
     res.status(200).send({ message: "Email verified successfully" });
-
   } catch (error) {
     res.status(500).send({
       message: "Email Verification Failure",
@@ -90,32 +87,35 @@ authRouter.post("/login", async (req, res) => {
 
     const user = await Authenticate.findOne({ email });
     if (!user)
-			return res.status(401).send({ message: "Invalid Email or Password" });
-    const validPassword = await bcrypt.compare(
-			password,
-			user.password
-		);
-		if (!validPassword)
-			return res.status(401).send({ message: "Invalid Email or Password" });
-    
-      
-		if (!user.verified) {
-			let token = await tokenSchema.findOne({ userId: user._id });
-			if (!token) {
-				token = await new tokenSchema({
-					userId: user._id,
-					token: crypto.randomBytes(32).toString("hex"),
-				}).save();
-				const url = `${process.env.BASE_URL}authenicate/${user.id}/verify/${token.token}`;
-				await sendEmail(user.email, "Verify Email", url);
-			}
-			return res
-				.status(400)
-				.send({ message: "An Email sent to your account please verify" });
-		}
+      return res.status(401).send({ message: "Invalid Email or Password" });
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword)
+      return res.status(401).send({ message: "Invalid Email or Password" });
 
-		const token = generateToken(user._id);
-		res.status(200).send({ data: token, message: "logged in successfully" });
+    if (!user.verified) {
+      let token = await tokenSchema.findOne({ userId: user._id });
+      if (!token) {
+        token = await new tokenSchema({
+          userId: user._id,
+          token: crypto.randomBytes(32).toString("hex"),
+        }).save();
+        const url = `${process.env.BASE_URL}authenicate/${user.id}/verify/${token.token}`;
+        await sendEmail(user.email, "Verify Email", url);
+        // await sendEmail(
+        //   user.email,
+        //   user.firstname  ,
+        //   "Please confirm your account",
+        //   // url
+        //   text
+        // );
+      }
+      return res
+        .status(400)
+        .send({ message: "An Email sent to your account please verify" });
+    }
+
+    const token = generateToken(user);
+    res.status(200).send({ token, message: "logged in successfully" });
   } catch (error) {
     res.status(500).send({
       message: "Encountered An Error",
@@ -171,41 +171,38 @@ authRouter.delete("/:userId", async (req, res) => {
 
 //forgot-password
 
-authRouter.post('/forgot-password',async (req, res) => {
-  const {email} = req.body;
+authRouter.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
   const user = await Authenticate.findOne({ email });
-    if (!user)
-			return res.status(401).send({ message: "Invalid Email" });
+  if (!user) return res.status(401).send({ message: "Invalid Email" });
 
-      const token = user.generateToken();
-      const url = `${process.env.BASE_URL}authenicate/reset_password/${user.id}/${token.token}`;
-    await sendEmail(user.email, "Reset Password", url);
-    res
-      .status(201)
-      .send({
-        user,
-        message: "An Email sent to your account",
-      });
-})
-
+  const token = user.generateToken();
+  const url = `${process.env.BASE_URL}authenicate/reset_password/${user.id}/${token.token}`;
+  await sendEmail(user.email, "Reset Password", url);
+  res.status(201).send({
+    user,
+    message: "An Email sent to your account",
+  });
+});
 
 //reset password
-authRouter.post('/reset-password/:userId/:token', (req, res) => {
-  const {userId, token} = req.params
-  const {password} = req.body
+authRouter.post("/reset-password/:userId/:token", (req, res) => {
+  const { userId, token } = req.params;
+  const { password } = req.body;
 
   jwt.verify(token, "jwt_secret_key", (err, decoded) => {
-      if(err) {
-          return res.json({Status: "Error with token"})
-      } else {
-          bcrypt.hash(password, 10)
-          .then(hash => {
-              UserModel.findByIdAndUpdate({_id:userId}, {password: hash})
-              .then(u => res.send({Status: "Success"}))
-              .catch(err => res.send({Status: err}))
-          })
-          .catch(err => res.send({Status: err}))
-      }
-  })
-})
+    if (err) {
+      return res.json({ Status: "Error with token" });
+    } else {
+      bcrypt
+        .hash(password, 10)
+        .then((hash) => {
+          UserModel.findByIdAndUpdate({ _id: userId }, { password: hash })
+            .then((u) => res.send({ Status: "Success" }))
+            .catch((err) => res.send({ Status: err }));
+        })
+        .catch((err) => res.send({ Status: err }));
+    }
+  });
+});
 module.exports = authRouter;

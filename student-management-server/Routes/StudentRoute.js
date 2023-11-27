@@ -15,6 +15,7 @@ const upload = require("../utils/multer.js");
 studentRouter.post(
   "/student",
   upload.single("studentPhoto"),
+  isAuth,
   async (req, res) => {
     try {
       const { firstname, lastname, gender, password } = req.body;
@@ -139,7 +140,7 @@ studentRouter.get("/search/:key", async (req, res) => {
 
 //delete student from a assiged class
 studentRouter.delete(
-  "/group/:groupId/students/:studentId",
+  "/group/:groupId/students/:studentId",isAuth,
   async (req, res) => {
     try {
       const student = await Student.findById(req.params.studentId);
@@ -205,7 +206,7 @@ studentRouter.post("/login", async (req, res) => {
 });
 
 //suspend  student from a specific class
-studentRouter.put("/suspend/:studentId", async (req, res) => {
+studentRouter.put("/suspend/:studentId",isAuth, async (req, res) => {
   // const { id } = req.params;
   // validateMongoDbId(id);
 
@@ -230,7 +231,7 @@ studentRouter.put("/suspend/:studentId", async (req, res) => {
 });
 
 //unblock / not suspend student
-studentRouter.put("/unsuspend/:studentId", async (req, res) => {
+studentRouter.put("/unsuspend/:studentId",isAuth, async (req, res) => {
   try {
     const unblock = await Student.findByIdAndUpdate(
       req.params.studentId,
@@ -292,7 +293,7 @@ studentRouter.get("/search", async (req, res) => {
 });
 
 //update a student by admin
-studentRouter.put("/student/:studentId", async (req, res) => {
+studentRouter.put("/student/:studentId",isAuth, async (req, res) => {
   try {
     const student = await Student.findByIdAndUpdate(
       req.params.studentId,
@@ -440,7 +441,7 @@ studentRouter.patch("/:studentId/pass", async (req, res) => {
 // })
 
 //delete student info with image
-studentRouter.delete("/student/:studentId", async (req, res) => {
+studentRouter.delete("/student/:studentId",isAuth, async (req, res) => {
   try {
     const stu = await Student.findById(req.params.studentId);
     // Delete image from cloudinary

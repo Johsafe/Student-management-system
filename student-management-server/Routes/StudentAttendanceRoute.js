@@ -17,7 +17,7 @@ attendanceRouter.get("/search", async (req, res) => {
     } else {
       res
         .status(404)
-        .json({ message: "No student found with the given information." });
+        .json({ message: "Course does not exist." });
     }
   } catch (error) {
     res.status(500).send({

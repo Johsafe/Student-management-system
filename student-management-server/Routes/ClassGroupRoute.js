@@ -6,9 +6,10 @@ const groupRouter = express.Router();
 const upload = require("../utils/multer.js");
 const cloudinary = require("../Utils/cloudinary.js");
 const path = require("path");
+const { isAuth } = require("../Middleware/Auth.js");
 
 // *add a new group image with cloudinary*
-groupRouter.post("/group", upload.single("classPhoto"), async (req, res) => {
+groupRouter.post("/group",isAuth, upload.single("classPhoto"), async (req, res) => {
   const {
     abbr,
     title,
@@ -71,7 +72,7 @@ groupRouter.get("/group/:groupId", async (req, res) => {
 });
 
 //update class + image
-groupRouter.put("/group/:groupId", upload.single("classPhoto"), async (req, res) => {
+groupRouter.put("/group/:groupId",isAuth, upload.single("classPhoto"), async (req, res) => {
   try {
     const groupexist = await Group.findById(req.params.groupId);
     await cloudinary.uploader.destroy(groupexist.cloudinary_id);
@@ -105,7 +106,7 @@ groupRouter.put("/group/:groupId", upload.single("classPhoto"), async (req, res)
 });
 
 //delete class + profile image
-groupRouter.delete("/group/:groupId", async (req, res) => {
+groupRouter.delete("/group/:groupId",isAuth, async (req, res) => {
   try {
     const group = await Group.findById(req.params.groupId);
     // Delete image from cloudinary

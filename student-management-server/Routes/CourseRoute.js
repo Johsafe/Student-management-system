@@ -3,10 +3,11 @@ const { default: mongoose } = require("mongoose");
 const Group = require("../Models/ClassGroupSchema.js");
 const Courses = require("../Models/CoursesSchema.js");
 const Student = require("../Models/StudentSchema.js");
+const { isAuth } = require("../Middleware/Auth.js");
 const courseRouter = express.Router();
 
 //create a course
-courseRouter.post("/create", async (req, res) => {
+courseRouter.post("/create", isAuth, async (req, res) => {
   try {
     const { code, title, semister, year } = req.body;
 
@@ -29,7 +30,7 @@ courseRouter.post("/create", async (req, res) => {
 });
 
 //update a course
-courseRouter.put("/:id", async (req, res) => {
+courseRouter.put("/:id", isAuth, async (req, res) => {
   try {
     //Validate course id
     if (!mongoose.isValidObjectId(req.params.id)) {
@@ -61,9 +62,7 @@ courseRouter.put("/:id", async (req, res) => {
 //get courses
 courseRouter.get("/courses", async (req, res) => {
   try {
-    const courses = await Courses.find({}).populate(
-      "department group students"
-    );
+    const courses = await Courses.find({}).populate("department group");
     res.send(courses);
   } catch (error) {
     res
@@ -100,7 +99,7 @@ courseRouter.get("/pagination", async (req, res) => {
     }
 
     result.data = await Courses.find()
-      .populate("department group students")
+      .populate("department group")
       .sort("-_id")
       .skip(startIndex)
       .limit(limit)
@@ -134,7 +133,7 @@ courseRouter.get("/courses", async (req, res) => {
 courseRouter.get("/:courseId", async (req, res) => {
   try {
     const course = await Courses.findById(req.params.courseId).populate(
-      "department group students"
+      "department group"
     );
     res.send(course);
   } catch (error) {
@@ -145,7 +144,7 @@ courseRouter.get("/:courseId", async (req, res) => {
 });
 
 //delete a course
-courseRouter.delete("/:courseId", async (req, res) => {
+courseRouter.delete("/:courseId", isAuth, async (req, res) => {
   try {
     Courses.findByIdAndRemove(req.params.courseId).then((course) => {
       if (course) {
@@ -202,8 +201,8 @@ courseRouter.get("/search/:key", async (req, res) => {
 });
 
 //get the number of all courses
-courseRouter.get("/coursecount", async (req, res) => {
-  const courseCount = await Courses.countDocuments();
+courseRouter.get("/", async (req, res) => {
+  const courseCount = await Courses.estimatedDocumentCount();
   if (courseCount) {
     res.json(courseCount);
   } else {

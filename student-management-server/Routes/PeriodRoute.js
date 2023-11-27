@@ -1,9 +1,10 @@
 const express = require('express');
 const Period = require('../Models/PeriodSchema.js');
+const { isAuth } = require('../Middleware/Auth.js');
 const periodRouter = express.Router();
 
 //create new period
-periodRouter.post('/period', async (req, res) => {
+periodRouter.post('/period',isAuth, async (req, res) => {
   try {
     const { session,starttime,stoptime } = req.body;
 
@@ -59,7 +60,7 @@ periodRouter.get('/:periodId', async (req, res) => {
 });
 
 //update student period
-periodRouter.put('/:periodId', async (req, res) => {
+periodRouter.put('/:periodId',isAuth, async (req, res) => {
   try {
     const period = await Period.findByIdAndUpdate(
       req.params.periodId,
@@ -81,7 +82,7 @@ periodRouter.put('/:periodId', async (req, res) => {
 });
 
 //delete period
-periodRouter.delete('/:periodId', async (req, res) => {
+periodRouter.delete('/:periodId',isAuth, async (req, res) => {
   try {
     Period.findByIdAndRemove(req.params.periodId).then((period) => {
       if (period) {
